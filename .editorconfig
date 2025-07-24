@@ -1,0 +1,16 @@
+# EditorConfig helps maintain consistent coding styles for multiple developers working on the same project
+# https://editorconfig.org
+
+# Top-most EditorConfig file
+root = true
+
+# Default settings
+[*]
+indent_style = space
+indent_size = 2
+tab_width = 2
+end_of_line = lf
+charset = utf-8
+trim_trailing_whitespace = true
+insert_final_newline = true
+max_line_length = 120
