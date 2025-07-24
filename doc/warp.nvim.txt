@@ -1,0 +1,152 @@
+*warp.nvim.txt*
+
+Mark your files and go. Simpler `harpoon` alternative.
+
+==============================================================================
+Table of Contents                                                *warp.nvim.toc*
+
+API ···························································· |warp.nvim.api|
+Configurations ·············································· |warp.nvim.config|
+Actions ····················································· |warp.nvim.action|
+List ·························································· |warp.nvim.list|
+Types ························································ |warp.nvim.types|
+
+==============================================================================
+API                                                              *warp.nvim.api*
+
+M.setup                                                    *warp.nvim.api.setup*
+    Entry point to setup the plugin
+
+    Type: ~
+        (fun(user_config?:Warp.Config))
+
+
+==============================================================================
+Configurations                                                *warp.nvim.config*
+
+
+Example Configuration:
+
+>
+{
+  root_markers = { ".git" },
+  keymaps = {
+    quit = { "q", "<Esc>" },
+    select = { "<CR>" },
+    delete = { "dd" },
+    move_up = { "<C-k>" },
+    move_down = { "<C-j>" },
+  },
+}
+<
+
+
+M.config                                               *warp.nvim.config.config*
+
+    Type: ~
+        (Warp.Config)
+
+
+==============================================================================
+Actions                                                       *warp.nvim.action*
+
+M.add()                                                   *warp.nvim.action.add*
+     Add or update current buffer in list
+
+
+M.goto_index()                                     *warp.nvim.action.goto_index*
+     Navigate to a file from warp list by index
+     @param idx number
+
+
+M.show_list()                                       *warp.nvim.action.show_list*
+    Show the list item in window
+
+
+==============================================================================
+List                                                            *warp.nvim.list*
+
+M.get_list()                                           *warp.nvim.list.get_list*
+     Get all items
+     @return Warp.ListItem[]
+
+
+M.get_list_count()                               *warp.nvim.list.get_list_count*
+     Get the count of the items
+     @return number
+
+
+M.get_item()                                           *warp.nvim.list.get_item*
+     Get a specific item by index
+     @param index number
+     @return Warp.ListItem|nil
+
+
+M.get_index_by_buf()                           *warp.nvim.list.get_index_by_buf*
+     Find the index of an entry by buffer
+     @param buf number
+     @return number|nil
+
+
+M.on_file_update()                               *warp.nvim.list.on_file_update*
+     Update entries if file or folder was updated
+     @param from string
+     @param to string
+
+
+M.add_to_list({path}, {current_line})               *warp.nvim.list.add_to_list*
+     Add or update current buffer in list
+
+    Parameters: ~
+        {path}          (string)
+        {current_line}  (number)
+
+
+M.remove_from_list({idx})                      *warp.nvim.list.remove_from_list*
+    Remove an entry from the list
+
+    Parameters: ~
+        {idx}  (number)
+
+
+                                  *warp.nvim.list.prune_missing_files_from_list*
+M.prune_missing_files_from_list()
+    Prune missing files from list
+
+
+M.clear_current_list()                       *warp.nvim.list.clear_current_list*
+     Clear current project's list
+
+
+M.clear_all_list()                               *warp.nvim.list.clear_all_list*
+     Clear all the lists across all projects
+
+
+==============================================================================
+Types                                                          *warp.nvim.types*
+
+Warp.Config                                        *warp.nvim.types.Warp.Config*
+
+    Fields: ~
+        {root_markers?}  (string[])             The root markers to check, defaults to { ".git" } and fallback to cwd, set to {} to nil it
+        {keymaps?}       (Warp.Config.Keymaps)  The keymaps for actions
+
+
+Warp.Config.Keymaps                        *warp.nvim.types.Warp.Config.Keymaps*
+
+    Fields: ~
+        {quit?}       (string[])
+        {select?}     (string[])
+        {delete?}     (string[])
+        {move_up?}    (string[])
+        {move_down?}  (string[])
+
+
+Warp.ListItem                                    *warp.nvim.types.Warp.ListItem*
+
+    Fields: ~
+        {path}  (string)
+        {line}  (number)
+
+
+vim:tw=78:ts=8:noet:ft=help:norl:
