@@ -308,6 +308,9 @@ M.on_file_update({from}, {to})                   *warp.nvim.list.on_file_update*
         {from}  (string)
         {to}    (string)
 
+    Returns: ~
+        (nil)
+
     Usage: ~
 >lua
         vim.api.nvim_create_autocmd("User", {
@@ -327,6 +330,9 @@ M.add_to_list({path}, {current_line})               *warp.nvim.list.add_to_list*
     Parameters: ~
         {path}          (string)
         {current_line}  (number)
+
+    Returns: ~
+        (nil)
 
     Usage: ~
 >lua
@@ -349,7 +355,8 @@ M.remove_from_list({idx})                      *warp.nvim.list.remove_from_list*
 <
 
 
-M.prune_missing_files_from_list() *warp.nvim.list.prune_missing_files_from_list*
+                                  *warp.nvim.list.prune_missing_files_from_list*
+M.prune_missing_files_from_list()
     Prune missing files from list
 
     Returns: ~
@@ -526,6 +533,10 @@ M.get_formatted_list_items({parent_item}, {warp_list})
         {parent_item}  (Warp.ListItem|nil)  The parent item before open the window
         {warp_list}    (Warp.ListItem[])
 
+    Returns: ~
+        (string[])    lines
+        (number|nil)  active_idx
+
     Usage: ~
 >lua
         require("warp.ui").get_formatted_list_items(parent_item, warp_list)
@@ -675,7 +686,8 @@ M.emit({event})                                          *warp.nvim.events.emit*
 ==============================================================================
 Types                                                          *warp.nvim.types*
 
-Warp.Config.FloatOpts.Relative  *warp.nvim.types.Warp.Config.FloatOpts.Relative*
+                                *warp.nvim.types.Warp.Config.FloatOpts.Relative*
+Warp.Config.FloatOpts.Relative
 
     Variants: ~
         ("cursor")
@@ -686,7 +698,8 @@ Warp.Config.FloatOpts.Relative  *warp.nvim.types.Warp.Config.FloatOpts.Relative*
         ("win")
 
 
-Warp.Config.FloatOpts.Anchor      *warp.nvim.types.Warp.Config.FloatOpts.Anchor*
+                                  *warp.nvim.types.Warp.Config.FloatOpts.Anchor*
+Warp.Config.FloatOpts.Anchor
 
     Variants: ~
         ("NE")
@@ -695,7 +708,8 @@ Warp.Config.FloatOpts.Anchor      *warp.nvim.types.Warp.Config.FloatOpts.Anchor*
         ("SW")
 
 
-Warp.Config.FloatOpts.Border      *warp.nvim.types.Warp.Config.FloatOpts.Border*
+                                  *warp.nvim.types.Warp.Config.FloatOpts.Border*
+Warp.Config.FloatOpts.Border
 
     Variants: ~
         ("double")
@@ -706,7 +720,8 @@ Warp.Config.FloatOpts.Border      *warp.nvim.types.Warp.Config.FloatOpts.Border*
         ("solid")
 
 
-Warp.Config.FloatOpts.TitlePos  *warp.nvim.types.Warp.Config.FloatOpts.TitlePos*
+                                *warp.nvim.types.Warp.Config.FloatOpts.TitlePos*
+Warp.Config.FloatOpts.TitlePos
 
     Variants: ~
         ("left")
