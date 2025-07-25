@@ -1,23 +1,24 @@
+---@mod warp.nvim.storage Storage
+
 local M = {}
 
 local fn = vim.fn
 
 local storage_dir = fn.stdpath("data") .. "/warp"
+local cwd = fn.getcwd()
 
 --- Find the root directory based on root markers, or fall back to cwd
 --- @return string
-local function find_project_root()
+function M.find_project_root()
   local config = require("warp.config").config
 
   local root_markers = config.root_markers
 
-  local start_path = fn.getcwd()
-
   if not root_markers or #root_markers == 0 then
-    return start_path
+    return cwd
   end
 
-  local path = start_path
+  local path = cwd
 
   while path ~= "/" do
     for _, marker in ipairs(root_markers) do
@@ -31,14 +32,33 @@ local function find_project_root()
   end
 
   --- fallback to cwd
-  return start_path
+  return cwd
 end
 
+---@private
 --- Get a safe, unique JSON file path for the current working directory
 --- @return string
 function M.get_storage_path()
+  local config = require("warp.config").config
   fn.mkdir(storage_dir, "p")
-  local root = find_project_root()
+
+  local root
+
+  if type(config.root_detection_fn) ~= "function" then
+    vim.notify("[Warp] root_detection_fn is not a function, fallback to default implementation.", vim.log.levels.WARN)
+    root = M.find_project_root()
+  else
+    root = config.root_detection_fn()
+  end
+
+  if not root or fn.isdirectory(root) == 0 then
+    vim.notify(
+      "[Warp] Root detection that setup is not resolving to an actual directory, fallback to default implementation.",
+      vim.log.levels.WARN
+    )
+    root = M.find_project_root()
+  end
+
   local safe_root = fn.fnamemodify(root, ":~"):gsub("/", "%%")
   return storage_dir .. "/" .. safe_root .. ".json"
 end

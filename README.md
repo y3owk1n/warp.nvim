@@ -75,9 +75,13 @@ require("warp").setup({
 ```lua
 ---@type Warp.Config
 {
-  root_markers = { ".git" }, -- order based markers for root detection, disable root_markers by setting it to {} and it
-  will fallback to only `cwd` as root
-  keymaps = { -- if you don't want certain keymaps, just set it to {}
+  -- [root_markers] order based markers for root detection, disable root_markers by setting it to {} and it will fallback to only `cwd` as root
+  root_markers = { ".git" },
+  -- [root_detection_fn] this function must return a path that exists in string
+  -- `root_markers` are checked in order, if the function returns a path that doesn't exist, it will fallback to `cwd`
+  root_detection_fn = require("warp.storage").find_project_root,
+  -- [keymaps] if you don't want certain keymaps, just set it to {}
+  keymaps = {
     quit = { "q", "<Esc>" }, -- quit the warp selection window
     select = { "<CR>" }, -- select the file in the warp selection window
     delete = { "dd" }, -- delete the file in the warp selection window
@@ -92,6 +96,7 @@ require("warp").setup({
 ```lua
 ---@class Warp.Config
 ---@field root_markers? string[] The root markers to check, defaults to { ".git" } and fallback to cwd, set to {} to nil it
+---@field root_detection_fn? fun(): string? The function to detect the root, defaults to `require("warp.storage").find_project_root`
 ---@field keymaps? Warp.Config.Keymaps The keymaps for actions
 
 ---@class Warp.Config.Keymaps

@@ -4,6 +4,7 @@ doc:
     lua/warp/config.lua \
     lua/warp/action.lua \
     lua/warp/list.lua \
+    lua/warp/storage.lua \
     lua/warp/types.lua \
     > doc/warp.nvim.txt
 

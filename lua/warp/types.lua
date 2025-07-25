@@ -4,6 +4,7 @@ local M = {}
 
 ---@class Warp.Config
 ---@field root_markers? string[] The root markers to check, defaults to { ".git" } and fallback to cwd, set to {} to nil it
+---@field root_detection_fn? fun(): string? The function to detect the root, defaults to `require("warp.storage").find_project_root`
 ---@field keymaps? Warp.Config.Keymaps The keymaps for actions
 
 ---@class Warp.Config.Keymaps
