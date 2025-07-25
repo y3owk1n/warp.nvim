@@ -56,7 +56,14 @@ function M.show_list()
     return
   end
 
-  require("warp.ui").open_window(index, warp_list, "List")
+  local is_active, active_win = require("warp.ui").is_warp_list_win_active()
+
+  if is_active then
+    require("warp.ui").close_win(active_win)
+    return
+  end
+
+  require("warp.ui").render_warp_list(index, warp_list)
 end
 
 ---Clear current project's list

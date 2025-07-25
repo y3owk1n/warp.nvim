@@ -1,6 +1,29 @@
 ---@mod warp.nvim.types Types
 
 local M = {}
+---@alias Warp.Config.FloatOpts.Relative
+---| '"cursor"'
+---| '"editor"'
+---| '"laststatus"'
+---| '"mouse"'
+---| '"tabline"'
+---| '"win"'
+---@alias Warp.Config.FloatOpts.Anchor
+---| '"NE"'
+---| '"NW"'
+---| '"SE"'
+---| '"SW"'
+---@alias Warp.Config.FloatOpts.Border
+---| '"double"'
+---| '"none"'
+---| '"rounded"'
+---| '"shadow"'
+---| '"single"'
+---| '"solid"'
+---@alias Warp.Config.FloatOpts.TitlePos
+---| '"left"'
+---| '"center"'
+---| '"right"'
 
 ---@class Warp.Config
 ---@field root_markers? string[] The root markers to check, defaults to { ".git" } and fallback to cwd, set to {} to nil it
@@ -19,10 +42,10 @@ local M = {}
 ---@class Warp.Config.FloatOpts
 ---@field width? integer The width of the window, more than 1 = absolute, less than 1 = calculated percentage
 ---@field height? integer The height of the window, more than 1 = absolute, less than 1 = calculated percentage
----@field relative? "cursor"|"editor"|"laststatus"|"mouse"|"tabline"|"win" The relative position of the window, defaults to "editor"
----@field anchor? "NW" | "NW" | "SW" | "SE" The anchor position of the window, no default
----@field title_pos? "left" | "center" | "right" The position of the title, defaults to "left"
----@field border? "double"|"none"|"rounded"|"shadow"|"single"|"solid"|"shadow" The border style of the window, no default
+---@field relative? Warp.Config.FloatOpts.Relative The relative position of the window, defaults to "editor"
+---@field anchor? Warp.Config.FloatOpts.Anchor The anchor position of the window, no default
+---@field title_pos? Warp.Config.FloatOpts.TitlePos The position of the title, defaults to "left"
+---@field border? Warp.Config.FloatOpts.Border The border style of the window, no default
 ---@field zindex? integer The z-index of the window, no default
 ---@field focusable? boolean Whether the window is focusable, no default
 
