@@ -19,11 +19,11 @@ local floating_win
 local floating_buf
 
 --- Show the floating window with the warp list
----@param item_idx number|nil The index of the warp list item before open the window
+---@param parent_item Warp.ListItem|nil The parent item before open the window
 ---@param warp_list Warp.ListItem[]
 ---@see warp.nvim.types.Warp.ListItem
----@usage `require('warp.ui').open_window(item_idx, warp_list)`
-function M.open_window(item_idx, warp_list)
+---@usage `require('warp.ui').open_window(parent_item, warp_list)`
+function M.open_window(parent_item, warp_list)
   if floating_win and api.nvim_win_is_valid(floating_win) then
     api.nvim_win_close(floating_win, true)
   end
@@ -47,15 +47,20 @@ function M.open_window(item_idx, warp_list)
   api.nvim_set_option_value("swapfile", false, { buf = floating_buf })
 
   local lines = {}
+
+  ---@type number|nil
+  local active_idx
+
   for idx, entry in ipairs(warp_list) do
     local display = fn.fnamemodify(entry.path, ":~:.")
-    if idx == item_idx then
+    if parent_item and entry.path == parent_item.path then
       display = display .. " *"
+      active_idx = idx
     end
     lines[idx] = string.format(" %d %s", idx, display)
   end
   api.nvim_buf_set_lines(floating_buf, 0, -1, false, lines)
-  api.nvim_win_set_cursor(floating_win, { item_idx or 1, 0 })
+  api.nvim_win_set_cursor(floating_win, { active_idx or 1, 0 })
 
   ---Not modifiable after setting lines
   api.nvim_set_option_value("modifiable", false, { buf = floating_buf })
@@ -88,7 +93,7 @@ function M.open_window(item_idx, warp_list)
       table.remove(warp_list, l)
       list.save_list()
       if #warp_list > 0 then
-        M.open_window(item_idx, warp_list)
+        M.open_window(parent_item, warp_list)
       else
         api.nvim_win_close(floating_win, true)
         notify.info("Warp List is emptied")
@@ -103,7 +108,7 @@ function M.open_window(item_idx, warp_list)
       if old > 1 then
         warp_list[old], warp_list[old - 1] = warp_list[old - 1], warp_list[old]
         list.save_list()
-        M.open_window(item_idx, warp_list)
+        M.open_window(parent_item, warp_list)
         api.nvim_win_set_cursor(floating_win, { math.max(1, old - 1), 0 })
       end
     end)
@@ -116,7 +121,7 @@ function M.open_window(item_idx, warp_list)
       if old < #warp_list then
         warp_list[old], warp_list[old + 1] = warp_list[old + 1], warp_list[old]
         list.save_list()
-        M.open_window(item_idx, warp_list)
+        M.open_window(parent_item, warp_list)
         api.nvim_win_set_cursor(floating_win, { math.min(#warp_list, old + 1), 0 })
       end
     end)
