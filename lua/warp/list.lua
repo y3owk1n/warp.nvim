@@ -9,6 +9,7 @@ local M = {}
 local api = vim.api
 local fs = vim.fs
 local fn = vim.fn
+local notify = require("warp.notifier")
 local utils = require("warp.utils")
 
 ---@type Warp.ListItem[]
@@ -29,7 +30,7 @@ function M.load_list()
     else
       warp_list = {}
       fn.rename(storage_path, storage_path .. ".bak")
-      vim.notify("Warp: Corrupted JSON backed up", vim.log.levels.WARN)
+      notify.warn("Corrupted JSON backed up")
     end
   else
     warp_list = {}
@@ -42,7 +43,7 @@ end
 function M.save_list()
   local ok, encoded = pcall(vim.json.encode, warp_list)
   if not ok then
-    vim.notify("Warp: Failed to save list", vim.log.levels.ERROR)
+    notify.error("Failed to save list")
     return
   end
   local storage_path = require("warp.storage").get_storage_path()
@@ -119,7 +120,7 @@ function M.on_file_update(from, to)
   end
   if changed then
     M.save_list()
-    vim.notify("Warp: updated after source updates", vim.log.levels.INFO)
+    notify.info("updated after source updates")
   end
 end
 
@@ -145,9 +146,9 @@ function M.add_to_list(path, current_line)
   M.save_list()
 
   if found then
-    vim.notify("Warp: Updated line number", vim.log.levels.INFO)
+    notify.info("Updated line number")
   else
-    vim.notify("Warp: Added to #" .. #warp_list, vim.log.levels.INFO)
+    notify.info("Added to #" .. #warp_list)
   end
 end
 
@@ -156,7 +157,7 @@ end
 ---@return nil
 ---@usage `require('warp.list').remove_from_list(idx)`
 function M.remove_from_list(idx)
-  vim.notify("Warp: file no longer exists – removed", vim.log.levels.WARN)
+  notify.warn("file no longer exists – removed")
   table.remove(warp_list, idx)
   M.save_list()
 end
@@ -182,6 +183,7 @@ end
 function M.clear_current_list()
   warp_list = {}
   M.save_list()
+  notify.info("Current lists cleared")
 end
 
 ---Clear all the lists across all projects
@@ -191,7 +193,7 @@ function M.clear_all_list()
   local storage_path = require("warp.storage").get_storage_path()
   local files = fn.readdir(storage_path)
   if not files then
-    vim.notify("Warp: No warp data found", vim.log.levels.INFO)
+    notify.info("No warp data found")
     return
   end
 
@@ -211,7 +213,7 @@ function M.clear_all_list()
           fn.delete(storage_path .. "/" .. file)
         end
       end
-      vim.notify("Warp: All warp lists cleared", vim.log.levels.INFO)
+      notify.info("All warp lists cleared")
     end
   end)
 end

@@ -7,6 +7,7 @@
 local M = {}
 
 local fn = vim.fn
+local notify = require("warp.notifier")
 
 local storage_dir = fn.stdpath("data") .. "/warp"
 local cwd = fn.getcwd()
@@ -50,17 +51,14 @@ function M.get_storage_path()
   local root
 
   if type(config.root_detection_fn) ~= "function" then
-    vim.notify("[Warp] root_detection_fn is not a function, fallback to default implementation.", vim.log.levels.WARN)
+    notify.warn("`root_detection_fn` is not a function, fallback to default implementation.")
     root = M.find_project_root()
   else
     root = config.root_detection_fn()
   end
 
   if not root or fn.isdirectory(root) == 0 then
-    vim.notify(
-      "[Warp] Root detection that setup is not resolving to an actual directory, fallback to default implementation.",
-      vim.log.levels.WARN
-    )
+    notify.warn("`root_detection_fn` returned an invalid directory, fallback to default implementation.")
     root = M.find_project_root()
   end
 
