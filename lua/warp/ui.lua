@@ -1,3 +1,9 @@
+---@mod warp.nvim.ui UI
+
+---@brief [[
+---UI related implementations
+---@brief ]]
+
 local M = {}
 
 local api = vim.api
@@ -6,15 +12,17 @@ local action = require("warp.action")
 local list = require("warp.list")
 local utils = require("warp.utils")
 
---- @type number|nil
+---@type number|nil
 local floating_win
 
---- @type number|nil
+---@type number|nil
 local floating_buf
 
 --- Show the floating window with the warp list
 ---@param item_idx number|nil The index of the warp list item before open the window
 ---@param warp_list Warp.ListItem[]
+---@see warp.nvim.types.Warp.ListItem
+---@usage `require('warp.ui').open_window(item_idx, warp_list)`
 function M.open_window(item_idx, warp_list)
   if floating_win and api.nvim_win_is_valid(floating_win) then
     api.nvim_win_close(floating_win, true)

@@ -1,15 +1,20 @@
 *warp.nvim.txt*
 
-Mark your files and go. Simpler `harpoon` alternative.
+Warp is a lightweight project-local buffer list for Neovim — add, view, jump, reorder, and remove buffers, all from a floating window.
+
+`warp.nvim` provides a per-project list of important files, allowing you to quickly return to them later. think of it as “buffer bookmarks,” scoped to your git repo (or any project root).
+
+It's inspired by https://github.com/ThePrimeagen/harpoon, but with a simpler goal: do one thing well. No terminals, no fancy workflows — just files you care about, saved per project.
 
 ==============================================================================
 Table of Contents                                                *warp.nvim.toc*
 
 API ···························································· |warp.nvim.api|
 Configurations ·············································· |warp.nvim.config|
-Actions ····················································· |warp.nvim.action|
 List ·························································· |warp.nvim.list|
 Storage ···················································· |warp.nvim.storage|
+UI ······························································ |warp.nvim.ui|
+Utilities ···················································· |warp.nvim.utils|
 Types ························································ |warp.nvim.types|
 
 ==============================================================================
@@ -21,12 +26,143 @@ M.setup                                                    *warp.nvim.api.setup*
     Type: ~
         (fun(user_config?:Warp.Config))
 
+    See: ~
+        |warp.nvim.config.config|
+        |warp.nvim.types.Warp.Config|
+
+    Usage: ~
+>lua
+        require('warp').setup(opts)
+<
+
+
+M.add()                                                      *warp.nvim.api.add*
+    Add or update current buffer in list
+
+    Returns: ~
+        (nil)
+
+    Usage: ~
+>lua
+        require('warp').add() or ':WarpAddFile'
+<
+
+
+M.show_list()                                          *warp.nvim.api.show_list*
+    Show the list item in window
+
+    Returns: ~
+        (nil)
+
+    Usage: ~
+>lua
+        require('warp').show_list() or ':WarpShowList'
+<
+
+
+M.clear_current_list                          *warp.nvim.api.clear_current_list*
+    Clear current project's list
+
+    Type: ~
+        (fun():nil)
+
+    See: ~
+        |warp.nvim.list.clear_current_list|
+
+    Usage: ~
+>lua
+        require('warp').clear_current_list() or ':WarpClearCurrentList'
+<
+
+
+M.clear_all_list                                  *warp.nvim.api.clear_all_list*
+    Clear all the lists across all projects
+
+    Type: ~
+        (fun():nil)
+
+    See: ~
+        |warp.nvim.list.clear_all_list|
+
+    Usage: ~
+>lua
+        require('warp').clear_all_list() or ':WarpClearAllList'
+<
+
+
+M.goto_index({idx})                                   *warp.nvim.api.goto_index*
+    Navigate to a file from warp list by index
+
+    Parameters: ~
+        {idx}  (number)
+
+    Returns: ~
+        (nil)
+
+    Usage: ~
+>lua
+        require('warp').goto_index(1) or ':WarpGoToIndex 1'
+<
+
+
+M.on_file_update                                  *warp.nvim.api.on_file_update*
+    Update entries if file or folder was updated
+
+    Type: ~
+        (fun(from:string,to:string):nil)
+
+    See: ~
+        |warp.nvim.list.on_file_update|
+
+    Usage: ~
+>lua
+        vim.api.nvim_create_autocmd("User", {
+          group = augroup,
+          pattern = { "MiniFilesActionRename", "MiniFilesActionMove" },
+          callback = function(ev)
+            local from, to = ev.data.from, ev.data.to
+            require("warp").on_file_update(from, to)
+          end,
+        })
+<
+
+
+M.get_index_by_buf                              *warp.nvim.api.get_index_by_buf*
+    Find the index of an entry by buffer
+
+    Type: ~
+        (fun(buf:number):number|nil)
+
+    See: ~
+        |warp.nvim.list.get_index_by_buf|
+
+    Usage: ~
+>lua
+        require('warp').get_index_by_buf(0)
+<
+
+
+M.get_list_count                                  *warp.nvim.api.get_list_count*
+    Get the count of the items
+
+    Type: ~
+        (fun():number)
+
+    See: ~
+        |warp.nvim.list.get_list_count|
+
+    Usage: ~
+>lua
+        require('warp').get_list_count()
+<
+
 
 ==============================================================================
 Configurations                                                *warp.nvim.config*
 
+Configuration related implementations
 
-Example Configuration:
+Default Configuration:
 
 >
 {
@@ -48,60 +184,130 @@ M.config                                               *warp.nvim.config.config*
     Type: ~
         (Warp.Config)
 
-
-==============================================================================
-Actions                                                       *warp.nvim.action*
-
-M.add()                                                   *warp.nvim.action.add*
-     Add or update current buffer in list
-
-
-M.goto_index()                                     *warp.nvim.action.goto_index*
-     Navigate to a file from warp list by index
-     @param idx number
-
-
-M.show_list()                                       *warp.nvim.action.show_list*
-    Show the list item in window
+    See: ~
+        |warp.nvim.types.Warp.Config|
 
 
 ==============================================================================
 List                                                            *warp.nvim.list*
 
+List related implementations, important functions are re-exported to the main module.
+
+M.load_list()                                         *warp.nvim.list.load_list*
+    Load list from disk into memory
+
+    Returns: ~
+        (nil)
+
+    Usage: ~
+>lua
+        require('warp.list').load_list()
+<
+
+
+M.save_list()                                         *warp.nvim.list.save_list*
+    Save list to disk
+
+    Returns: ~
+        (nil)
+
+    Usage: ~
+>lua
+        require('warp.list').save_list()
+<
+
+
 M.get_list()                                           *warp.nvim.list.get_list*
-     Get all items
-     @return Warp.ListItem[]
+    Get all items
+
+    Returns: ~
+        (Warp.ListItem[])
+
+    See: ~
+        |warp.nvim.types.Warp.ListItem|
+
+    Usage: ~
+>lua
+        require('warp.list').get_list()
+<
 
 
 M.get_list_count()                               *warp.nvim.list.get_list_count*
-     Get the count of the items
-     @return number
+    Get the count of the items
+
+    Returns: ~
+        (number)
+
+    Usage: ~
+>lua
+        require('warp.list').get_list_count()
+<
 
 
-M.get_item()                                           *warp.nvim.list.get_item*
-     Get a specific item by index
-     @param index number
-     @return Warp.ListItem|nil
+M.get_item_by_index({index})                  *warp.nvim.list.get_item_by_index*
+    Get a specific item by index
+
+    Parameters: ~
+        {index}  (number)
+
+    Returns: ~
+        (Warp.ListItem|nil)
+
+    See: ~
+        |warp.nvim.types.Warp.ListItem|
+
+    Usage: ~
+>lua
+        require('warp.list').get_item_by_index(1)
+<
 
 
-M.get_index_by_buf()                           *warp.nvim.list.get_index_by_buf*
-     Find the index of an entry by buffer
-     @param buf number
-     @return number|nil
+M.get_index_by_buf({buf})                      *warp.nvim.list.get_index_by_buf*
+    Find the index of an entry by buffer
+
+    Parameters: ~
+        {buf}  (number)
+
+    Returns: ~
+        (number|nil)
+
+    Usage: ~
+>lua
+        require('warp.list').get_index_by_buf(0)
+<
 
 
-M.on_file_update()                               *warp.nvim.list.on_file_update*
-     Update entries if file or folder was updated
-     @param from string
-     @param to string
+M.on_file_update({from}, {to})                   *warp.nvim.list.on_file_update*
+    Update entries if file or folder was updated
+
+    Parameters: ~
+        {from}  (string)
+        {to}    (string)
+
+    Usage: ~
+>lua
+        vim.api.nvim_create_autocmd("User", {
+          group = augroup,
+          pattern = { "MiniFilesActionRename", "MiniFilesActionMove" },
+          callback = function(ev)
+            local from, to = ev.data.from, ev.data.to
+            require("warp").on_file_update(from, to)
+          end,
+        })
+<
 
 
 M.add_to_list({path}, {current_line})               *warp.nvim.list.add_to_list*
-     Add or update current buffer in list
+    Add or update current buffer in list
 
     Parameters: ~
         {path}          (string)
         {current_line}  (number)
+
+    Usage: ~
+>lua
+        require('warp.list').add_to_list(path, current_line)
+<
 
 
 M.remove_from_list({idx})                      *warp.nvim.list.remove_from_list*
@@ -110,26 +316,165 @@ M.remove_from_list({idx})                      *warp.nvim.list.remove_from_list*
     Parameters: ~
         {idx}  (number)
 
+    Returns: ~
+        (nil)
+
+    Usage: ~
+>lua
+        require('warp.list').remove_from_list(idx)
+<
+
 
                                   *warp.nvim.list.prune_missing_files_from_list*
 M.prune_missing_files_from_list()
     Prune missing files from list
 
+    Returns: ~
+        (nil)
+
+    Usage: ~
+>lua
+        require('warp.list').prune_missing_files_from_list()
+<
+
 
 M.clear_current_list()                       *warp.nvim.list.clear_current_list*
-     Clear current project's list
+    Clear current project's list
+
+    Returns: ~
+        (nil)
+
+    Usage: ~
+>lua
+        require('warp.list').clear_current_list()
+<
 
 
 M.clear_all_list()                               *warp.nvim.list.clear_all_list*
-     Clear all the lists across all projects
+    Clear all the lists across all projects
+
+    Returns: ~
+        (nil)
+
+    Usage: ~
+>lua
+        require('warp.list').clear_all_list()
+<
 
 
 ==============================================================================
 Storage                                                      *warp.nvim.storage*
 
+Storage related implementations
+
 M.find_project_root()                      *warp.nvim.storage.find_project_root*
-     Find the root directory based on root markers, or fall back to cwd
-     @return string
+    Find the root directory based on root markers, or fall back to cwd
+
+    Returns: ~
+        (string)
+
+    Usage: ~
+>lua
+        require('warp.storage').find_project_root()
+<
+
+
+M.get_storage_path()                        *warp.nvim.storage.get_storage_path*
+    Get a safe, unique JSON file path for the current working directory
+
+    Returns: ~
+        (string)
+
+    Usage: ~
+>lua
+        require('warp.storage').get_storage_path()
+<
+
+
+==============================================================================
+UI                                                                *warp.nvim.ui*
+
+UI related implementations
+
+M.open_window({item_idx}, {warp_list})                *warp.nvim.ui.open_window*
+     Show the floating window with the warp list
+
+    Parameters: ~
+        {item_idx}   (number|nil)       The index of the warp list item before open the window
+        {warp_list}  (Warp.ListItem[])
+
+    See: ~
+        |warp.nvim.types.Warp.ListItem|
+
+    Usage: ~
+>lua
+        require('warp.ui').open_window(item_idx, warp_list)
+<
+
+
+==============================================================================
+Utilities                                                      *warp.nvim.utils*
+
+Utilities related implementations
+
+                                  *warp.nvim.utils.format_string_to_pascal_case*
+M.format_string_to_pascal_case({str})
+    Convert a string to PascalCase
+
+    Parameters: ~
+        {str}  (string)
+
+    Returns: ~
+        (string)
+
+    Usage: ~
+>lua
+        require('warp.utils').format_string_to_pascal_case("hello_world")
+<
+
+
+M.augroup({name})                                      *warp.nvim.utils.augroup*
+    Create an augroup
+
+    Parameters: ~
+        {name}  (string)  The name of the augroup
+
+    Returns: ~
+        (integer)  augroup ID
+
+    Usage: ~
+>lua
+        require('warp.utils').augroup("my_augroup")
+<
+
+
+M.file_exists({path})                              *warp.nvim.utils.file_exists*
+    Check if a file exists
+
+    Parameters: ~
+        {path}  (string)
+
+    Returns: ~
+        (boolean)
+
+    Usage: ~
+>lua
+        require('warp.utils').file_exists(path)
+<
+
+
+M.buf_set_keymap({bufnr}, {lhs}, {rhs})         *warp.nvim.utils.buf_set_keymap*
+    Set a keymap for a buffer
+
+    Parameters: ~
+        {bufnr}  (number)
+        {lhs}    (string)
+        {rhs}    (fun())
+
+    Usage: ~
+>lua
+        require('warp.utils').buf_set_keymap(bufnr, lhs, rhs)
+<
 
 
 ==============================================================================
@@ -138,8 +483,9 @@ Types                                                          *warp.nvim.types*
 Warp.Config                                        *warp.nvim.types.Warp.Config*
 
     Fields: ~
-        {root_markers?}       (string[])      The root markers to check, defaults to { ".git" } and fallback to cwd, set to {} to nil it
-        {root_detection_fn?}  (fun():string)
+        {root_markers?}       (string[])             The root markers to check, defaults to { ".git" } and fallback to cwd, set to {} to nil it
+        {root_detection_fn?}  (fun():string)         The function to detect the root, defaults to `require("warp.storage").find_project_root`
+        {keymaps?}            (Warp.Config.Keymaps)  The keymaps for actions
 
 
 Warp.Config.Keymaps                        *warp.nvim.types.Warp.Config.Keymaps*
@@ -155,8 +501,8 @@ Warp.Config.Keymaps                        *warp.nvim.types.Warp.Config.Keymaps*
 Warp.ListItem                                    *warp.nvim.types.Warp.ListItem*
 
     Fields: ~
-        {path}  (string)
-        {line}  (number)
+        {path}  (string)  The path of the file
+        {line}  (number)  The line number of the file
 
 
 vim:tw=78:ts=8:noet:ft=help:norl:
