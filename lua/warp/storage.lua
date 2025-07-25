@@ -9,18 +9,20 @@ local storage_dir = fn.stdpath("data") .. "/warp"
 local function find_project_root()
   local config = require("warp.config").config
 
-  -- List of root markers to check
   local root_markers = config.root_markers
 
-  local path = fn.getcwd()
+  local start_path = fn.getcwd()
 
   if not root_markers or #root_markers == 0 then
-    return path
+    return start_path
   end
+
+  local path = start_path
 
   while path ~= "/" do
     for _, marker in ipairs(root_markers) do
-      if fn.isdirectory(path .. "/" .. marker) == 1 or fn.filereadable(path .. "/" .. marker) == 1 then
+      local full = path .. "/" .. marker
+      if fn.isdirectory(full) == 1 or fn.filereadable(full) == 1 then
         return path
       end
     end
@@ -29,7 +31,7 @@ local function find_project_root()
   end
 
   --- fallback to cwd
-  return fn.getcwd()
+  return start_path
 end
 
 --- Get a safe, unique JSON file path for the current working directory
