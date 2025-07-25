@@ -9,6 +9,7 @@ API ······································
 Configurations ·············································· |warp.nvim.config|
 Actions ····················································· |warp.nvim.action|
 List ·························································· |warp.nvim.list|
+Storage ···················································· |warp.nvim.storage|
 Types ························································ |warp.nvim.types|
 
 ==============================================================================
@@ -30,6 +31,7 @@ Example Configuration:
 >
 {
   root_markers = { ".git" },
+  root_detection_fn = require("warp.storage").find_project_root,
   keymaps = {
     quit = { "q", "<Esc>" },
     select = { "<CR>" },
@@ -109,8 +111,7 @@ M.remove_from_list({idx})                      *warp.nvim.list.remove_from_list*
         {idx}  (number)
 
 
-                                  *warp.nvim.list.prune_missing_files_from_list*
-M.prune_missing_files_from_list()
+M.prune_missing_files_from_list() *warp.nvim.list.prune_missing_files_from_list*
     Prune missing files from list
 
 
@@ -123,13 +124,21 @@ M.clear_all_list()                               *warp.nvim.list.clear_all_list*
 
 
 ==============================================================================
+Storage                                                      *warp.nvim.storage*
+
+M.find_project_root()                      *warp.nvim.storage.find_project_root*
+     Find the root directory based on root markers, or fall back to cwd
+     @return string
+
+
+==============================================================================
 Types                                                          *warp.nvim.types*
 
 Warp.Config                                        *warp.nvim.types.Warp.Config*
 
     Fields: ~
-        {root_markers?}  (string[])             The root markers to check, defaults to { ".git" } and fallback to cwd, set to {} to nil it
-        {keymaps?}       (Warp.Config.Keymaps)  The keymaps for actions
+        {root_markers?}       (string[])      The root markers to check, defaults to { ".git" } and fallback to cwd, set to {} to nil it
+        {root_detection_fn?}  (fun():string)
 
 
 Warp.Config.Keymaps                        *warp.nvim.types.Warp.Config.Keymaps*

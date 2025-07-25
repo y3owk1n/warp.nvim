@@ -6,6 +6,7 @@
 --->
 ---{
 ---  root_markers = { ".git" },
+---  root_detection_fn = require("warp.storage").find_project_root,
 ---  keymaps = {
 ---    quit = { "q", "<Esc>" },
 ---    select = { "<CR>" },
@@ -30,6 +31,7 @@ M.config = {}
 ---@type Warp.Config
 M.defaults = {
   root_markers = { ".git" },
+  root_detection_fn = require("warp.storage").find_project_root,
   keymaps = {
     quit = { "q", "<Esc>" },
     select = { "<CR>" },
