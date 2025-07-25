@@ -56,7 +56,7 @@ function M.show_list()
     return
   end
 
-  require("warp.ui").open_window(index, warp_list)
+  require("warp.ui").open_window(index, warp_list, "List")
 end
 
 ---Clear current project's list

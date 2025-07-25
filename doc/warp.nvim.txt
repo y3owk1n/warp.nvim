@@ -176,6 +176,12 @@ Default Configuration:
     move_up = { "<C-k>" },
     move_down = { "<C-j>" },
   },
+ float_opts = {
+   width = 0.5,
+   height = 0.5,
+   relative = "editor",
+   title_pos = "left",
+ },
 }
 <
 
@@ -413,19 +419,20 @@ UI                                                                *warp.nvim.ui*
 UI related implementations
 
                                                       *warp.nvim.ui.open_window*
-M.open_window({parent_item}, {warp_list})
+M.open_window({parent_item}, {warp_list}, {title?})
      Show the floating window with the warp list
 
     Parameters: ~
         {parent_item}  (Warp.ListItem|nil)  The parent item before open the window
         {warp_list}    (Warp.ListItem[])
+        {title?}       (string)             The title of the window
 
     See: ~
         |warp.nvim.types.Warp.ListItem|
 
     Usage: ~
 >lua
-        require('warp.ui').open_window(parent_item, warp_list)
+        require('warp.ui').open_window(parent_item, warp_list, title)
 <
 
 
@@ -541,9 +548,10 @@ Types                                                          *warp.nvim.types*
 Warp.Config                                        *warp.nvim.types.Warp.Config*
 
     Fields: ~
-        {root_markers?}       (string[])             The root markers to check, defaults to { ".git" } and fallback to cwd, set to {} to nil it
-        {root_detection_fn?}  (fun():string)         The function to detect the root, defaults to `require("warp.storage").find_project_root`
-        {keymaps?}            (Warp.Config.Keymaps)  The keymaps for actions
+        {root_markers?}       (string[])               The root markers to check, defaults to { ".git" } and fallback to cwd, set to {} to nil it
+        {root_detection_fn?}  (fun():string)           The function to detect the root, defaults to `require("warp.storage").find_project_root`
+        {keymaps?}            (Warp.Config.Keymaps)    The keymaps for actions
+        {float_opts?}         (Warp.Config.FloatOpts)  The floating window options
 
 
 Warp.Config.Keymaps                        *warp.nvim.types.Warp.Config.Keymaps*
@@ -554,6 +562,14 @@ Warp.Config.Keymaps                        *warp.nvim.types.Warp.Config.Keymaps*
         {delete?}     (string[])
         {move_up?}    (string[])
         {move_down?}  (string[])
+
+
+Warp.Config.FloatOpts                    *warp.nvim.types.Warp.Config.FloatOpts*
+
+    Fields: ~
+        {width?}     (integer)  The width of the window, more than 1 = absolute, less than 1 = calculated percentage
+        {height?}    (integer)  The height of the window, more than 1 = absolute, less than 1 = calculated percentage
+        {relative?}  ()
 
 
 Warp.ListItem                                    *warp.nvim.types.Warp.ListItem*
