@@ -278,6 +278,21 @@ M.get_index_by_buf({buf})                      *warp.nvim.list.get_index_by_buf*
 <
 
 
+M.get_item_by_buf({buf})                        *warp.nvim.list.get_item_by_buf*
+    Find the index of an entry by buffer
+
+    Parameters: ~
+        {buf}  (number)
+
+    Returns: ~
+        (Warp.ListItem|nil)
+
+    Usage: ~
+>lua
+        require('warp.list').get_item_by_buf(0)
+<
+
+
 M.on_file_update({from}, {to})                   *warp.nvim.list.on_file_update*
     Update entries if file or folder was updated
 
@@ -397,19 +412,20 @@ UI                                                                *warp.nvim.ui*
 
 UI related implementations
 
-M.open_window({item_idx}, {warp_list})                *warp.nvim.ui.open_window*
+                                                      *warp.nvim.ui.open_window*
+M.open_window({parent_item}, {warp_list})
      Show the floating window with the warp list
 
     Parameters: ~
-        {item_idx}   (number|nil)       The index of the warp list item before open the window
-        {warp_list}  (Warp.ListItem[])
+        {parent_item}  (Warp.ListItem|nil)  The parent item before open the window
+        {warp_list}    (Warp.ListItem[])
 
     See: ~
         |warp.nvim.types.Warp.ListItem|
 
     Usage: ~
 >lua
-        require('warp.ui').open_window(item_idx, warp_list)
+        require('warp.ui').open_window(parent_item, warp_list)
 <
 
 
