@@ -29,6 +29,7 @@
 
 local M = {}
 
+local events = require("warp.events")
 local list = require("warp.list")
 local utils = require("warp.utils")
 
@@ -74,6 +75,14 @@ function M.setup_autocmds()
       if vim.o.buftype ~= "nofile" then
         list.load_list()
       end
+    end,
+  })
+
+  ---Setup to save list on closing the list window
+  vim.api.nvim_create_autocmd("User", {
+    pattern = events.constants.close_list_win,
+    callback = function()
+      require("warp.list").save_list()
     end,
   })
 end

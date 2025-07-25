@@ -16,6 +16,7 @@ Storage ····································
 UI ······························································ |warp.nvim.ui|
 Utilities ···················································· |warp.nvim.utils|
 Notifier ·················································· |warp.nvim.notifier|
+Events ······················································ |warp.nvim.events|
 Types ························································ |warp.nvim.types|
 
 ==============================================================================
@@ -307,6 +308,9 @@ M.on_file_update({from}, {to})                   *warp.nvim.list.on_file_update*
         {from}  (string)
         {to}    (string)
 
+    Returns: ~
+        (nil)
+
     Usage: ~
 >lua
         vim.api.nvim_create_autocmd("User", {
@@ -326,6 +330,9 @@ M.add_to_list({path}, {current_line})               *warp.nvim.list.add_to_list*
     Parameters: ~
         {path}          (string)
         {current_line}  (number)
+
+    Returns: ~
+        (nil)
 
     Usage: ~
 >lua
@@ -526,6 +533,10 @@ M.get_formatted_list_items({parent_item}, {warp_list})
         {parent_item}  (Warp.ListItem|nil)  The parent item before open the window
         {warp_list}    (Warp.ListItem[])
 
+    Returns: ~
+        (string[])    lines
+        (number|nil)  active_idx
+
     Usage: ~
 >lua
         require("warp.ui").get_formatted_list_items(parent_item, warp_list)
@@ -639,6 +650,40 @@ M.error({msg})                                        *warp.nvim.notifier.error*
 
 
 ==============================================================================
+Events                                                        *warp.nvim.events*
+
+Events related implementations
+
+Warp.Events                                       *warp.nvim.events.Warp.Events*
+
+    Fields: ~
+        {open_list_win}   ("WarpOpenListWin")   When a list window is opened
+        {close_list_win}  ("WarpCloseListWin")  When a list window is closed
+        {added_to_list}   ("WarpAddedToList")   When a file is added to the list
+
+
+M.constants                                         *warp.nvim.events.constants*
+
+    Type: ~
+        (Warp.Events)
+
+
+M.emit({event})                                          *warp.nvim.events.emit*
+    Emit an event
+
+    Parameters: ~
+        {event}  (string)  The event name
+
+    Returns: ~
+        (nil)
+
+    Usage: ~
+>lua
+        require('warp.utils').emit_event("my_event")
+<
+
+
+==============================================================================
 Types                                                          *warp.nvim.types*
 
                                 *warp.nvim.types.Warp.Config.FloatOpts.Relative*
@@ -689,7 +734,7 @@ Warp.Config                                        *warp.nvim.types.Warp.Config*
     Fields: ~
         {root_markers?}         (string[])                                                          The root markers to check, defaults to { ".git" } and fallback to cwd, set to {} to nil it
         {root_detection_fn?}    (fun():string)                                                      The function to detect the root, defaults to `require("warp.storage").find_project_root`
-        {list_item_format_fn?}  (fun(entry:Warp.ListItem,idx:number,is_active:boolean|nil):string)  The function to format the list items lines
+        {list_item_format_fn?}  (fun(entry:Warp.ListItem,idx:number,is_active:boolean|nil):string)  The function to format the list items lines, defaults to `require("warp.ui").default_list_item_format`
         {keymaps?}              (Warp.Config.Keymaps)                                               The keymaps for actions
         {float_opts?}           (Warp.Config.FloatOpts)                                             The floating window options
 
