@@ -326,7 +326,8 @@ M.remove_from_list({idx})                      *warp.nvim.list.remove_from_list*
 <
 
 
-M.prune_missing_files_from_list() *warp.nvim.list.prune_missing_files_from_list*
+                                  *warp.nvim.list.prune_missing_files_from_list*
+M.prune_missing_files_from_list()
     Prune missing files from list
 
     Returns: ~
