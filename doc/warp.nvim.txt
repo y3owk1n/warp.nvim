@@ -419,21 +419,84 @@ UI                                                                *warp.nvim.ui*
 
 UI related implementations
 
-                                                      *warp.nvim.ui.open_window*
-M.open_window({parent_item}, {warp_list}, {title?})
-     Show the floating window with the warp list
+                                          *warp.nvim.ui.create_native_float_win*
+M.create_native_float_win({bufnr}, {title?}, {target_win?})
+    Create a floating window for native
+
+    Parameters: ~
+        {bufnr}        (integer)  The buffer to open
+        {title?}       (string)   The title appended after `Time Machine`
+        {target_win?}  (integer)  The window number to render the list
+
+    Returns: ~
+        (integer|nil)  The window handle
+
+    Usage: ~
+>lua
+        require('warp.ui').create_native_float_win(bufnr, title, target_win)
+<
+
+
+                                         *warp.nvim.ui.set_standard_buf_options*
+M.set_standard_buf_options({bufnr}, {ft})
+    Set standard buffer options
+
+    Parameters: ~
+        {bufnr}  (integer)  The buffer number
+        {ft}     (string)   The filetype
+
+    Returns: ~
+        (nil)
+
+    Usage: ~
+>lua
+        require('warp.ui').set_standard_buf_options(bufnr, ft)
+<
+
+
+                                                 *warp.nvim.ui.render_warp_list*
+M.render_warp_list({parent_item}, {warp_list}, {target_win?})
 
     Parameters: ~
         {parent_item}  (Warp.ListItem|nil)  The parent item before open the window
         {warp_list}    (Warp.ListItem[])
-        {title?}       (string)             The title of the window
+        {target_win?}  (integer)            The window number to render the list
 
-    See: ~
-        |warp.nvim.types.Warp.ListItem|
+    Returns: ~
+        (nil)
 
     Usage: ~
 >lua
-        require('warp.ui').open_window(parent_item, warp_list, title)
+        require('warp.ui').render_warp_list(parent_item, warp_list, target_win)
+<
+
+
+M.close_win({win?})                                     *warp.nvim.ui.close_win*
+    Close a window
+
+    Parameters: ~
+        {win?}  (integer)  The window number
+
+    Returns: ~
+        (nil)
+
+    Usage: ~
+>lua
+        require('warp.ui').close_win(win)
+<
+
+
+M.is_warp_list_win_active()               *warp.nvim.ui.is_warp_list_win_active*
+    Find if the warp list window is active and get it's detail
+
+    Returns: ~
+        (boolean)      window is active
+        (integer|nil)  window id
+        (integer|nil)  buffer id
+
+    Usage: ~
+>lua
+        require('warp.ui').is_warp_list_win_active()
 <
 
 
@@ -455,8 +518,8 @@ M.default_list_item_format({entry}, {idx}, {is_active})
 <
 
 
-                                                   *warp.nvim.ui.render_entries*
-M.render_entries({parent_item}, {warp_list})
+                                         *warp.nvim.ui.get_formatted_list_items*
+M.get_formatted_list_items({parent_item}, {warp_list})
     Render the entries as lines
 
     Parameters: ~
@@ -465,7 +528,7 @@ M.render_entries({parent_item}, {warp_list})
 
     Usage: ~
 >lua
-        require("warp.ui").render_entries(parent_item, warp_list)
+        require("warp.ui").get_formatted_list_items(parent_item, warp_list)
 <
 
 
@@ -578,6 +641,49 @@ M.error({msg})                                        *warp.nvim.notifier.error*
 ==============================================================================
 Types                                                          *warp.nvim.types*
 
+                                *warp.nvim.types.Warp.Config.FloatOpts.Relative*
+Warp.Config.FloatOpts.Relative
+
+    Variants: ~
+        ("cursor")
+        ("editor")
+        ("laststatus")
+        ("mouse")
+        ("tabline")
+        ("win")
+
+
+                                  *warp.nvim.types.Warp.Config.FloatOpts.Anchor*
+Warp.Config.FloatOpts.Anchor
+
+    Variants: ~
+        ("NE")
+        ("NW")
+        ("SE")
+        ("SW")
+
+
+                                  *warp.nvim.types.Warp.Config.FloatOpts.Border*
+Warp.Config.FloatOpts.Border
+
+    Variants: ~
+        ("double")
+        ("none")
+        ("rounded")
+        ("shadow")
+        ("single")
+        ("solid")
+
+
+                                *warp.nvim.types.Warp.Config.FloatOpts.TitlePos*
+Warp.Config.FloatOpts.TitlePos
+
+    Variants: ~
+        ("left")
+        ("center")
+        ("right")
+
+
 Warp.Config                                        *warp.nvim.types.Warp.Config*
 
     Fields: ~
@@ -601,9 +707,14 @@ Warp.Config.Keymaps                        *warp.nvim.types.Warp.Config.Keymaps*
 Warp.Config.FloatOpts                    *warp.nvim.types.Warp.Config.FloatOpts*
 
     Fields: ~
-        {width?}     (integer)  The width of the window, more than 1 = absolute, less than 1 = calculated percentage
-        {height?}    (integer)  The height of the window, more than 1 = absolute, less than 1 = calculated percentage
-        {relative?}  ()
+        {width?}      (integer)                         The width of the window, more than 1 = absolute, less than 1 = calculated percentage
+        {height?}     (integer)                         The height of the window, more than 1 = absolute, less than 1 = calculated percentage
+        {relative?}   (Warp.Config.FloatOpts.Relative)  The relative position of the window, defaults to "editor"
+        {anchor?}     (Warp.Config.FloatOpts.Anchor)    The anchor position of the window, no default
+        {title_pos?}  (Warp.Config.FloatOpts.TitlePos)  The position of the title, defaults to "left"
+        {border?}     (Warp.Config.FloatOpts.Border)    The border style of the window, no default
+        {zindex?}     (integer)                         The z-index of the window, no default
+        {focusable?}  (boolean)                         Whether the window is focusable, no default
 
 
 Warp.ListItem                                    *warp.nvim.types.Warp.ListItem*

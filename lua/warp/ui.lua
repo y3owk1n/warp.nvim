@@ -12,24 +12,16 @@ local list = require("warp.list")
 local notify = require("warp.notifier")
 local utils = require("warp.utils")
 
----@type number|nil
-local floating_win
-
----@type number|nil
-local floating_buf
-
---- Show the floating window with the warp list
----@param parent_item Warp.ListItem|nil The parent item before open the window
----@param warp_list Warp.ListItem[]
----@param title? string The title of the window
----@see warp.nvim.types.Warp.ListItem
----@usage `require('warp.ui').open_window(parent_item, warp_list, title)`
-function M.open_window(parent_item, warp_list, title)
-  if floating_win and api.nvim_win_is_valid(floating_win) then
-    api.nvim_win_close(floating_win, true)
+---Create a floating window for native
+---@param bufnr integer The buffer to open
+---@param title? string The title appended after `Time Machine`
+---@param target_win? integer The window number to render the list
+---@return integer|nil win_id The window handle
+---@usage `require('warp.ui').create_native_float_win(bufnr, title, target_win)`
+function M.create_native_float_win(bufnr, title, target_win)
+  if target_win then
+    return target_win
   end
-
-  floating_buf = api.nvim_create_buf(false, true)
 
   local config_float_opts = require("warp.config").config.float_opts or {}
 
@@ -47,57 +39,100 @@ function M.open_window(parent_item, warp_list, title)
     focusable = config_float_opts.focusable,
   }
 
-  win_opts.width = win_opts.width > 1 and win_opts.width or math.floor(vim.o.columns * win_opts.width)
-  win_opts.height = win_opts.height > 1 and win_opts.height or math.floor(vim.o.lines * win_opts.height)
+  win_opts.width = math.floor(vim.o.columns * win_opts.width)
+  win_opts.height = math.floor(vim.o.lines * win_opts.height)
   win_opts.row = math.floor((vim.o.lines - win_opts.height) / 2)
   win_opts.col = math.floor((vim.o.columns - win_opts.width) / 2)
 
-  floating_win = api.nvim_open_win(floating_buf, true, win_opts)
+  local win = vim.api.nvim_open_win(bufnr, true, win_opts)
 
-  api.nvim_set_option_value("filetype", "warp-list", { buf = floating_buf })
-  api.nvim_set_option_value("buftype", "nofile", { buf = floating_buf })
-  api.nvim_set_option_value("bufhidden", "wipe", { buf = floating_buf })
-  api.nvim_set_option_value("swapfile", false, { buf = floating_buf })
+  return win
+end
 
-  local lines, active_idx = M.render_entries(parent_item, warp_list)
+---Set standard buffer options
+---@param bufnr integer The buffer number
+---@param ft string The filetype
+---@return nil
+---@usage `require('warp.ui').set_standard_buf_options(bufnr, ft)`
+function M.set_standard_buf_options(bufnr, ft)
+  vim.api.nvim_set_option_value("filetype", ft, { scope = "local", buf = bufnr })
+  vim.api.nvim_set_option_value("buftype", "nofile", { scope = "local", buf = bufnr })
+  vim.api.nvim_set_option_value("bufhidden", "wipe", { scope = "local", buf = bufnr })
+  vim.api.nvim_set_option_value("swapfile", false, { scope = "local", buf = bufnr })
+  vim.api.nvim_set_option_value("modifiable", false, { scope = "local", buf = bufnr })
+  vim.api.nvim_set_option_value("readonly", true, { scope = "local", buf = bufnr })
+  vim.api.nvim_set_option_value("buflisted", false, { scope = "local", buf = bufnr })
+end
 
-  api.nvim_buf_set_lines(floating_buf, 0, -1, false, lines)
-  api.nvim_win_set_cursor(floating_win, { active_idx or 1, 0 })
+---@param parent_item Warp.ListItem|nil The parent item before open the window
+---@param warp_list Warp.ListItem[]
+---@param target_win? integer The window number to render the list
+---@return nil
+---@usage `require('warp.ui').render_warp_list(parent_item, warp_list, target_win)`
+function M.render_warp_list(parent_item, warp_list, target_win)
+  local lines, active_idx = M.get_formatted_list_items(parent_item, warp_list)
 
-  ---Not modifiable after setting lines
-  api.nvim_set_option_value("modifiable", false, { buf = floating_buf })
-  api.nvim_set_option_value("readonly", true, { buf = floating_buf })
+  local _, _, active_warp_list_bufnr = M.is_warp_list_win_active()
 
+  local bufnr = active_warp_list_bufnr
+
+  if not bufnr then
+    bufnr = vim.api.nvim_create_buf(false, true)
+  else
+    vim.api.nvim_set_option_value("modifiable", true, { scope = "local", buf = bufnr })
+    vim.api.nvim_set_option_value("readonly", false, { scope = "local", buf = bufnr })
+  end
+
+  vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, lines)
+
+  M.set_standard_buf_options(bufnr, "warp-list")
+
+  local title = "List"
+
+  local warp_list_win_id = M.create_native_float_win(bufnr, title, target_win)
+
+  if not warp_list_win_id then
+    notify.error("Failed to open native float window for warp list")
+    return
+  end
+
+  ---Set the cursor to the current sequence
+  if active_idx then
+    vim.api.nvim_win_set_cursor(warp_list_win_id, { active_idx, 0 })
+  end
+
+  ---Start setting keymaps
   local default_keymaps = require("warp.config").defaults.keymaps or {}
   local keymaps = require("warp.config").config.keymaps or default_keymaps
   local warp = require("warp")
 
   ---Setup for quit keymaps
   for _, key in ipairs(keymaps.quit) do
-    utils.buf_set_keymap(floating_buf, key, function()
-      api.nvim_win_close(floating_win, true)
+    utils.buf_set_keymap(bufnr, key, function()
+      M.close_win(warp_list_win_id)
     end)
   end
 
   ---Setup for select keymaps
   for _, key in ipairs(keymaps.select) do
-    utils.buf_set_keymap(floating_buf, key, function()
+    utils.buf_set_keymap(bufnr, key, function()
       local line_num = api.nvim_win_get_cursor(0)[1]
-      api.nvim_win_close(floating_win, true)
+      M.close_win(warp_list_win_id)
       warp.goto_index(line_num)
     end)
   end
 
   ---Setup for delete keymaps
   for _, key in ipairs(keymaps.delete) do
-    utils.buf_set_keymap(floating_buf, key, function()
-      local l = api.nvim_win_get_cursor(0)[1]
-      table.remove(warp_list, l)
+    utils.buf_set_keymap(bufnr, key, function()
+      local old = api.nvim_win_get_cursor(0)[1]
+      table.remove(warp_list, old)
       list.save_list()
       if #warp_list > 0 then
-        M.open_window(parent_item, warp_list, title)
+        M.render_warp_list(parent_item, warp_list, warp_list_win_id)
+        pcall(api.nvim_win_set_cursor, warp_list_win_id, { math.max(1, old), 0 })
       else
-        api.nvim_win_close(floating_win, true)
+        M.close_win(warp_list_win_id)
         notify.info("Warp List is emptied")
       end
     end)
@@ -105,37 +140,65 @@ function M.open_window(parent_item, warp_list, title)
 
   ---Setup for move up keymaps
   for _, key in ipairs(keymaps.move_up) do
-    utils.buf_set_keymap(floating_buf, key, function()
+    utils.buf_set_keymap(bufnr, key, function()
       local old = api.nvim_win_get_cursor(0)[1]
       if old > 1 then
         warp_list[old], warp_list[old - 1] = warp_list[old - 1], warp_list[old]
         list.save_list()
-        M.open_window(parent_item, warp_list, title)
-        api.nvim_win_set_cursor(floating_win, { math.max(1, old - 1), 0 })
+        M.render_warp_list(parent_item, warp_list, warp_list_win_id)
+        pcall(api.nvim_win_set_cursor, warp_list_win_id, { math.max(1, old - 1), 0 })
       end
     end)
   end
 
   ---Setup for move down keymaps
   for _, key in ipairs(keymaps.move_down) do
-    utils.buf_set_keymap(floating_buf, key, function()
+    utils.buf_set_keymap(bufnr, key, function()
       local old = api.nvim_win_get_cursor(0)[1]
       if old < #warp_list then
         warp_list[old], warp_list[old + 1] = warp_list[old + 1], warp_list[old]
         list.save_list()
-        M.open_window(parent_item, warp_list, title)
-        api.nvim_win_set_cursor(floating_win, { math.min(#warp_list, old + 1), 0 })
+        M.render_warp_list(parent_item, warp_list, warp_list_win_id)
+        pcall(api.nvim_win_set_cursor, warp_list_win_id, { math.min(#warp_list, old + 1), 0 })
       end
     end)
   end
 
   ---Setup quick 1-9 action
   for idx = 1, 9 do
-    utils.buf_set_keymap(floating_buf, tostring(idx), function()
-      api.nvim_win_close(floating_win, true)
+    utils.buf_set_keymap(bufnr, tostring(idx), function()
+      M.close_win(warp_list_win_id)
       warp.goto_index(idx)
     end)
   end
+end
+
+---Close a window
+---@param win? integer The window number
+---@return nil
+---@usage `require('warp.ui').close_win(win)`
+function M.close_win(win)
+  if win and vim.api.nvim_win_is_valid(win) then
+    vim.api.nvim_win_close(win, true)
+  end
+end
+
+---Find if the warp list window is active and get it's detail
+---@return boolean is_active window is active
+---@return integer|nil win window id
+---@return integer|nil bufnr buffer id
+---@usage `require('warp.ui').is_warp_list_win_active()`
+function M.is_warp_list_win_active()
+  local wins = api.nvim_list_wins()
+
+  for _, win in ipairs(wins) do
+    local bufnr = api.nvim_win_get_buf(win)
+    if api.nvim_get_option_value("filetype", { scope = "local", buf = bufnr }) == "warp-list" then
+      return true, win, bufnr
+    end
+  end
+
+  return false, nil, nil
 end
 
 ---Default format for the entry lines
@@ -157,8 +220,8 @@ end
 ---Render the entries as lines
 ---@param parent_item Warp.ListItem|nil The parent item before open the window
 ---@param warp_list Warp.ListItem[]
----@usage `require("warp.ui").render_entries(parent_item, warp_list)`
-function M.render_entries(parent_item, warp_list)
+---@usage `require("warp.ui").get_formatted_list_items(parent_item, warp_list)`
+function M.get_formatted_list_items(parent_item, warp_list)
   local lines = {}
 
   ---@type number|nil
