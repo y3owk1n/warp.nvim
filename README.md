@@ -1,8 +1,8 @@
 # warp.nvim
 
-> ⚡️ Warp is a lightweight project-local buffer list for Neovim — add, view, jump, reorder, and remove buffers, all from a floating window.
+> ⚡️ Warp is a lightweight project-local buffer list for Neovim — add, view, jump, reorder, and remove buffers, all from a floating window or a keymap away.
 
-`warp.nvim` provides a per-project list of important files, allowing you to quickly return to them later. think of it as “buffer bookmarks,” scoped to your git repo (or any project root).
+`warp.nvim` provides a per-project list of important files, allowing you to quickly return to them later. think of it as “files bookmarks,” scoped to your git repo (or any project root).
 
 It's inspired by [ThePrimeagen/harpoon](https://github.com/ThePrimeagen/harpoon), but with a simpler goal: **do one thing well.** No terminals, no fancy workflows — just files you care about, saved per project.
 
@@ -10,7 +10,7 @@ It's inspired by [ThePrimeagen/harpoon](https://github.com/ThePrimeagen/harpoon)
 
 ## ❓ Why `warp.nvim`?
 
-Because sometimes you want a simple list of buffers you care about, and you want it **per project**, and you want it **to just work**.
+Because sometimes you want a simple list of files you care about, and you want it **per project**, and you want it **to just work**.
 
 - No extra dependencies
 - No terminal management
@@ -22,14 +22,15 @@ Just you, your files, and a fast way to warp between them.
 
 ## 🔧 Features
 
-- 📁 Per-project buffer list (based on root markers like `.git`)
-- 🌪 Add current file with line number
+- 📁 Per-project file list (based on root markers like `.git`, or custom root resolver)
+- 🌪 Add current file with line number, and updatable line numbers
 - 👀 View list in a floating window
 - ✨ Reorder entries via keymaps
 - ❌ Remove entries via keymaps
 - 🚀 Jump to any file instantly
 - 🔁 Auto-reload list on `:cd`, `FocusGained`, `TermClose`, etc.
-- 💾 Persistent storage in `stdpath("data")/warp/`
+- 💾 Persistent storage in `stdpath("data")/warp/**`
+- 🧹 Auto-prune unreachable or deleted files
 
 ## 📕 Contents
 
@@ -368,20 +369,9 @@ opts = function(_, opts)
   -- rest of the config
 
   local DefaultStatusline = {
-    ViMode,
-    Git,
+    -- rest of default statusline
     Warp, --- add warp the default statusline
-    Align,
-    FileNameBlock,
-    Diagnostics,
-    Align,
-    LSPActive,
-    Space,
-    FileTypeBlock,
-    Space,
-    FileSize,
-    Space,
-    Ruler,
+    -- rest of default statusline
   }
 
   -- rest of the config
