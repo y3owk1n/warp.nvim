@@ -9,6 +9,7 @@ local M = {}
 local api = vim.api
 local fn = vim.fn
 local list = require("warp.list")
+local notify = require("warp.notifier")
 local utils = require("warp.utils")
 
 ---@type number|nil
@@ -86,7 +87,12 @@ function M.open_window(item_idx, warp_list)
       local l = api.nvim_win_get_cursor(0)[1]
       table.remove(warp_list, l)
       list.save_list()
-      M.open_window(item_idx, warp_list)
+      if #warp_list > 0 then
+        M.open_window(item_idx, warp_list)
+      else
+        api.nvim_win_close(floating_win, true)
+        notify.info("Warp List is emptied")
+      end
     end)
   end
 
