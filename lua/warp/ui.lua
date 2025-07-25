@@ -37,7 +37,7 @@ function M.open_window(parent_item, warp_list)
     col = (vim.o.columns - 60) / 2,
     row = (vim.o.lines - #warp_list - 2) / 2,
     style = "minimal",
-    border = "rounded",
+    border = vim.api.nvim_get_option_value("winborder", { scope = "local" }) or "none",
     title = "Warp List",
   })
 
