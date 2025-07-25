@@ -81,6 +81,8 @@ require("warp").setup({
   -- [root_detection_fn] this function must return a path that exists in string
   -- `root_markers` are checked in order, if the function returns a path that doesn't exist, it will fallback to `cwd`
   root_detection_fn = require("warp.storage").find_project_root,
+  -- [list_item_format_fn] this function must return in string
+  list_item_format_fn = require("warp.ui").default_list_item_format,
   -- [keymaps] if you don't want certain keymaps, just set it to {}
   keymaps = {
     quit = { "q", "<Esc>" }, -- quit the warp selection window
@@ -104,6 +106,7 @@ require("warp").setup({
 ---@class Warp.Config
 ---@field root_markers? string[] The root markers to check, defaults to { ".git" } and fallback to cwd, set to {} to nil it
 ---@field root_detection_fn? fun(): string? The function to detect the root, defaults to `require("warp.storage").find_project_root`
+---@field list_item_format_fn? fun(entry: Warp.ListItem, idx: number, is_active: boolean|nil): string The function to format the list items lines
 ---@field keymaps? Warp.Config.Keymaps The keymaps for actions
 ---@field float_opts? Warp.Config.FloatOpts The floating window options
 

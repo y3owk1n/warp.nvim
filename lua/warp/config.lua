@@ -8,6 +8,7 @@
 ---{
 ---  root_markers = { ".git" },
 ---  root_detection_fn = require("warp.storage").find_project_root,
+---  list_item_format_fn = require("warp.ui").default_list_item_format,
 ---  keymaps = {
 ---    quit = { "q", "<Esc>" },
 ---    select = { "<CR>" },
@@ -40,6 +41,7 @@ M.config = {}
 M.defaults = {
   root_markers = { ".git" },
   root_detection_fn = require("warp.storage").find_project_root,
+  list_item_format_fn = require("warp.ui").default_list_item_format,
   keymaps = {
     quit = { "q", "<Esc>" },
     select = { "<CR>" },

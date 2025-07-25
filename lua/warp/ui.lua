@@ -59,19 +59,8 @@ function M.open_window(parent_item, warp_list, title)
   api.nvim_set_option_value("bufhidden", "wipe", { buf = floating_buf })
   api.nvim_set_option_value("swapfile", false, { buf = floating_buf })
 
-  local lines = {}
+  local lines, active_idx = M.render_entries(parent_item, warp_list)
 
-  ---@type number|nil
-  local active_idx
-
-  for idx, entry in ipairs(warp_list) do
-    local display = fn.fnamemodify(entry.path, ":~:.")
-    if parent_item and entry.path == parent_item.path then
-      display = display .. " *"
-      active_idx = idx
-    end
-    lines[idx] = string.format(" %d %s", idx, display)
-  end
   api.nvim_buf_set_lines(floating_buf, 0, -1, false, lines)
   api.nvim_win_set_cursor(floating_win, { active_idx or 1, 0 })
 
@@ -147,6 +136,63 @@ function M.open_window(parent_item, warp_list, title)
       warp.goto_index(idx)
     end)
   end
+end
+
+---Default format for the entry lines
+---@param entry Warp.ListItem
+---@param idx number
+---@param is_active boolean|nil
+---@return string
+---@usage `require('warp.ui').default_list_item_format(entry, idx, is_active)`
+function M.default_list_item_format(entry, idx, is_active)
+  local display = fn.fnamemodify(entry.path, ":~:.")
+
+  if is_active then
+    display = display .. " *"
+  end
+
+  return string.format(" %d %s", idx, display)
+end
+
+---Render the entries as lines
+---@param parent_item Warp.ListItem|nil The parent item before open the window
+---@param warp_list Warp.ListItem[]
+---@usage `require("warp.ui").render_entries(parent_item, warp_list)`
+function M.render_entries(parent_item, warp_list)
+  local lines = {}
+
+  ---@type number|nil
+  local active_idx
+
+  local config = require("warp.config").config
+
+  local formatter_fn = M.default_list_item_format
+
+  if type(config.list_item_format_fn) == "function" then
+    formatter_fn = config.list_item_format_fn
+  else
+    notify.warn("`list_item_format_fn` is not a function, fallback to default implementation")
+  end
+
+  for idx, entry in ipairs(warp_list) do
+    local is_active = parent_item and entry.path == parent_item.path
+
+    if is_active then
+      active_idx = idx
+    end
+
+    ---@diagnostic disable-next-line: need-check-nil
+    local formatted_line = formatter_fn(entry, idx, is_active)
+
+    if type(formatted_line) ~= "string" then
+      notify.warn("`list_item_format_fn` should return a string, fallback to default implementation")
+      formatted_line = M.default_list_item_format(entry, idx, is_active)
+    end
+
+    lines[idx] = formatted_line
+  end
+
+  return lines, active_idx
 end
 
 return M
