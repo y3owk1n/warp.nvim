@@ -15,6 +15,12 @@
 ---    move_up = { "<C-k>" },
 ---    move_down = { "<C-j>" },
 ---  },
+--- float_opts = {
+---   width = 0.5,
+---   height = 0.5,
+---   relative = "editor",
+---   title_pos = "left",
+--- },
 ---}
 ---<
 ---
@@ -40,6 +46,12 @@ M.defaults = {
     delete = { "dd" },
     move_up = { "<C-k>" },
     move_down = { "<C-j>" },
+  },
+  float_opts = {
+    width = 0.5,
+    height = 0.5,
+    relative = "editor",
+    title_pos = "left",
   },
 }
 

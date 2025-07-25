@@ -21,25 +21,38 @@ local floating_buf
 --- Show the floating window with the warp list
 ---@param parent_item Warp.ListItem|nil The parent item before open the window
 ---@param warp_list Warp.ListItem[]
+---@param title? string The title of the window
 ---@see warp.nvim.types.Warp.ListItem
----@usage `require('warp.ui').open_window(parent_item, warp_list)`
-function M.open_window(parent_item, warp_list)
+---@usage `require('warp.ui').open_window(parent_item, warp_list, title)`
+function M.open_window(parent_item, warp_list, title)
   if floating_win and api.nvim_win_is_valid(floating_win) then
     api.nvim_win_close(floating_win, true)
   end
 
   floating_buf = api.nvim_create_buf(false, true)
 
-  floating_win = api.nvim_open_win(floating_buf, true, {
-    relative = "editor",
-    width = 60,
-    height = math.min(#warp_list, 20),
-    col = (vim.o.columns - 60) / 2,
-    row = (vim.o.lines - #warp_list - 2) / 2,
+  local config_float_opts = require("warp.config").config.float_opts or {}
+
+  ---@type vim.api.keyset.win_config
+  local win_opts = {
+    relative = config_float_opts.relative,
+    anchor = config_float_opts.anchor,
     style = "minimal",
-    border = vim.api.nvim_get_option_value("winborder", { scope = "local" }) or "none",
-    title = "Warp List",
-  })
+    width = config_float_opts.width,
+    height = config_float_opts.height,
+    title = "Warp" .. (title and (" - " .. title) or ""),
+    title_pos = "left",
+    border = config_float_opts.border,
+    zindex = config_float_opts.zindex,
+    focusable = config_float_opts.focusable,
+  }
+
+  win_opts.width = win_opts.width > 1 and win_opts.width or math.floor(vim.o.columns * win_opts.width)
+  win_opts.height = win_opts.height > 1 and win_opts.height or math.floor(vim.o.lines * win_opts.height)
+  win_opts.row = math.floor((vim.o.lines - win_opts.height) / 2)
+  win_opts.col = math.floor((vim.o.columns - win_opts.width) / 2)
+
+  floating_win = api.nvim_open_win(floating_buf, true, win_opts)
 
   api.nvim_set_option_value("filetype", "warp-list", { buf = floating_buf })
   api.nvim_set_option_value("buftype", "nofile", { buf = floating_buf })
@@ -93,7 +106,7 @@ function M.open_window(parent_item, warp_list)
       table.remove(warp_list, l)
       list.save_list()
       if #warp_list > 0 then
-        M.open_window(parent_item, warp_list)
+        M.open_window(parent_item, warp_list, title)
       else
         api.nvim_win_close(floating_win, true)
         notify.info("Warp List is emptied")
@@ -108,7 +121,7 @@ function M.open_window(parent_item, warp_list)
       if old > 1 then
         warp_list[old], warp_list[old - 1] = warp_list[old - 1], warp_list[old]
         list.save_list()
-        M.open_window(parent_item, warp_list)
+        M.open_window(parent_item, warp_list, title)
         api.nvim_win_set_cursor(floating_win, { math.max(1, old - 1), 0 })
       end
     end)
@@ -121,7 +134,7 @@ function M.open_window(parent_item, warp_list)
       if old < #warp_list then
         warp_list[old], warp_list[old + 1] = warp_list[old + 1], warp_list[old]
         list.save_list()
-        M.open_window(parent_item, warp_list)
+        M.open_window(parent_item, warp_list, title)
         api.nvim_win_set_cursor(floating_win, { math.min(#warp_list, old + 1), 0 })
       end
     end)
