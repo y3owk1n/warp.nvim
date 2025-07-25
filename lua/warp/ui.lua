@@ -51,7 +51,7 @@ function M.open_window(item_idx, warp_list)
     if idx == item_idx then
       display = display .. " *"
     end
-    lines[idx] = string.format("%d %s", idx, display)
+    lines[idx] = string.format(" %d %s", idx, display)
   end
   api.nvim_buf_set_lines(floating_buf, 0, -1, false, lines)
   api.nvim_win_set_cursor(floating_win, { item_idx or 1, 0 })
