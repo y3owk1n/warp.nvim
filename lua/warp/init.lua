@@ -45,7 +45,7 @@ end
 ---@return nil
 ---@usage `require('warp').show_list() or ':WarpShowList'`
 function M.show_list()
-  local index = list.get_index_by_buf(api.nvim_get_current_buf())
+  local index = list.get_item_by_buf(api.nvim_get_current_buf())
 
   local warp_list = list.get_list()
 

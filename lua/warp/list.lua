@@ -93,6 +93,20 @@ function M.get_index_by_buf(buf)
   return nil
 end
 
+---Find the index of an entry by buffer
+---@param buf number
+---@return Warp.ListItem|nil
+---@usage `require('warp.list').get_item_by_buf(0)`
+function M.get_item_by_buf(buf)
+  local path = fs.normalize(api.nvim_buf_get_name(buf))
+  for _, entry in ipairs(warp_list) do
+    if fs.normalize(entry.path) == path then
+      return entry
+    end
+  end
+  return nil
+end
+
 ---Update entries if file or folder was updated
 ---@param from string
 ---@param to string
