@@ -1,6 +1,5 @@
 local M = {}
 
-local fn = vim.fn
 local api = vim.api
 
 --- Create an augroup
@@ -15,19 +14,6 @@ end
 --- @return boolean
 function M.file_exists(path)
   return vim.loop.fs_stat(path) ~= nil
-end
-
---- Get (and load if necessary) the buffer number for an entry
---- @param entry Warp.ListItem
---- @return number
-function M.get_buf(entry)
-  -- return the buffer number for entry.path (open it if needed)
-  local buf = fn.bufnr(entry.path)
-  if buf == -1 then
-    buf = fn.bufadd(entry.path)
-    fn.bufload(buf)
-  end
-  return buf
 end
 
 ---Set a keymap for a buffer
