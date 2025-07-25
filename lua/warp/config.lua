@@ -96,7 +96,7 @@ function M.setup_usercmds()
     local index = tonumber(opts.args)
 
     if not index then
-      vim.notify("Failed to warp, need a number", vim.log.levels.ERROR)
+      vim.notify("[Warp:] Failed to warp, need a number", vim.log.levels.ERROR)
       return
     end
 

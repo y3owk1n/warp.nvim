@@ -20,6 +20,7 @@ local api = vim.api
 local fs = vim.fs
 local fn = vim.fn
 local list = require("warp.list")
+local notify = require("warp.notifier")
 local utils = require("warp.utils")
 
 ---Entry point to setup the plugin
@@ -51,7 +52,7 @@ function M.show_list()
   list.prune_missing_files_from_list()
 
   if #warp_list == 0 then
-    vim.notify("Warp: Nothing found...", vim.log.levels.INFO)
+    notify.warn("Nothing found")
     return
   end
 

@@ -15,6 +15,7 @@ List ·····································�
 Storage ···················································· |warp.nvim.storage|
 UI ······························································ |warp.nvim.ui|
 Utilities ···················································· |warp.nvim.utils|
+Notifier ·················································· |warp.nvim.notifier|
 Types ························································ |warp.nvim.types|
 
 ==============================================================================
@@ -474,6 +475,47 @@ M.buf_set_keymap({bufnr}, {lhs}, {rhs})         *warp.nvim.utils.buf_set_keymap*
     Usage: ~
 >lua
         require('warp.utils').buf_set_keymap(bufnr, lhs, rhs)
+<
+
+
+==============================================================================
+Notifier                                                    *warp.nvim.notifier*
+
+Notification related implementations
+
+M.info({msg})                                          *warp.nvim.notifier.info*
+    Info notification
+
+    Parameters: ~
+        {msg}  (string)
+
+    Usage: ~
+>lua
+        require('warp.notifier').info("Hello world")
+<
+
+
+M.warn({msg})                                          *warp.nvim.notifier.warn*
+    Warn notification
+
+    Parameters: ~
+        {msg}  (string)
+
+    Usage: ~
+>lua
+        require('warp.notifier').warn("Hello world")
+<
+
+
+M.error({msg})                                        *warp.nvim.notifier.error*
+    Error notification
+
+    Parameters: ~
+        {msg}  (string)
+
+    Usage: ~
+>lua
+        require('warp.notifier').error("Hello world")
 <
 
 

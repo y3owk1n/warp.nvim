@@ -6,6 +6,7 @@ doc:
     lua/warp/storage.lua \
     lua/warp/ui.lua \
     lua/warp/utils.lua \
+    lua/warp/notifier.lua \
     lua/warp/types.lua \
     > doc/warp.nvim.txt
 
