@@ -169,6 +169,7 @@ Default Configuration:
 {
   root_markers = { ".git" },
   root_detection_fn = require("warp.storage").find_project_root,
+  list_item_format_fn = require("warp.ui").default_list_item_format,
   keymaps = {
     quit = { "q", "<Esc>" },
     select = { "<CR>" },
@@ -436,6 +437,38 @@ M.open_window({parent_item}, {warp_list}, {title?})
 <
 
 
+                                         *warp.nvim.ui.default_list_item_format*
+M.default_list_item_format({entry}, {idx}, {is_active})
+    Default format for the entry lines
+
+    Parameters: ~
+        {entry}      (Warp.ListItem)
+        {idx}        (number)
+        {is_active}  (boolean|nil)
+
+    Returns: ~
+        (string)
+
+    Usage: ~
+>lua
+        require('warp.ui').default_list_item_format(entry, idx, is_active)
+<
+
+
+                                                   *warp.nvim.ui.render_entries*
+M.render_entries({parent_item}, {warp_list})
+    Render the entries as lines
+
+    Parameters: ~
+        {parent_item}  (Warp.ListItem|nil)  The parent item before open the window
+        {warp_list}    (Warp.ListItem[])
+
+    Usage: ~
+>lua
+        require("warp.ui").render_entries(parent_item, warp_list)
+<
+
+
 ==============================================================================
 Utilities                                                      *warp.nvim.utils*
 
@@ -548,10 +581,11 @@ Types                                                          *warp.nvim.types*
 Warp.Config                                        *warp.nvim.types.Warp.Config*
 
     Fields: ~
-        {root_markers?}       (string[])               The root markers to check, defaults to { ".git" } and fallback to cwd, set to {} to nil it
-        {root_detection_fn?}  (fun():string)           The function to detect the root, defaults to `require("warp.storage").find_project_root`
-        {keymaps?}            (Warp.Config.Keymaps)    The keymaps for actions
-        {float_opts?}         (Warp.Config.FloatOpts)  The floating window options
+        {root_markers?}         (string[])                                                          The root markers to check, defaults to { ".git" } and fallback to cwd, set to {} to nil it
+        {root_detection_fn?}    (fun():string)                                                      The function to detect the root, defaults to `require("warp.storage").find_project_root`
+        {list_item_format_fn?}  (fun(entry:Warp.ListItem,idx:number,is_active:boolean|nil):string)  The function to format the list items lines
+        {keymaps?}              (Warp.Config.Keymaps)                                               The keymaps for actions
+        {float_opts?}           (Warp.Config.FloatOpts)                                             The floating window options
 
 
 Warp.Config.Keymaps                        *warp.nvim.types.Warp.Config.Keymaps*
