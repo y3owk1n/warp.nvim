@@ -88,7 +88,9 @@ function M.goto_index(idx)
   if current_path ~= vim.fn.fnamemodify(entry.path, ":p") then
     vim.cmd("edit " .. vim.fn.fnameescape(entry.path))
   end
-  api.nvim_win_set_cursor(0, { entry.line or 1, 0 })
+
+  ---Try to set but do not crash it
+  pcall(api.nvim_win_set_cursor, 0, { entry.line or 1, 0 })
 end
 
 ---Update entries if file or folder was updated
