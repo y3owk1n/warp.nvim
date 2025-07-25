@@ -50,6 +50,7 @@ function M.save_list()
   local f = assert(io.open(storage_path, "w"))
   f:write(encoded)
   f:close()
+  notify.info("Saved list")
 end
 
 ---Get all items
@@ -181,14 +182,20 @@ end
 ---@usage `require('warp.list').prune_missing_files_from_list()`
 function M.prune_missing_files_from_list()
   local i = 1
+  local pruned = 0
   while i <= #warp_list do
     if not utils.file_exists(warp_list[i].path) then
       table.remove(warp_list, i)
+      pruned = pruned + 1
     else
       i = i + 1
     end
   end
-  M.save_list()
+
+  if pruned > 0 then
+    M.save_list()
+    notify.info("Pruned " .. pruned .. " entries")
+  end
 end
 
 ---Clear current project's list
