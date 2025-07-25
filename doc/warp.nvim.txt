@@ -348,7 +348,8 @@ M.remove_from_list({idx})                      *warp.nvim.list.remove_from_list*
 <
 
 
-M.prune_missing_files_from_list() *warp.nvim.list.prune_missing_files_from_list*
+                                  *warp.nvim.list.prune_missing_files_from_list*
+M.prune_missing_files_from_list()
     Prune missing files from list
 
     Returns: ~
@@ -640,7 +641,8 @@ M.error({msg})                                        *warp.nvim.notifier.error*
 ==============================================================================
 Types                                                          *warp.nvim.types*
 
-Warp.Config.FloatOpts.Relative  *warp.nvim.types.Warp.Config.FloatOpts.Relative*
+                                *warp.nvim.types.Warp.Config.FloatOpts.Relative*
+Warp.Config.FloatOpts.Relative
 
     Variants: ~
         ("cursor")
@@ -651,7 +653,8 @@ Warp.Config.FloatOpts.Relative  *warp.nvim.types.Warp.Config.FloatOpts.Relative*
         ("win")
 
 
-Warp.Config.FloatOpts.Anchor      *warp.nvim.types.Warp.Config.FloatOpts.Anchor*
+                                  *warp.nvim.types.Warp.Config.FloatOpts.Anchor*
+Warp.Config.FloatOpts.Anchor
 
     Variants: ~
         ("NE")
@@ -660,7 +663,8 @@ Warp.Config.FloatOpts.Anchor      *warp.nvim.types.Warp.Config.FloatOpts.Anchor*
         ("SW")
 
 
-Warp.Config.FloatOpts.Border      *warp.nvim.types.Warp.Config.FloatOpts.Border*
+                                  *warp.nvim.types.Warp.Config.FloatOpts.Border*
+Warp.Config.FloatOpts.Border
 
     Variants: ~
         ("double")
@@ -671,7 +675,8 @@ Warp.Config.FloatOpts.Border      *warp.nvim.types.Warp.Config.FloatOpts.Border*
         ("solid")
 
 
-Warp.Config.FloatOpts.TitlePos  *warp.nvim.types.Warp.Config.FloatOpts.TitlePos*
+                                *warp.nvim.types.Warp.Config.FloatOpts.TitlePos*
+Warp.Config.FloatOpts.TitlePos
 
     Variants: ~
         ("left")
