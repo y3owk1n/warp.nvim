@@ -29,8 +29,10 @@ function M.goto_index(idx)
     list.remove_from_list(idx)
     return
   end
-  local buf = utils.get_buf(entry)
-  api.nvim_set_current_buf(buf)
+  local current_path = vim.api.nvim_buf_get_name(0)
+  if current_path ~= vim.fn.fnamemodify(entry.path, ":p") then
+    vim.cmd("edit " .. vim.fn.fnameescape(entry.path))
+  end
   api.nvim_win_set_cursor(0, { entry.line or 1, 0 })
 end
 
