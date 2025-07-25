@@ -48,14 +48,16 @@ function M.get_storage_path()
   local config = require("warp.config").config
   fn.mkdir(storage_dir, "p")
 
-  local root
+  local root_detection_fn = M.find_project_root
 
-  if type(config.root_detection_fn) ~= "function" then
-    notify.warn("`root_detection_fn` is not a function, fallback to default implementation.")
-    root = M.find_project_root()
+  if type(config.root_detection_fn) == "function" then
+    root_detection_fn = config.root_detection_fn
   else
-    root = config.root_detection_fn()
+    notify.warn("`root_detection_fn` is not a function, fallback to default implementation.")
   end
+
+  ---@diagnostic disable-next-line: need-check-nil
+  local root = root_detection_fn()
 
   if not root or fn.isdirectory(root) == 0 then
     notify.warn("`root_detection_fn` returned an invalid directory, fallback to default implementation.")
