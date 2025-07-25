@@ -39,6 +39,7 @@ Just you, your files, and a fast way to warp between them.
 - [Quick Start](#-quick-start)
 - [API](#-api)
 - [Keybindings](#%EF%B8%8F-keybindings)
+- [Events](#%EF%B8%8F-events)
 - [Integrations](#-integrations)
 - [Contributing](#-contributing)
 
@@ -322,6 +323,27 @@ All the keybindings are customizable in config via `keymaps` field.
 | `<C-k>` | Move item up | Move the current item up |
 | `<C-j>` | Move item down | Move the current item down |
 | `1 - 9` | Quick Select | Select the item based on the number |
+
+## 🕰️ Events
+
+- `WarpOpenListWin` - Fired when a list window is opened
+- `WarpCloseListWin` - Fired when a list window is closed
+- `WarpAddedToList` - Fired when a file is added to the list
+
+> [!note]
+> If you want to be safe, you can use the `constants` to get the event instead of the string.
+> For example `require("warp.events").constants.ev_that_you_want`
+
+You can then listen to these user events and do something with them.
+
+```lua
+vim.api.nvim_create_autocmd("User", {
+  pattern = "WarpAddedToList",
+  callback = function()
+    -- do something
+  end,
+})
+```
 
 ## 🔌 Integrations
 

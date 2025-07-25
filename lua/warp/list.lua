@@ -50,7 +50,6 @@ function M.save_list()
   local f = assert(io.open(storage_path, "w"))
   f:write(encoded)
   f:close()
-  notify.info("Saved list")
 end
 
 ---Get all items
@@ -111,6 +110,7 @@ end
 ---Update entries if file or folder was updated
 ---@param from string
 ---@param to string
+---@return nil
 ---@usage [[
 ---vim.api.nvim_create_autocmd("User", {
 ---  group = augroup,
@@ -142,6 +142,7 @@ end
 ---Add or update current buffer in list
 ---@param path string
 ---@param current_line number
+---@return nil
 ---@usage `require('warp.list').add_to_list(path, current_line)`
 function M.add_to_list(path, current_line)
   local found = false

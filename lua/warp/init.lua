@@ -19,6 +19,7 @@ local M = {}
 local api = vim.api
 local fs = vim.fs
 local fn = vim.fn
+local events = require("warp.events")
 local list = require("warp.list")
 local notify = require("warp.notifier")
 local utils = require("warp.utils")
@@ -39,6 +40,7 @@ function M.add()
   local current_line = fn.line(".")
 
   list.add_to_list(path, current_line)
+  events.emit(events.constants.added_to_list)
 end
 
 ---Show the list item in window
@@ -60,10 +62,12 @@ function M.show_list()
 
   if is_active then
     require("warp.ui").close_win(active_win)
+    events.emit(events.constants.close_list_win)
     return
   end
 
   require("warp.ui").render_warp_list(index, warp_list)
+  events.emit(events.constants.open_list_win)
 end
 
 ---Clear current project's list
@@ -88,7 +92,7 @@ function M.goto_index(idx)
     return
   end
   if not utils.file_exists(entry.path) then
-    M.remove_from_list(idx)
+    list.remove_from_list(idx)
     return
   end
   local current_path = vim.api.nvim_buf_get_name(0)

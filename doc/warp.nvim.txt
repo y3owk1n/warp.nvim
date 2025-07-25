@@ -16,6 +16,7 @@ Storage ····································
 UI ······························································ |warp.nvim.ui|
 Utilities ···················································· |warp.nvim.utils|
 Notifier ·················································· |warp.nvim.notifier|
+Events ······················································ |warp.nvim.events|
 Types ························································ |warp.nvim.types|
 
 ==============================================================================
@@ -348,8 +349,7 @@ M.remove_from_list({idx})                      *warp.nvim.list.remove_from_list*
 <
 
 
-                                  *warp.nvim.list.prune_missing_files_from_list*
-M.prune_missing_files_from_list()
+M.prune_missing_files_from_list() *warp.nvim.list.prune_missing_files_from_list*
     Prune missing files from list
 
     Returns: ~
@@ -639,10 +639,43 @@ M.error({msg})                                        *warp.nvim.notifier.error*
 
 
 ==============================================================================
+Events                                                        *warp.nvim.events*
+
+Events related implementations
+
+Warp.Events                                       *warp.nvim.events.Warp.Events*
+
+    Fields: ~
+        {open_list_win}   ("WarpOpenListWin")   When a list window is opened
+        {close_list_win}  ("WarpCloseListWin")  When a list window is closed
+        {added_to_list}   ("WarpAddedToList")   When a file is added to the list
+
+
+M.constants                                         *warp.nvim.events.constants*
+
+    Type: ~
+        (Warp.Events)
+
+
+M.emit({event})                                          *warp.nvim.events.emit*
+    Emit an event
+
+    Parameters: ~
+        {event}  (string)  The event name
+
+    Returns: ~
+        (nil)
+
+    Usage: ~
+>lua
+        require('warp.utils').emit_event("my_event")
+<
+
+
+==============================================================================
 Types                                                          *warp.nvim.types*
 
-                                *warp.nvim.types.Warp.Config.FloatOpts.Relative*
-Warp.Config.FloatOpts.Relative
+Warp.Config.FloatOpts.Relative  *warp.nvim.types.Warp.Config.FloatOpts.Relative*
 
     Variants: ~
         ("cursor")
@@ -653,8 +686,7 @@ Warp.Config.FloatOpts.Relative
         ("win")
 
 
-                                  *warp.nvim.types.Warp.Config.FloatOpts.Anchor*
-Warp.Config.FloatOpts.Anchor
+Warp.Config.FloatOpts.Anchor      *warp.nvim.types.Warp.Config.FloatOpts.Anchor*
 
     Variants: ~
         ("NE")
@@ -663,8 +695,7 @@ Warp.Config.FloatOpts.Anchor
         ("SW")
 
 
-                                  *warp.nvim.types.Warp.Config.FloatOpts.Border*
-Warp.Config.FloatOpts.Border
+Warp.Config.FloatOpts.Border      *warp.nvim.types.Warp.Config.FloatOpts.Border*
 
     Variants: ~
         ("double")
@@ -675,8 +706,7 @@ Warp.Config.FloatOpts.Border
         ("solid")
 
 
-                                *warp.nvim.types.Warp.Config.FloatOpts.TitlePos*
-Warp.Config.FloatOpts.TitlePos
+Warp.Config.FloatOpts.TitlePos  *warp.nvim.types.Warp.Config.FloatOpts.TitlePos*
 
     Variants: ~
         ("left")
@@ -689,7 +719,7 @@ Warp.Config                                        *warp.nvim.types.Warp.Config*
     Fields: ~
         {root_markers?}         (string[])                                                          The root markers to check, defaults to { ".git" } and fallback to cwd, set to {} to nil it
         {root_detection_fn?}    (fun():string)                                                      The function to detect the root, defaults to `require("warp.storage").find_project_root`
-        {list_item_format_fn?}  (fun(entry:Warp.ListItem,idx:number,is_active:boolean|nil):string)  The function to format the list items lines
+        {list_item_format_fn?}  (fun(entry:Warp.ListItem,idx:number,is_active:boolean|nil):string)  The function to format the list items lines, defaults to `require("warp.ui").default_list_item_format`
         {keymaps?}              (Warp.Config.Keymaps)                                               The keymaps for actions
         {float_opts?}           (Warp.Config.FloatOpts)                                             The floating window options
 

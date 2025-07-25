@@ -8,7 +8,7 @@ local M = {}
 
 local api = vim.api
 local fn = vim.fn
-local list = require("warp.list")
+local events = require("warp.events")
 local notify = require("warp.notifier")
 local utils = require("warp.utils")
 
@@ -110,6 +110,7 @@ function M.render_warp_list(parent_item, warp_list, target_win)
   for _, key in ipairs(keymaps.quit) do
     utils.buf_set_keymap(bufnr, key, function()
       M.close_win(warp_list_win_id)
+      events.emit(events.constants.close_list_win)
     end)
   end
 
@@ -117,7 +118,10 @@ function M.render_warp_list(parent_item, warp_list, target_win)
   for _, key in ipairs(keymaps.select) do
     utils.buf_set_keymap(bufnr, key, function()
       local line_num = api.nvim_win_get_cursor(0)[1]
+
       M.close_win(warp_list_win_id)
+      events.emit(events.constants.close_list_win)
+
       warp.goto_index(line_num)
     end)
   end
@@ -127,12 +131,13 @@ function M.render_warp_list(parent_item, warp_list, target_win)
     utils.buf_set_keymap(bufnr, key, function()
       local old = api.nvim_win_get_cursor(0)[1]
       table.remove(warp_list, old)
-      list.save_list()
       if #warp_list > 0 then
         M.render_warp_list(parent_item, warp_list, warp_list_win_id)
         pcall(api.nvim_win_set_cursor, warp_list_win_id, { math.max(1, old), 0 })
       else
         M.close_win(warp_list_win_id)
+        events.emit(events.constants.close_list_win)
+
         notify.info("Warp List is emptied")
       end
     end)
@@ -144,7 +149,7 @@ function M.render_warp_list(parent_item, warp_list, target_win)
       local old = api.nvim_win_get_cursor(0)[1]
       if old > 1 then
         warp_list[old], warp_list[old - 1] = warp_list[old - 1], warp_list[old]
-        list.save_list()
+
         M.render_warp_list(parent_item, warp_list, warp_list_win_id)
         pcall(api.nvim_win_set_cursor, warp_list_win_id, { math.max(1, old - 1), 0 })
       end
@@ -157,7 +162,7 @@ function M.render_warp_list(parent_item, warp_list, target_win)
       local old = api.nvim_win_get_cursor(0)[1]
       if old < #warp_list then
         warp_list[old], warp_list[old + 1] = warp_list[old + 1], warp_list[old]
-        list.save_list()
+
         M.render_warp_list(parent_item, warp_list, warp_list_win_id)
         pcall(api.nvim_win_set_cursor, warp_list_win_id, { math.min(#warp_list, old + 1), 0 })
       end
@@ -168,6 +173,8 @@ function M.render_warp_list(parent_item, warp_list, target_win)
   for idx = 1, 9 do
     utils.buf_set_keymap(bufnr, tostring(idx), function()
       M.close_win(warp_list_win_id)
+      events.emit(events.constants.close_list_win)
+
       warp.goto_index(idx)
     end)
   end
@@ -220,6 +227,8 @@ end
 ---Render the entries as lines
 ---@param parent_item Warp.ListItem|nil The parent item before open the window
 ---@param warp_list Warp.ListItem[]
+---@return string[] lines
+---@return number|nil active_idx
 ---@usage `require("warp.ui").get_formatted_list_items(parent_item, warp_list)`
 function M.get_formatted_list_items(parent_item, warp_list)
   local lines = {}
