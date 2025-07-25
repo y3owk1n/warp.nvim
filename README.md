@@ -1,12 +1,12 @@
 # warp.nvim
 
-⚡️ Warp is a lightweight project-local buffer list for Neovim — add, view, jump, reorder, and remove buffers, all from a floating window.
-
-## ✨ Intro
+> ⚡️ Warp is a lightweight project-local buffer list for Neovim — add, view, jump, reorder, and remove buffers, all from a floating window.
 
 `warp.nvim` provides a per-project list of important files, allowing you to quickly return to them later. think of it as “buffer bookmarks,” scoped to your git repo (or any project root).
 
 It's inspired by [ThePrimeagen/harpoon](https://github.com/ThePrimeagen/harpoon), but with a simpler goal: **do one thing well.** No terminals, no fancy workflows — just files you care about, saved per project.
+
+![warp-demo](https://github.com/user-attachments/assets/09ef6849-bc82-486f-8b0a-f407152bc8fd)
 
 ## ❓ Why `warp.nvim`?
 
