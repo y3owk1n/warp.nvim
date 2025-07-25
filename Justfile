@@ -2,9 +2,10 @@ doc:
     vimcats -t -f -c -a \
     lua/warp/init.lua \
     lua/warp/config.lua \
-    lua/warp/action.lua \
     lua/warp/list.lua \
     lua/warp/storage.lua \
+    lua/warp/ui.lua \
+    lua/warp/utils.lua \
     lua/warp/types.lua \
     > doc/warp.nvim.txt
 

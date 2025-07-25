@@ -4,7 +4,7 @@
 
 ## ✨ Intro
 
-`warp.nvim` provides a per-project list of important files, allowing you to quickly return to them later. Think of it as “buffer bookmarks,” scoped to your Git repo (or any project root).
+`warp.nvim` provides a per-project list of important files, allowing you to quickly return to them later. think of it as “buffer bookmarks,” scoped to your git repo (or any project root).
 
 It's inspired by [ThePrimeagen/harpoon](https://github.com/ThePrimeagen/harpoon), but with a simpler goal: **do one thing well.** No terminals, no fancy workflows — just files you care about, saved per project.
 
@@ -182,57 +182,87 @@ See the example below for how to configure **warp.nvim** with keybindings.
 ### Show the list of files
 
 ```lua
-require("warp.action").show_list()
+require("warp").show_list()
 
 -- or any of the equivalents
 
 :WarpShowList
-:lua require("warp.action").show_list()
+:lua require("warp").show_list()
 ```
 
 ### Add a file to the list
 
 ```lua
-require("warp.action").add()
+require("warp").add()
 
 -- or any of the equivalents
 
 :WarpAddFile
-:lua require("warp.action").add()
+:lua require("warp").add()
 ```
 
 ### Go to a specific index in the list
 
 ```lua
---- @param idx number
-require("warp.action").goto_index(idx)
+---@param idx number
+require("warp").goto_index(idx)
 
 -- or any of the equivalents
 
 :WarpGoToIndex {idx}
-:lua require("warp.action").goto_index(idx)
+:lua require("warp").goto_index(idx)
 ```
 
 ### Clear or empty current list
 
 ```lua
-require("warp.list").clear_current_list()
+require("warp").clear_current_list()
 
 -- or any of the equivalents
 
 :WarpClearCurrentList
-:lua require("warp.list").clear_current_list()
+:lua require("warp").clear_current_list()
 ```
 
 ### Clear all lists
 
 ```lua
-require("warp.list").clear_all_list()
+require("warp").clear_all_list()
 
 -- or any of the equivalents
 
 :WarpClearAllList
-:lua require("warp.list").clear_all_list()
+:lua require("warp").clear_all_list()
+```
+
+### Update list when file path changes
+
+This function is normally used to integrate with other plugins that change the file path, such as `snacks.nvim`,
+`mini.files` and more. See [Integrations](#-integrations) for more details.
+
+```lua
+---@param from string
+---@param to string
+require("warp").on_file_update(from, to)
+```
+
+### Get the index of an entry by buffer
+
+Useful for showing on statusline. See [Integrations](#-integrations) for more details.
+
+```lua
+---@param buf number
+---@return number|nil
+require("warp").get_index_by_buf(buf)
+```
+
+### Get the count of the items
+
+Useful for showing on statusline. See [Integrations](#-integrations) for more details.
+
+```lua
+---@return number
+require("warp").get_list_count()
 ```
 
 ## ⌨️ Keybindings
@@ -246,6 +276,7 @@ All the keybindings are customizable in config via `keymaps` field.
 | `dd` | Delete | Delete the current item |
 | `<C-k>` | Move item up | Move the current item up |
 | `<C-j>` | Move item down | Move the current item down |
+| `1 - 9` | Quick Select | Select the item based on the number |
 
 ## 🔌 Integrations
 
@@ -260,9 +291,9 @@ vim.api.nvim_create_autocmd("User", {
   callback = function(ev)
     local from, to = ev.data.from, ev.data.to
 
-    local warp_exists, warp_list = pcall(require, "warp.list")
+    local warp_exists, warp = pcall(require, "warp")
     if warp_exists then
-      warp_list.on_file_update(from, to)
+      warp.on_file_update(from, to)
     end
   end,
 })
@@ -282,7 +313,7 @@ This snippet will update the warp list when you do a file rename in `snacks.nvim
       function()
         Snacks.rename.rename_file({
           on_rename = function(to, from)
-            require("warp.list").on_file_update(from, to)
+            require("warp").on_file_update(from, to)
           end,
         })
       end,
@@ -300,7 +331,7 @@ This snippet shows how I add warp to my statusline, it shoud be similar for othe
 opts = function(_, opts)
   -- rest of the config
 
-  local warp_exists, warp_list = pcall(require, "warp.list")
+  local warp_exists, warp = pcall(require, "warp")
 
   -- rest of the config
 
@@ -309,11 +340,11 @@ opts = function(_, opts)
   if warp_exists then
     Warp = {
       condition = function()
-        return warp_list.get_list_count() > 0
+        return warp.get_list_count() > 0
       end,
       init = function(self)
-        self.current = warp_list.get_index_by_buf(0)
-        self.total = warp_list.get_list_count()
+        self.current = warp.get_index_by_buf(0)
+        self.total = warp.get_list_count()
       end,
       hl = { fg = "teal", bold = true },
       {

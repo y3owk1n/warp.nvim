@@ -1,5 +1,9 @@
 ---@mod warp.nvim.storage Storage
 
+---@brief [[
+---Storage related implementations
+---@brief ]]
+
 local M = {}
 
 local fn = vim.fn
@@ -7,8 +11,9 @@ local fn = vim.fn
 local storage_dir = fn.stdpath("data") .. "/warp"
 local cwd = fn.getcwd()
 
---- Find the root directory based on root markers, or fall back to cwd
---- @return string
+---Find the root directory based on root markers, or fall back to cwd
+---@return string
+---@usage `require('warp.storage').find_project_root()`
 function M.find_project_root()
   local config = require("warp.config").config
 
@@ -35,9 +40,9 @@ function M.find_project_root()
   return cwd
 end
 
----@private
---- Get a safe, unique JSON file path for the current working directory
---- @return string
+---Get a safe, unique JSON file path for the current working directory
+---@return string
+---@usage `require('warp.storage').get_storage_path()`
 function M.get_storage_path()
   local config = require("warp.config").config
   fn.mkdir(storage_dir, "p")

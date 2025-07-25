@@ -1,5 +1,9 @@
 ---@mod warp.nvim.list List
 
+---@brief [[
+---List related implementations, important functions are re-exported to the main module.
+---@brief ]]
+
 local M = {}
 
 local api = vim.api
@@ -10,8 +14,9 @@ local utils = require("warp.utils")
 ---@type Warp.ListItem[]
 local warp_list = {}
 
----@private
 ---Load list from disk into memory
+---@return nil
+---@usage `require('warp.list').load_list()`
 function M.load_list()
   local storage_path = require("warp.storage").get_storage_path()
   local f = io.open(storage_path, "r")
@@ -31,8 +36,9 @@ function M.load_list()
   end
 end
 
----@private
---- Save list to disk
+---Save list to disk
+---@return nil
+---@usage `require('warp.list').save_list()`
 function M.save_list()
   local ok, encoded = pcall(vim.json.encode, warp_list)
   if not ok then
@@ -45,31 +51,37 @@ function M.save_list()
   f:close()
 end
 
---- Get all items
---- @return Warp.ListItem[]
+---Get all items
+---@return Warp.ListItem[]
+---@see warp.nvim.types.Warp.ListItem
+---@usage `require('warp.list').get_list()`
 function M.get_list()
   return warp_list
 end
 
---- Get the count of the items
---- @return number
+---Get the count of the items
+---@return number
+---@usage `require('warp.list').get_list_count()`
 function M.get_list_count()
   return #warp_list
 end
 
---- Get a specific item by index
---- @param index number
---- @return Warp.ListItem|nil
-function M.get_item(index)
+---Get a specific item by index
+---@param index number
+---@return Warp.ListItem|nil
+---@see warp.nvim.types.Warp.ListItem
+---@usage `require('warp.list').get_item_by_index(1)`
+function M.get_item_by_index(index)
   if index < 1 or index > #warp_list then
     return nil
   end
   return warp_list[index]
 end
 
---- Find the index of an entry by buffer
---- @param buf number
---- @return number|nil
+---Find the index of an entry by buffer
+---@param buf number
+---@return number|nil
+---@usage `require('warp.list').get_index_by_buf(0)`
 function M.get_index_by_buf(buf)
   local path = fs.normalize(api.nvim_buf_get_name(buf))
   for i, entry in ipairs(warp_list) do
@@ -80,9 +92,19 @@ function M.get_index_by_buf(buf)
   return nil
 end
 
---- Update entries if file or folder was updated
---- @param from string
---- @param to string
+---Update entries if file or folder was updated
+---@param from string
+---@param to string
+---@usage [[
+---vim.api.nvim_create_autocmd("User", {
+---  group = augroup,
+---  pattern = { "MiniFilesActionRename", "MiniFilesActionMove" },
+---  callback = function(ev)
+---    local from, to = ev.data.from, ev.data.to
+---    require("warp").on_file_update(from, to)
+---  end,
+---})
+---@usage ]]
 function M.on_file_update(from, to)
   local changed = false
   for _, entry in ipairs(warp_list) do
@@ -101,9 +123,10 @@ function M.on_file_update(from, to)
   end
 end
 
---- Add or update current buffer in list
+---Add or update current buffer in list
 ---@param path string
 ---@param current_line number
+---@usage `require('warp.list').add_to_list(path, current_line)`
 function M.add_to_list(path, current_line)
   local found = false
   for i, entry in ipairs(warp_list) do
@@ -130,6 +153,8 @@ end
 
 ---Remove an entry from the list
 ---@param idx number
+---@return nil
+---@usage `require('warp.list').remove_from_list(idx)`
 function M.remove_from_list(idx)
   vim.notify("Warp: file no longer exists – removed", vim.log.levels.WARN)
   table.remove(warp_list, idx)
@@ -137,6 +162,8 @@ function M.remove_from_list(idx)
 end
 
 ---Prune missing files from list
+---@return nil
+---@usage `require('warp.list').prune_missing_files_from_list()`
 function M.prune_missing_files_from_list()
   local i = 1
   while i <= #warp_list do
@@ -149,13 +176,17 @@ function M.prune_missing_files_from_list()
   M.save_list()
 end
 
---- Clear current project's list
+---Clear current project's list
+---@return nil
+---@usage `require('warp.list').clear_current_list()`
 function M.clear_current_list()
   warp_list = {}
   M.save_list()
 end
 
---- Clear all the lists across all projects
+---Clear all the lists across all projects
+---@return nil
+---@usage `require('warp.list').clear_all_list()`
 function M.clear_all_list()
   local storage_path = require("warp.storage").get_storage_path()
   local files = fn.readdir(storage_path)

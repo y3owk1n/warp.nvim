@@ -1,7 +1,8 @@
 ---@mod warp.nvim.config Configurations
 ---@brief [[
+---Configuration related implementations
 ---
----Example Configuration:
+---Default Configuration:
 ---
 --->
 ---{
@@ -25,6 +26,7 @@ local list = require("warp.list")
 local utils = require("warp.utils")
 
 ---@type Warp.Config
+---@see warp.nvim.types.Warp.Config
 M.config = {}
 
 ---@private
@@ -42,7 +44,7 @@ M.defaults = {
 }
 
 ---@private
---- Setup autocommands
+---Setup autocommands
 ---@return nil
 function M.setup_autocmds()
   vim.api.nvim_create_autocmd("DirChanged", {
@@ -63,31 +65,29 @@ function M.setup_autocmds()
 end
 
 ---@private
---- Setup user commands
+----Setup user commands
 ---@return nil
 function M.setup_usercmds()
-  local action = require("warp.action")
-
   vim.api.nvim_create_user_command("WarpAddFile", function()
-    action.add()
+    require("warp").add()
   end, {
     desc = "Add a file to the list",
   })
 
   vim.api.nvim_create_user_command("WarpShowList", function()
-    action.show_list()
+    require("warp").show_list()
   end, {
     desc = "Show the list of files",
   })
 
   vim.api.nvim_create_user_command("WarpClearCurrentList", function()
-    list.clear_current_list()
+    require("warp").clear_current_list()
   end, {
     desc = "Clear the current list",
   })
 
   vim.api.nvim_create_user_command("WarpClearAllList", function()
-    list.clear_all_list()
+    require("warp").clear_all_list()
   end, {
     desc = "Clear all lists",
   })
@@ -100,7 +100,7 @@ function M.setup_usercmds()
       return
     end
 
-    action.goto_index(index)
+    require("warp").goto_index(index)
   end, {
     nargs = "*",
     desc = "Go to a specific index in the list",
@@ -108,7 +108,7 @@ function M.setup_usercmds()
 end
 
 ---@private
---- Setup Warp
+---Setup Warp
 ---@param user_config Warp.Config
 ---@return nil
 function M.setup(user_config)
