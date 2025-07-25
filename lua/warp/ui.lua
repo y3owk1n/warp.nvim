@@ -8,7 +8,6 @@ local M = {}
 
 local api = vim.api
 local fn = vim.fn
-local action = require("warp.action")
 local list = require("warp.list")
 local utils = require("warp.utils")
 
@@ -63,6 +62,7 @@ function M.open_window(item_idx, warp_list)
 
   local default_keymaps = require("warp.config").defaults.keymaps or {}
   local keymaps = require("warp.config").config.keymaps or default_keymaps
+  local warp = require("warp")
 
   ---Setup for quit keymaps
   for _, key in ipairs(keymaps.quit) do
@@ -76,7 +76,7 @@ function M.open_window(item_idx, warp_list)
     utils.buf_set_keymap(floating_buf, key, function()
       local line_num = api.nvim_win_get_cursor(0)[1]
       api.nvim_win_close(floating_win, true)
-      action.goto_index(line_num)
+      warp.goto_index(line_num)
     end)
   end
 
@@ -120,7 +120,7 @@ function M.open_window(item_idx, warp_list)
   for idx = 1, 9 do
     utils.buf_set_keymap(floating_buf, tostring(idx), function()
       api.nvim_win_close(floating_win, true)
-      action.goto_index(idx)
+      warp.goto_index(idx)
     end)
   end
 end
