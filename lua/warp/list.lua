@@ -46,7 +46,7 @@ end
 ---@param index number
 ---@return Warp.ListItem|nil
 ---@see warp.nvim.types.Warp.ListItem
----@usage `require('warp.list').get_item.by_index(1)`
+---@usage `require('warp.list').get.item_by_index(1)`
 function M.get.item_by_index(index)
   if index < 1 or index > #warp_list then
     return nil
@@ -57,7 +57,7 @@ end
 ---Find the index of an entry by buffer
 ---@param buf number
 ---@return { entry: Warp.ListItem, index: number }|nil
----@usage `require('warp.list').get_item.by_buf(0)`
+---@usage `require('warp.list').get.item_by_buf(0)`
 function M.get.item_by_buf(buf)
   local path = fs.normalize(api.nvim_buf_get_name(buf))
   for i, entry in ipairs(warp_list) do
@@ -85,16 +85,7 @@ end
 ---@param from string
 ---@param to string
 ---@return nil
----@usage [[
----vim.api.nvim_create_autocmd("User", {
----  group = augroup,
----  pattern = { "MiniFilesActionRename", "MiniFilesActionMove" },
----  callback = function(ev)
----    local from, to = ev.data.from, ev.data.to
----    require("warp").on_file_update(from, to)
----  end,
----})
----@usage ]]
+---@usage `require('warp.list').action.on_file_update(from, to)`
 function M.action.on_file_update(from, to)
   local changed = false
   for _, entry in ipairs(warp_list) do

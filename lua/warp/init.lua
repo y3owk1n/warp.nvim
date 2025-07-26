@@ -216,7 +216,7 @@ M.on_file_update = require("warp.list").action.on_file_update
 ---Find the item of an entry by buffer
 ---@type fun(buf: number): { entry: Warp.ListItem, index: number }|nil
 ---@see warp.nvim.list.get.item_by_buf
----@usage `require('warp').get.item_by_buf(0)`
+---@usage `require('warp').get_item_by_buf(0)`
 M.get_item_by_buf = require("warp.list").get.item_by_buf
 
 ---Get the count of the items

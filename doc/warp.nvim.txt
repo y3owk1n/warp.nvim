@@ -162,7 +162,7 @@ M.get_item_by_buf                                *warp.nvim.api.get_item_by_buf*
 
     Usage: ~
 >lua
-        require('warp').get.item_by_buf(0)
+        require('warp').get_item_by_buf(0)
 <
 
 
@@ -279,7 +279,7 @@ M.get.item_by_index({index})                  *warp.nvim.list.get.item_by_index*
 
     Usage: ~
 >lua
-        require('warp.list').get_item.by_index(1)
+        require('warp.list').get.item_by_index(1)
 <
 
 
@@ -294,7 +294,7 @@ M.get.item_by_buf({buf})                        *warp.nvim.list.get.item_by_buf*
 
     Usage: ~
 >lua
-        require('warp.list').get_item.by_buf(0)
+        require('warp.list').get.item_by_buf(0)
 <
 
 
@@ -324,14 +324,7 @@ M.action.on_file_update({from}, {to})     *warp.nvim.list.action.on_file_update*
 
     Usage: ~
 >lua
-        vim.api.nvim_create_autocmd("User", {
-          group = augroup,
-          pattern = { "MiniFilesActionRename", "MiniFilesActionMove" },
-          callback = function(ev)
-            local from, to = ev.data.from, ev.data.to
-            require("warp").on_file_update(from, to)
-          end,
-        })
+        require('warp.list').action.on_file_update(from, to)
 <
 
 
@@ -750,7 +743,7 @@ M.emit({event})                                          *warp.nvim.events.emit*
 
     Usage: ~
 >lua
-        require('warp.utils').emit_event("my_event")
+        require('warp.events').emit("my_event")
 <
 
 
