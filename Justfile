@@ -7,6 +7,7 @@ doc:
     lua/warp/ui.lua \
     lua/warp/utils.lua \
     lua/warp/notifier.lua \
+    lua/warp/builtins.lua \
     lua/warp/events.lua \
     lua/warp/types.lua \
     > doc/warp.nvim.txt

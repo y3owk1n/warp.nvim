@@ -39,7 +39,7 @@ function M.add()
   local path = fs.normalize(api.nvim_buf_get_name(buf))
   local current_line = fn.line(".")
 
-  list.add_to_list(path, current_line)
+  list.action.insert_or_update(path, current_line)
   events.emit(events.constants.added_to_list)
 end
 
@@ -47,11 +47,13 @@ end
 ---@return nil
 ---@usage `require('warp').show_list() or ':WarpShowList'`
 function M.show_list()
-  local index = list.get_item_by_buf(api.nvim_get_current_buf())
+  local item = list.get.item_by_buf(api.nvim_get_current_buf())
 
-  local warp_list = list.get_list()
+  local entry = item and item.entry or nil
 
-  list.prune_missing_files_from_list()
+  local warp_list = list.get.all()
+
+  list.action.prune()
 
   if #warp_list == 0 then
     notify.warn("Nothing found")
@@ -66,33 +68,65 @@ function M.show_list()
     return
   end
 
-  require("warp.ui").render_warp_list(index, warp_list)
+  require("warp.ui").render_warp_list(entry, warp_list)
   events.emit(events.constants.open_list_win)
 end
 
 ---Clear current project's list
----@type fun(): nil
----@see warp.nvim.list.clear_current_list
----@usage `require('warp').clear_current_list() or ':WarpClearCurrentList'`
-M.clear_current_list = require("warp.list").clear_current_list
+---@return nil
+---@usage `require('warp').clear_current_list()`
+function M.clear_current_list()
+  list.action.set({})
+  require("warp.storage").save()
+  notify.info("Current lists cleared")
+end
 
 ---Clear all the lists across all projects
----@type fun(): nil
----@see warp.nvim.list.clear_all_list
----@usage `require('warp').clear_all_list() or ':WarpClearAllList'`
-M.clear_all_list = require("warp.list").clear_all_list
+---@return nil
+---@usage `require('warp').clear_all_list()`
+function M.clear_all_list()
+  local storage_path = require("warp.storage").get_storage_path()
+  local files = fn.readdir(storage_path)
+  if not files then
+    notify.info("No warp data found")
+    return
+  end
+
+  -- confirmation prompt
+  vim.ui.input({
+    prompt = "Clear all warp lists for all projects? (y/n) ",
+    completion = "file",
+  }, function(input)
+    if input == nil then
+      return
+    end
+
+    if input:lower() == "y" then
+      for _, file in ipairs(files) do
+        if file:match("%.json$") then
+          fn.delete(storage_path .. "/" .. file)
+        end
+      end
+
+      list.action.set({})
+      notify.info("All warp lists cleared")
+    end
+  end)
+end
 
 ---Navigate to a file from warp list by index
 ---@param idx number
 ---@return nil
 ---@usage `require('warp').goto_index(1) or ':WarpGoToIndex 1'`
 function M.goto_index(idx)
-  local entry = list.get_item_by_index(idx)
+  local entry = list.get.item_by_index(idx)
   if not entry then
     return
   end
   if not utils.file_exists(entry.path) then
-    list.remove_from_list(idx)
+    notify.warn("file no longer exists – removed")
+    list.action.remove_one(idx)
+    events.emit(events.constants.removed_from_list)
     return
   end
   local current_path = vim.api.nvim_buf_get_name(0)
@@ -106,7 +140,7 @@ end
 
 ---Update entries if file or folder was updated
 ---@type fun(from: string, to: string): nil
----@see warp.nvim.list.on_file_update
+---@see warp.nvim.list.action.on_file_update
 ---@usage [[
 ---vim.api.nvim_create_autocmd("User", {
 ---  group = augroup,
@@ -117,18 +151,18 @@ end
 ---  end,
 ---})
 ---@usage ]]
-M.on_file_update = require("warp.list").on_file_update
+M.on_file_update = require("warp.list").action.on_file_update
 
----Find the index of an entry by buffer
----@type fun(buf: number): number|nil
----@see warp.nvim.list.get_index_by_buf
----@usage `require('warp').get_index_by_buf(0)`
-M.get_index_by_buf = require("warp.list").get_index_by_buf
+---Find the item of an entry by buffer
+---@type fun(buf: number): { entry: Warp.ListItem, index: number }|nil
+---@see warp.nvim.list.get.item_by_buf
+---@usage `require('warp').get.item_by_buf(0)`
+M.get_item_by_buf = require("warp.list").get.item_by_buf
 
 ---Get the count of the items
 ---@type fun(): number
----@see warp.nvim.list.get_list_count
----@usage `require('warp').get_list_count()`
-M.get_list_count = require("warp.list").get_list_count
+---@see warp.nvim.list.count
+---@usage `require('warp').count()`
+M.count = require("warp.list").get.count
 
 return M

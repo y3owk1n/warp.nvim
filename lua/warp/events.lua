@@ -12,12 +12,14 @@ local utils = require("warp.utils")
 ---@field open_list_win 'WarpOpenListWin' When a list window is opened
 ---@field close_list_win 'WarpCloseListWin' When a list window is closed
 ---@field added_to_list 'WarpAddedToList' When a file is added to the list
+---@field removed_from_list 'WarpRemovedFromList' When a file is removed from the list
 
 ---@type Warp.Events
 M.constants = {
   open_list_win = "Warp" .. utils.format_string_to_pascal_case("open_list_win"),
   close_list_win = "Warp" .. utils.format_string_to_pascal_case("close_list_win"),
   added_to_list = "Warp" .. utils.format_string_to_pascal_case("added_to_list"),
+  removed_from_list = "Warp" .. utils.format_string_to_pascal_case("removed_from_list"),
 }
 
 ---Emit an event

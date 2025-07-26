@@ -7,7 +7,7 @@
 local M = {}
 
 local api = vim.api
-local fn = vim.fn
+local builtins = require("warp.builtins")
 local events = require("warp.events")
 local notify = require("warp.notifier")
 local utils = require("warp.utils")
@@ -208,22 +208,6 @@ function M.is_warp_list_win_active()
   return false, nil, nil
 end
 
----Default format for the entry lines
----@param entry Warp.ListItem
----@param idx number
----@param is_active boolean|nil
----@return string
----@usage `require('warp.ui').default_list_item_format(entry, idx, is_active)`
-function M.default_list_item_format(entry, idx, is_active)
-  local display = fn.fnamemodify(entry.path, ":~:.")
-
-  if is_active then
-    display = display .. " *"
-  end
-
-  return string.format(" %d %s", idx, display)
-end
-
 ---Render the entries as lines
 ---@param parent_item Warp.ListItem|nil The parent item before open the window
 ---@param warp_list Warp.ListItem[]
@@ -238,7 +222,7 @@ function M.get_formatted_list_items(parent_item, warp_list)
 
   local config = require("warp.config").config
 
-  local formatter_fn = M.default_list_item_format
+  local formatter_fn = builtins.list_item_format_fn
 
   if type(config.list_item_format_fn) == "function" then
     formatter_fn = config.list_item_format_fn
@@ -258,7 +242,7 @@ function M.get_formatted_list_items(parent_item, warp_list)
 
     if type(formatted_line) ~= "string" then
       notify.warn("`list_item_format_fn` should return a string, fallback to default implementation")
-      formatted_line = M.default_list_item_format(entry, idx, is_active)
+      formatted_line = builtins.list_item_format_fn(entry, idx, is_active)
     end
 
     lines[idx] = formatted_line
