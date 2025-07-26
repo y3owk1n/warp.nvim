@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.3.0](https://github.com/y3owk1n/warp.nvim/compare/v1.2.0...v1.3.0) (2025-07-26)
+
+
+### Features
+
+* add `add_all_onscreen` API ([#44](https://github.com/y3owk1n/warp.nvim/issues/44)) ([c75b7be](https://github.com/y3owk1n/warp.nvim/commit/c75b7bebb3700c815479246b27f74aff4378d996))
+
+
+### Bug Fixes
+
+* add `VimLeavePre` for cursor updating autocmd ([#48](https://github.com/y3owk1n/warp.nvim/issues/48)) ([56509ac](https://github.com/y3owk1n/warp.nvim/commit/56509ac2a10d9dc06668e107ba755cbec9b2dd92))
+* do not add if it's not an existing path ([#47](https://github.com/y3owk1n/warp.nvim/issues/47)) ([e112bb7](https://github.com/y3owk1n/warp.nvim/commit/e112bb7eda931bedaf0065d0e89fe7bfd3b05dd5))
+* use `vim.uv` instead of `vim.loop` for `fs_stat` ([#46](https://github.com/y3owk1n/warp.nvim/issues/46)) ([de4c529](https://github.com/y3owk1n/warp.nvim/commit/de4c529410d958d52a69e5a2dff72285396baa09))
+
 ## [1.2.0](https://github.com/y3owk1n/warp.nvim/compare/v1.1.0...v1.2.0) (2025-07-26)
 
 
