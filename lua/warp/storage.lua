@@ -13,14 +13,14 @@ local notify = require("warp.notifier")
 local storage_dir = fn.stdpath("data") .. "/warp"
 
 ---Get the storage directory
----@return string
+---@return string storage_dir The storage directory
 ---@usage `require('warp.storage').get_storage_dir()`
 function M.get_storage_dir()
   return storage_dir
 end
 
 ---Get a safe, unique JSON file path for the current working directory
----@return string
+---@return string storage_path The storage path
 ---@usage `require('warp.storage').get_storage_path()`
 function M.get_storage_path()
   local config = require("warp.config").config
@@ -47,8 +47,8 @@ function M.get_storage_path()
 end
 
 ---Load the data from the storage file and set it to the list
----@param storage_path? string
----@return Warp.ListItem[]
+---@param storage_path? string The path of the storage file
+---@return Warp.ListItem[] items The list of items
 ---@usage `require('warp.storage').load()`
 function M.load(storage_path)
   if not storage_path then
@@ -74,8 +74,8 @@ function M.load(storage_path)
 end
 
 ---Save data to disk
----@param data? Warp.ListItem[]
----@param storage_path? string
+---@param data? Warp.ListItem[] The list of items
+---@param storage_path? string The path of the storage file
 ---@return nil
 ---@usage `require('warp.storage').save()`
 function M.save(data, storage_path)

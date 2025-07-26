@@ -28,7 +28,7 @@ end
 M.get = {}
 
 ---Get all items
----@return Warp.ListItem[]
+---@return Warp.ListItem[] warp_list The list of items
 ---@see warp.nvim.types.Warp.ListItem
 ---@usage `require('warp.list').get.all()`
 function M.get.all()
@@ -36,15 +36,15 @@ function M.get.all()
 end
 
 ---Get the count of the items
----@return number
+---@return number count The count of items in the list
 ---@usage `require('warp.list').get.count()`
 function M.get.count()
   return #warp_list
 end
 
 ---Get a specific item by index
----@param index number
----@return Warp.ListItem|nil
+---@param index number The index of the entry
+---@return Warp.ListItem|nil item The entry item
 ---@see warp.nvim.types.Warp.ListItem
 ---@usage `require('warp.list').get.item_by_index(1)`
 function M.get.item_by_index(index)
@@ -55,8 +55,8 @@ function M.get.item_by_index(index)
 end
 
 ---Find the index of an entry by buffer
----@param buf number
----@return { entry: Warp.ListItem, index: number }|nil
+---@param buf number The buffer number
+---@return { entry: Warp.ListItem, index: number }|nil item The entry item and index
 ---@usage `require('warp.list').get.item_by_buf(0)`
 function M.get.item_by_buf(buf)
   local path = fs.normalize(api.nvim_buf_get_name(buf))
@@ -75,15 +75,15 @@ end
 M.action = {}
 
 ---Set the list
----@param data Warp.ListItem[]
+---@param data Warp.ListItem[] The list of items
 ---@usage `require('warp.list').action.set(data)`
 function M.action.set(data)
   warp_list = data
 end
 
 ---Update entries if file or folder was updated
----@param from string
----@param to string
+---@param from string The path of the file
+---@param to string The path of the file
 ---@return nil
 ---@usage `require('warp.list').action.on_file_update(from, to)`
 function M.action.on_file_update(from, to)
@@ -104,35 +104,45 @@ function M.action.on_file_update(from, to)
   end
 end
 
----Insert or update current buffer in list
----@param path string
----@param current_line number
----@return nil
----@usage `require('warp.list').insert_or_update(path, current_line)`
-function M.action.insert_or_update(path, current_line)
+---@param index number The index of the entry
+---@param cursor number[] The cursor position as {row, col}
+---@return boolean ok Whether the operation was successful
+---@usage `require('warp.list').action.update_line_number(1, [1, 1])`
+function M.action.update_line_number(index, cursor)
+  local entry = warp_list[index]
+
+  if not entry then
+    return false
+  end
+
+  entry.cursor = cursor
+  return true
+end
+
+---Insert current buffer to current list
+---@param path string The path of the file
+---@param cursor number[] The cursor position as {row, col}
+---@return boolean ok Whether the operation was successful
+---@usage `require('warp.list').insert(path, cursor)`
+function M.action.insert(path, cursor)
   local found = false
-  for i, entry in ipairs(warp_list) do
+  for _, entry in ipairs(warp_list) do
     if entry.path == path then
-      -- Update the line number
-      warp_list[i].line = current_line
       found = true
       break
     end
   end
 
-  if not found then
-    table.insert(warp_list, { path = path, line = current_line })
+  if found then
+    return false
   end
 
-  if found then
-    notify.info("Updated line number")
-  else
-    notify.info("Added to #" .. #warp_list)
-  end
+  table.insert(warp_list, { path = path, cursor = cursor })
+  return true
 end
 
 ---Remove an entry from the list
----@param idx number
+---@param idx number The index of the entry
 ---@return nil
 ---@usage `require('warp.list').remove_one(idx)`
 function M.action.remove_one(idx)
@@ -140,9 +150,9 @@ function M.action.remove_one(idx)
 end
 
 ---Move an entry to a new index
----@param from_idx number
----@param to_idx number
----@return boolean
+---@param from_idx number The index of the entry
+---@param to_idx number The index of the entry
+---@return boolean ok Whether the operation was successful
 ---@usage `require('warp.list').action.move_to_index(1, 2)`
 function M.action.move_to_index(from_idx, to_idx)
   if from_idx == to_idx then

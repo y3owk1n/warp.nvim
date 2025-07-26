@@ -58,6 +58,6 @@ local M = {}
 
 ---@class Warp.ListItem
 ---@field path string The path of the file
----@field line number The line number of the file
+---@field cursor number[] The cursor position as {row, col}
 
 return M

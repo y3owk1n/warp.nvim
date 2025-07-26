@@ -37,10 +37,12 @@ M.setup = require("warp.config").setup
 function M.add()
   local buf = api.nvim_get_current_buf()
   local path = fs.normalize(api.nvim_buf_get_name(buf))
-  local current_line = fn.line(".")
+  local cursor = api.nvim_win_get_cursor(0)
 
-  list.action.insert_or_update(path, current_line)
-  events.emit(events.constants.added_to_list)
+  local ok = list.action.insert(path, cursor)
+  if ok then
+    events.emit(events.constants.added_to_list)
+  end
 end
 
 ---Remove current buffer from warp list
@@ -60,7 +62,7 @@ function M.del()
 end
 
 ---Move current buffer to a new index in list
----@param direction_or_index Warp.Config.MoveDirection | number
+---@param direction_or_index Warp.Config.MoveDirection | number The direction or index to move to
 ---@return nil
 ---@usage `require('warp').move_to('prev') or ':WarpMoveTo prev'`
 function M.move_to(direction_or_index)
@@ -164,7 +166,7 @@ function M.clear_all_list()
 end
 
 ---Navigate to a file from warp list by index or direction
----@param direction_or_index Warp.Config.MoveDirection | number
+---@param direction_or_index Warp.Config.MoveDirection | number The direction or index to move to
 ---@return nil
 ---@usage `require('warp').goto_index(1) or ':WarpGoToIndex 1'`
 function M.goto_index(direction_or_index)
@@ -195,7 +197,7 @@ function M.goto_index(direction_or_index)
   end
 
   ---Try to set but do not crash it
-  pcall(api.nvim_win_set_cursor, 0, { entry.line or 1, 0 })
+  pcall(api.nvim_win_set_cursor, 0, entry.cursor)
 end
 
 ---Update entries if file or folder was updated

@@ -81,6 +81,26 @@ function M.setup_autocmds()
     end,
   })
 
+  vim.api.nvim_create_autocmd("BufLeave", {
+    callback = function(args)
+      local buf = args.buf
+      local item = list.get.item_by_buf(buf)
+      local cursor = vim.api.nvim_win_get_cursor(0)
+
+      if not item then
+        return
+      end
+
+      if item.entry.cursor ~= cursor then
+        local ok = list.action.update_line_number(item.index, cursor)
+
+        if ok then
+          events.emit(events.constants.updated_item_cursor)
+        end
+      end
+    end,
+  })
+
   ---Setup to save list on closing the list window
   vim.api.nvim_create_autocmd("User", {
     pattern = {
@@ -88,6 +108,7 @@ function M.setup_autocmds()
       events.constants.added_to_list,
       events.constants.removed_from_list,
       events.constants.moved_item_index,
+      events.constants.updated_item_cursor,
     },
     callback = function()
       storage.save()
