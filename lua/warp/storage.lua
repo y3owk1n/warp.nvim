@@ -12,6 +12,13 @@ local notify = require("warp.notifier")
 
 local storage_dir = fn.stdpath("data") .. "/warp"
 
+---Get the storage directory
+---@return string
+---@usage `require('warp.storage').get_storage_dir()`
+function M.get_storage_dir()
+  return storage_dir
+end
+
 ---Get a safe, unique JSON file path for the current working directory
 ---@return string
 ---@usage `require('warp.storage').get_storage_path()`

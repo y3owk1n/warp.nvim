@@ -127,10 +127,17 @@ end
 ---@return nil
 ---@usage `require('warp').clear_all_list()`
 function M.clear_all_list()
-  local storage_path = require("warp.storage").get_storage_path()
-  local files = fn.readdir(storage_path)
-  if not files then
-    notify.info("No warp data found")
+  local storage_dir = require("warp.storage").get_storage_dir()
+
+  if fn.isdirectory(storage_dir) == 0 then
+    notify.info("Not a directory, checked for: " .. storage_dir)
+    return
+  end
+
+  local files = fn.readdir(storage_dir)
+
+  if vim.tbl_isempty(files) then
+    notify.info("Nothing to clear! Abort...")
     return
   end
 
@@ -146,7 +153,7 @@ function M.clear_all_list()
     if input:lower() == "y" then
       for _, file in ipairs(files) do
         if file:match("%.json$") then
-          fn.delete(storage_path .. "/" .. file)
+          fn.delete(storage_dir .. "/" .. file)
         end
       end
 
