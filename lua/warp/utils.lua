@@ -6,6 +6,8 @@
 
 local M = {}
 
+local api = vim.api
+
 ---Convert a string to PascalCase
 ---@param str string The string to convert
 ---@return string The formatted string
@@ -83,6 +85,30 @@ function M.parse_direction_or_index(direction_or_index, current_item_idx)
   end
 
   return parsed_idx
+end
+
+---Get all on screen visible buffers
+---@return number[] bufs The list of all on screen buffers
+---@usage `require('warp.utils').get_all_onscreen_bufs()`
+function M.get_all_onscreen_bufs()
+  local bufs = {}
+  for _, win in ipairs(api.nvim_list_wins()) do
+    local buf = api.nvim_win_get_buf(win)
+
+    local path = vim.fs.normalize(api.nvim_buf_get_name(buf))
+
+    if M.file_exists(path) then
+      bufs[buf] = true
+    end
+  end
+
+  -- Convert keys to list
+  local result = {}
+  for buf, _ in pairs(bufs) do
+    table.insert(result, buf)
+  end
+
+  return result
 end
 
 return M
