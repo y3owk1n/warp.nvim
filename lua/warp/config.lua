@@ -127,6 +127,12 @@ function M.setup_usercmds()
     desc = "Add a file to the list",
   })
 
+  vim.api.nvim_create_user_command("WarpAddOnScreenFiles", function()
+    require("warp").add_all_onscreen()
+  end, {
+    desc = "Add all on screen buffer to list",
+  })
+
   vim.api.nvim_create_user_command("WarpDelFile", function()
     require("warp").del()
   end, {

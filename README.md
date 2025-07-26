@@ -173,6 +173,7 @@ See the example below for how to configure **warp.nvim** with keybindings.
   event = "VeryLazy",
   cmd = {
     "WarpAddFile",
+    "WarpAddOnScreenFiles",
     "WarpDelFile",
     "WarpMoveTo",
     "WarpShowList",
@@ -200,6 +201,11 @@ See the example below for how to configure **warp.nvim** with keybindings.
       "<leader>ha",
       "<cmd>WarpAddFile<cr>",
       desc = "[Warp] Add",
+    },
+    {
+      "<leader>hA",
+      "<cmd>WarpAddOnScreenFiles<cr>",
+      desc = "[Warp] Add all on screen files",
     },
     {
       "<leader>hd",
@@ -300,7 +306,7 @@ require("warp").show_list()
 :lua require("warp").show_list()
 ```
 
-### Add a file to the list or update the marked file line number
+### Add current buffer file to the list
 
 ```lua
 require("warp").add()
@@ -311,7 +317,20 @@ require("warp").add()
 :lua require("warp").add()
 ```
 
-## Delete a file from the list
+### Add all on screen buffer files to the list
+
+Sometime you're lazy to add the files one by one, this will come in handy, if you want all the files visible on screen.
+
+```lua
+require("warp").add_all_onscreen()
+
+-- or any of the equivalents
+
+:WarpAddOnScreenFiles
+:lua require("warp").add_all_onscreen()
+```
+
+## Delete current buffer file from the list
 
 ```lua
 require("warp").del()

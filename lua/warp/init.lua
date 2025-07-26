@@ -31,7 +31,7 @@ local utils = require("warp.utils")
 ---@usage `require('warp').setup(opts)`
 M.setup = require("warp.config").setup
 
----Add or update current buffer in list
+---Add current buffer to list
 ---@return nil
 ---@usage `require('warp').add() or ':WarpAddFile'`
 function M.add()
@@ -41,6 +41,29 @@ function M.add()
 
   local ok = list.action.insert(path, cursor)
   if ok then
+    events.emit(events.constants.added_to_list)
+  end
+end
+
+---Add all on screen buffer to list
+---@return nil
+---@usage `require('warp').add_all_onscreen() or ':WarpAddOnScreenFiles'`
+function M.add_all_onscreen()
+  local bufs = utils.get_all_onscreen_bufs()
+
+  local added_count = 0
+
+  for _, buf in ipairs(bufs) do
+    local path = fs.normalize(api.nvim_buf_get_name(buf))
+    local cursor = api.nvim_win_get_cursor(0)
+
+    local ok = list.action.insert(path, cursor)
+    if ok then
+      added_count = added_count + 1
+    end
+  end
+
+  if added_count > 0 then
     events.emit(events.constants.added_to_list)
   end
 end
