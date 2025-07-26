@@ -1,5 +1,23 @@
 # Changelog
 
+## [1.2.0](https://github.com/y3owk1n/warp.nvim/compare/v1.1.0...v1.2.0) (2025-07-26)
+
+
+### Features
+
+* switch from `line_number` to `cursor` position & make it auto update itself ([#40](https://github.com/y3owk1n/warp.nvim/issues/40)) ([f08a9e6](https://github.com/y3owk1n/warp.nvim/commit/f08a9e6d7252da5c359895f36aec8b3c4b7bf316))
+
+
+### Bug Fixes
+
+* abort `goto` if it's already the index ([#41](https://github.com/y3owk1n/warp.nvim/issues/41)) ([b1ad174](https://github.com/y3owk1n/warp.nvim/commit/b1ad174fcfbd328b524c96ee954a75d0fb78d607))
+* add split keymaps to list window ([#39](https://github.com/y3owk1n/warp.nvim/issues/39)) ([3ad425a](https://github.com/y3owk1n/warp.nvim/commit/3ad425a6c9970eadfbe11fd154efe41e0c622996))
+* better clear all list logic ([#31](https://github.com/y3owk1n/warp.nvim/issues/31)) ([8086312](https://github.com/y3owk1n/warp.nvim/commit/80863129e2d45d71d750a6208173682fc8ee0534))
+* call `redrawstatus` when relevant events happen ([#33](https://github.com/y3owk1n/warp.nvim/issues/33)) ([791417a](https://github.com/y3owk1n/warp.nvim/commit/791417ae39fecc848e8545115e14a688ec51d911))
+* typo on `[@usage](https://github.com/usage)` due to refactoring ([#34](https://github.com/y3owk1n/warp.nvim/issues/34)) ([50e3842](https://github.com/y3owk1n/warp.nvim/commit/50e384216c1d5bfc5ce1f6ba54ae883f85af9cf8))
+* use defined actions for moving up and down ([#35](https://github.com/y3owk1n/warp.nvim/issues/35)) ([825389c](https://github.com/y3owk1n/warp.nvim/commit/825389cdb6857d1f822153229589438f911e374a))
+* wrong `[@see](https://github.com/see)` for `M.count` ([#38](https://github.com/y3owk1n/warp.nvim/issues/38)) ([1a4188c](https://github.com/y3owk1n/warp.nvim/commit/1a4188c3e7e57b12b38adb90177e9d7845b9a41e))
+
 ## [1.1.0](https://github.com/y3owk1n/warp.nvim/compare/v1.0.1...v1.1.0) (2025-07-26)
 
 
