@@ -51,6 +51,18 @@ M.add()                                                      *warp.nvim.api.add*
 <
 
 
+M.del()                                                      *warp.nvim.api.del*
+    Remove current buffer from warp list
+
+    Returns: ~
+        (nil)
+
+    Usage: ~
+>lua
+        require('warp').del() or ':WarpDelFile'
+<
+
+
 M.show_list()                                          *warp.nvim.api.show_list*
     Show the list item in window
 
