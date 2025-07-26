@@ -102,6 +102,12 @@ function M.setup_usercmds()
     desc = "Add a file to the list",
   })
 
+  vim.api.nvim_create_user_command("WarpDelFile", function()
+    require("warp").del()
+  end, {
+    desc = "Delete a file to the list",
+  })
+
   vim.api.nvim_create_user_command("WarpShowList", function()
     require("warp").show_list()
   end, {
