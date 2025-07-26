@@ -65,6 +65,8 @@ M.defaults = {
 ---Setup autocommands
 ---@return nil
 function M.setup_autocmds()
+  -- Re-initialize the list when the directory changes
+  -- So that root detection can do it's work and ensure getting the right list
   vim.api.nvim_create_autocmd("DirChanged", {
     group = utils.augroup("dir_changed"),
     callback = function()
@@ -72,6 +74,9 @@ function M.setup_autocmds()
     end,
   })
 
+  -- Re-initialize the list when the file is focused
+  -- This is to ensure if so happens to edit the same list but at different terminal instance
+  -- Maybe there is a better way to do this
   vim.api.nvim_create_autocmd({ "FocusGained", "TermClose", "TermLeave" }, {
     group = utils.augroup("checktime"),
     callback = function()
@@ -81,15 +86,18 @@ function M.setup_autocmds()
     end,
   })
 
-  vim.api.nvim_create_autocmd("BufLeave", {
+  -- Best effor to update the cursor position when leaving the file
+  -- NOTE: Not sure if these are the best events to use, but they seem to work
+  vim.api.nvim_create_autocmd({ "BufLeave", "VimLeavePre" }, {
     callback = function(args)
       local buf = args.buf
       local item = list.get.item_by_buf(buf)
-      local cursor = vim.api.nvim_win_get_cursor(0)
 
       if not item then
         return
       end
+
+      local cursor = vim.api.nvim_win_get_cursor(0)
 
       if item.entry.cursor ~= cursor then
         local ok = list.action.update_line_number(item.index, cursor)
@@ -101,7 +109,9 @@ function M.setup_autocmds()
     end,
   })
 
-  ---Setup to save list on closing the list window
+  -- Most operations do not trigger a `save` to the fs, but emit events after the operation is done
+  -- I am assuming that most of these events will cause a diff in the list, so we should save it to the fs and
+  -- redraw the statusline
   vim.api.nvim_create_autocmd("User", {
     pattern = {
       events.constants.close_list_win,
