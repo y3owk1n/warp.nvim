@@ -549,6 +549,48 @@ opts = function(_, opts)
 end,
 ```
 
+### With `mini.starter`
+
+This snippet shows how I add warp to my `mini.starter`, it shoud be similar for other starters / dashboards.
+
+```lua
+opts = function(_, opts)
+  -- rest of the config
+  local warp_exists, warp_list = pcall(require, "warp.list")
+
+  local new_section = function(name, action, section)
+    return { name = name, action = action, section = section }
+  end
+
+  local items = {
+    new_section("e: Explore", "lua require('mini.files').open(vim.uv.cwd(), true)", "Navigate"),
+    new_section("f: Find File", "Pick files", "Navigate"),
+    new_section("g: Grep Text", "Pick grep_live", "Navigate"),
+    new_section("s: Restore", "lua require('persistence').load()", "Session"),
+  }
+
+  if warp_exists then
+    local warps = warp_list.get.all()
+
+    if #warps > 0 then
+      for index, warp in ipairs(warps) do
+        local display = vim.fn.pathshorten(vim.fn.fnamemodify(warp.path, ":~:."))
+
+        table.insert(items, new_section(index .. ": " .. display, "WarpGoToIndex " .. index, "Warp"))
+      end
+    end
+  end
+
+  local config = {
+    -- rest of the config
+    items = items,
+    -- rest of the config
+  }
+
+  return config
+end
+```
+
 ## 🤝 Contributing
 
 Read the documentation carefully before submitting any issue.
