@@ -114,11 +114,11 @@ M.clear_all_list()                                *warp.nvim.api.clear_all_list*
 <
 
 
-M.goto_index({idx})                                   *warp.nvim.api.goto_index*
-    Navigate to a file from warp list by index
+M.goto_index({direction_or_index})                    *warp.nvim.api.goto_index*
+    Navigate to a file from warp list by index or direction
 
     Parameters: ~
-        {idx}  (number)
+        {direction_or_index}  (Warp.Config.MoveDirection|number)
 
     Returns: ~
         (nil)
@@ -610,6 +610,23 @@ M.buf_set_keymap({bufnr}, {lhs}, {rhs})         *warp.nvim.utils.buf_set_keymap*
     Usage: ~
 >lua
         require('warp.utils').buf_set_keymap(bufnr, lhs, rhs)
+<
+
+
+                                      *warp.nvim.utils.parse_direction_or_index*
+M.parse_direction_or_index({direction_or_index}, {current_item_idx})
+    Parse a direction_or_index to a number
+
+    Parameters: ~
+        {direction_or_index}  (Warp.Config.MoveDirection|number)
+        {current_item_idx}    (number|nil)
+
+    Returns: ~
+        (number|nil)
+
+    Usage: ~
+>lua
+        require('warp.utils').parse_direction_or_index('prev')
 <
 
 
