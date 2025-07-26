@@ -221,7 +221,7 @@ M.get_item_by_buf = require("warp.list").get.item_by_buf
 
 ---Get the count of the items
 ---@type fun(): number
----@see warp.nvim.list.count
+---@see warp.nvim.list.get.count
 ---@usage `require('warp').count()`
 M.count = require("warp.list").get.count
 
