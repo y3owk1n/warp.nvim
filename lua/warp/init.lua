@@ -72,28 +72,7 @@ function M.move_to(direction_or_index)
     return
   end
 
-  ---@type integer
-  local to_idx
-
-  if type(direction_or_index) == "number" then
-    to_idx = direction_or_index
-  end
-
-  if direction_or_index == "first" then
-    to_idx = 1
-  end
-
-  if direction_or_index == "last" then
-    to_idx = list.get.count()
-  end
-
-  if direction_or_index == "prev" then
-    to_idx = item.index - 1
-  end
-
-  if direction_or_index == "next" then
-    to_idx = item.index + 1
-  end
+  local to_idx = utils.parse_direction_or_index(direction_or_index, item.index)
 
   if not to_idx then
     notify.warn("Invalid direction_or_index")
@@ -177,18 +156,29 @@ function M.clear_all_list()
   end)
 end
 
----Navigate to a file from warp list by index
----@param idx number
+---Navigate to a file from warp list by index or direction
+---@param direction_or_index Warp.Config.MoveDirection | number
 ---@return nil
 ---@usage `require('warp').goto_index(1) or ':WarpGoToIndex 1'`
-function M.goto_index(idx)
-  local entry = list.get.item_by_index(idx)
+function M.goto_index(direction_or_index)
+  local buf = api.nvim_get_current_buf()
+  local item = list.get.item_by_buf(buf)
+
+  local to_idx = utils.parse_direction_or_index(direction_or_index, item and item.index or nil)
+
+  if not to_idx then
+    notify.warn("Invalid direction_or_index")
+    return
+  end
+
+  local entry = list.get.item_by_index(to_idx)
   if not entry then
+    notify.warn("Not in bound")
     return
   end
   if not utils.file_exists(entry.path) then
     notify.warn("file no longer exists – removed")
-    list.action.remove_one(idx)
+    list.action.remove_one(to_idx)
     events.emit(events.constants.removed_from_list)
     return
   end
