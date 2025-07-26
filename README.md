@@ -94,6 +94,8 @@ require("warp").setup({
     delete = { "dd" }, -- delete the file in the warp selection window
     move_up = { "<C-k>" }, -- move an item up in the warp selection window
     move_down = { "<C-j>" }, -- move an item down in the warp selection window
+    split_horizontal = { "<C-w>s" }, -- horizontal split
+    split_vertical = { "<C-w>v" }, -- vertical split
   },
   float_opts = {
     width = 0.5,
@@ -144,6 +146,8 @@ require("warp").setup({
 ---@field delete? string[]
 ---@field move_up? string[]
 ---@field move_down? string[]
+---@field split_horizontal? string[]
+---@field split_vertical? string[]
 
 ---@class Warp.Config.FloatOpts
 ---@field width? integer The width of the window, more than 1 = absolute, less than 1 = calculated percentage
@@ -417,6 +421,8 @@ All the keybindings are customizable in config via `keymaps` field.
 | `dd` | Delete | Delete the current item |
 | `<C-k>` | Move item up | Move the current item up |
 | `<C-j>` | Move item down | Move the current item down |
+| `<C-w>s` | Split horizontal | Split the window horizontally |
+| `<C-w>v` | Split vertical | Split the window vertically |
 | `1 - 9` | Quick Select | Select the item based on the number |
 
 ## 🕰️ Events

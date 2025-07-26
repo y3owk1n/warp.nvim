@@ -50,6 +50,8 @@ M.defaults = {
     delete = { "dd" },
     move_up = { "<C-k>" },
     move_down = { "<C-j>" },
+    split_horizontal = { "<C-w>s" },
+    split_vertical = { "<C-w>v" },
   },
   float_opts = {
     width = 0.5,

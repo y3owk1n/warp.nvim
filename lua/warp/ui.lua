@@ -126,6 +126,34 @@ function M.render_warp_list(parent_item, warp_list, target_win)
     end)
   end
 
+  ---Setup for select and horizontal split keymaps
+  for _, key in ipairs(keymaps.split_horizontal) do
+    utils.buf_set_keymap(bufnr, key, function()
+      local line_num = api.nvim_win_get_cursor(0)[1]
+
+      M.close_win(warp_list_win_id)
+      events.emit(events.constants.close_list_win)
+
+      vim.cmd("split")
+
+      warp.goto_index(line_num)
+    end)
+  end
+
+  ---Setup for select and vertical split keymaps
+  for _, key in ipairs(keymaps.split_vertical) do
+    utils.buf_set_keymap(bufnr, key, function()
+      local line_num = api.nvim_win_get_cursor(0)[1]
+
+      M.close_win(warp_list_win_id)
+      events.emit(events.constants.close_list_win)
+
+      vim.cmd("vsplit")
+
+      warp.goto_index(line_num)
+    end)
+  end
+
   ---Setup for delete keymaps
   for _, key in ipairs(keymaps.delete) do
     utils.buf_set_keymap(bufnr, key, function()
