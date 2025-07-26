@@ -55,23 +55,35 @@ function M.load(storage_path)
     storage_path = M.get_storage_path()
   end
 
-  local f = io.open(storage_path, "r")
-
-  if f then
-    local contents = f:read("*a")
-    f:close()
-    local ok, data = pcall(vim.json.decode, contents)
-    if ok then
-      return data
-    else
-      fn.rename(storage_path, storage_path .. ".bak")
-      notify.warn("Corrupted JSON backed up")
-      return {}
-    end
-  else
+  if not require("warp.utils").file_exists(storage_path) then
     return {}
   end
+
+  local contents_ok, contents = pcall(function()
+    local lines = vim.fn.readfile(storage_path)
+    return table.concat(lines, "\n")
+  end)
+
+  if not contents_ok or contents == "" then
+    return {}
+  end
+
+  local data_ok, data = pcall(vim.json.decode, contents)
+
+  if not data_ok then
+    fn.rename(storage_path, storage_path .. ".bak")
+    notify.warn("Corrupted JSON backed up")
+    return {}
+  end
+
+  return data
 end
+
+---Track the last saved encoded data
+local last_saved_encoded = nil
+
+---Track the last saved storage path
+local last_saved_storage_path = nil
 
 ---Save data to disk
 ---@param data? Warp.ListItem[] The list of items
@@ -93,9 +105,16 @@ function M.save(data, storage_path)
     return
   end
 
-  local f = assert(io.open(storage_path, "w"))
-  f:write(encoded)
-  f:close()
+  if last_saved_encoded == encoded and last_saved_storage_path == storage_path then
+    return
+  end
+
+  last_saved_encoded = encoded
+  last_saved_storage_path = storage_path
+
+  local tmp_path = storage_path .. ".tmp"
+  vim.fn.writefile({ encoded }, tmp_path)
+  os.rename(tmp_path, storage_path)
 end
 
 return M
