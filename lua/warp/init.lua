@@ -37,6 +37,11 @@ M.setup = require("warp.config").setup
 function M.add()
   local buf = api.nvim_get_current_buf()
   local path = fs.normalize(api.nvim_buf_get_name(buf))
+
+  if not utils.file_exists(path) then
+    return
+  end
+
   local cursor = api.nvim_win_get_cursor(0)
 
   local ok = list.action.insert(path, cursor)
