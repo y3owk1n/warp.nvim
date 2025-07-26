@@ -40,7 +40,7 @@ M.setup                                                    *warp.nvim.api.setup*
 
 
 M.add()                                                      *warp.nvim.api.add*
-    Add or update current buffer in list
+    Add current buffer to list
 
     Returns: ~
         (nil)
@@ -48,6 +48,18 @@ M.add()                                                      *warp.nvim.api.add*
     Usage: ~
 >lua
         require('warp').add() or ':WarpAddFile'
+<
+
+
+M.add_all_onscreen()                            *warp.nvim.api.add_all_onscreen*
+    Add all on screen buffer to list
+
+    Returns: ~
+        (nil)
+
+    Usage: ~
+>lua
+        require('warp').add_all_onscreen() or ':WarpAddOnScreenFiles'
 <
 
 
@@ -647,6 +659,18 @@ M.parse_direction_or_index({direction_or_index}, {current_item_idx})
     Usage: ~
 >lua
         require('warp.utils').parse_direction_or_index('prev')
+<
+
+
+M.get_all_onscreen_bufs()                *warp.nvim.utils.get_all_onscreen_bufs*
+    Get all on screen visible buffers
+
+    Returns: ~
+        (number[])  The list of all on screen buffers
+
+    Usage: ~
+>lua
+        require('warp.utils').get_all_onscreen_bufs()
 <
 
 
