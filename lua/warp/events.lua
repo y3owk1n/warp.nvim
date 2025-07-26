@@ -27,7 +27,7 @@ M.constants = {
 ---Emit an event
 ---@param event string The event name
 ---@return nil
----@usage `require('warp.utils').emit_event("my_event")`
+---@usage `require('warp.events').emit("my_event")`
 function M.emit(event)
   vim.api.nvim_exec_autocmds("User", { pattern = event })
 end
