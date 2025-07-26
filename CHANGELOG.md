@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.1.0](https://github.com/y3owk1n/warp.nvim/compare/v1.0.1...v1.1.0) (2025-07-26)
+
+
+### Features
+
+* add `delete` command ([#26](https://github.com/y3owk1n/warp.nvim/issues/26)) ([aed5713](https://github.com/y3owk1n/warp.nvim/commit/aed5713f1a81b3623dcd3667c29dc7cdbe78d1fa))
+* add `moveTo` command ([#27](https://github.com/y3owk1n/warp.nvim/issues/27)) ([b6653c5](https://github.com/y3owk1n/warp.nvim/commit/b6653c510f78610df52d7763e6a2b55f82604118))
+* add directions support for `goto` commands ([#28](https://github.com/y3owk1n/warp.nvim/issues/28)) ([9b7f778](https://github.com/y3owk1n/warp.nvim/commit/9b7f77809a127645d329395f371aba02326aebed))
+
+
+### Bug Fixes
+
+* refactoring names, functions & files ([#24](https://github.com/y3owk1n/warp.nvim/issues/24)) ([3063164](https://github.com/y3owk1n/warp.nvim/commit/306316405b3993b5983d080b1658fce35748e2b3))
+
 ## [1.0.1](https://github.com/y3owk1n/warp.nvim/compare/v1.0.0...v1.0.1) (2025-07-25)
 
 
