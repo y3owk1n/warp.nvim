@@ -63,7 +63,11 @@ M.del()                                                      *warp.nvim.api.del*
 <
 
 
-M.move_to()                                              *warp.nvim.api.move_to*
+M.move_to({direction_or_index})                          *warp.nvim.api.move_to*
+    Move current buffer to a new index in list
+
+    Parameters: ~
+        {direction_or_index}  (Warp.Config.MoveDirection|number)
 
     Returns: ~
         (nil)
@@ -724,7 +728,8 @@ M.emit({event})                                          *warp.nvim.events.emit*
 ==============================================================================
 Types                                                          *warp.nvim.types*
 
-Warp.Config.FloatOpts.Relative  *warp.nvim.types.Warp.Config.FloatOpts.Relative*
+                                *warp.nvim.types.Warp.Config.FloatOpts.Relative*
+Warp.Config.FloatOpts.Relative
 
     Variants: ~
         ("cursor")
@@ -735,7 +740,8 @@ Warp.Config.FloatOpts.Relative  *warp.nvim.types.Warp.Config.FloatOpts.Relative*
         ("win")
 
 
-Warp.Config.FloatOpts.Anchor      *warp.nvim.types.Warp.Config.FloatOpts.Anchor*
+                                  *warp.nvim.types.Warp.Config.FloatOpts.Anchor*
+Warp.Config.FloatOpts.Anchor
 
     Variants: ~
         ("NE")
@@ -744,7 +750,8 @@ Warp.Config.FloatOpts.Anchor      *warp.nvim.types.Warp.Config.FloatOpts.Anchor*
         ("SW")
 
 
-Warp.Config.FloatOpts.Border      *warp.nvim.types.Warp.Config.FloatOpts.Border*
+                                  *warp.nvim.types.Warp.Config.FloatOpts.Border*
+Warp.Config.FloatOpts.Border
 
     Variants: ~
         ("double")
@@ -755,7 +762,8 @@ Warp.Config.FloatOpts.Border      *warp.nvim.types.Warp.Config.FloatOpts.Border*
         ("solid")
 
 
-Warp.Config.FloatOpts.TitlePos  *warp.nvim.types.Warp.Config.FloatOpts.TitlePos*
+                                *warp.nvim.types.Warp.Config.FloatOpts.TitlePos*
+Warp.Config.FloatOpts.TitlePos
 
     Variants: ~
         ("left")
@@ -763,7 +771,8 @@ Warp.Config.FloatOpts.TitlePos  *warp.nvim.types.Warp.Config.FloatOpts.TitlePos*
         ("right")
 
 
-Warp.Config.MoveDirection            *warp.nvim.types.Warp.Config.MoveDirection*
+                                     *warp.nvim.types.Warp.Config.MoveDirection*
+Warp.Config.MoveDirection
 
     Variants: ~
         ("prev")
@@ -773,7 +782,6 @@ Warp.Config.MoveDirection            *warp.nvim.types.Warp.Config.MoveDirection*
 
 
 Warp.Config                                        *warp.nvim.types.Warp.Config*
-    | number
 
     Fields: ~
         {root_markers?}         (string[])                                                          The root markers to check, defaults to { ".git" } and fallback to cwd, set to {} to nil it
