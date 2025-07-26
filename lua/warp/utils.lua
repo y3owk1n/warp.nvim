@@ -6,11 +6,9 @@
 
 local M = {}
 
-local api = vim.api
-
 ---Convert a string to PascalCase
----@param str string
----@return string
+---@param str string The string to convert
+---@return string The formatted string
 ---@usage `require('warp.utils').format_string_to_pascal_case("hello_world")`
 function M.format_string_to_pascal_case(str)
   local formatted = str
@@ -34,17 +32,17 @@ function M.augroup(name)
 end
 
 ---Check if a file exists
----@param path string
----@return boolean
+---@param path string The path of the file
+---@return boolean exists Whether the file exists
 ---@usage `require('warp.utils').file_exists(path)`
 function M.file_exists(path)
   return vim.loop.fs_stat(path) ~= nil
 end
 
 ---Set a keymap for a buffer
----@param bufnr number
----@param lhs string
----@param rhs fun()
+---@param bufnr number The buffer number
+---@param lhs string The keymap
+---@param rhs fun() The function to execute
 ---@usage `require('warp.utils').buf_set_keymap(bufnr, lhs, rhs)`
 function M.buf_set_keymap(bufnr, lhs, rhs)
   vim.keymap.set("n", lhs, rhs, {
@@ -56,9 +54,9 @@ function M.buf_set_keymap(bufnr, lhs, rhs)
 end
 
 ---Parse a direction_or_index to a number
----@param direction_or_index Warp.Config.MoveDirection | number
----@param current_item_idx number|nil
----@return number|nil
+---@param direction_or_index Warp.Config.MoveDirection | number The direction or index to move to
+---@param current_item_idx number|nil The current index of the item
+---@return number|nil parsed_idx The parsed index
 ---@usage `require('warp.utils').parse_direction_or_index('prev')`
 function M.parse_direction_or_index(direction_or_index, current_item_idx)
   ---@type number

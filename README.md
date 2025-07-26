@@ -23,7 +23,7 @@ Just you, your files, and a fast way to warp between them.
 ## 🔧 Features
 
 - 📁 Per-project file list (based on root markers like `.git`, or custom root resolver)
-- 🌪 Add current file with line number, and updatable line numbers
+- 🌪 Add current file with cursor position with auto cursor updates
 - 👀 View list in a floating window
 - ✨ Reorder entries via keymaps
 - ❌ Remove entries via keymaps
@@ -432,6 +432,7 @@ All the keybindings are customizable in config via `keymaps` field.
 - `WarpAddedToList` - Fired when a file is added to the list
 - `WarpRemovedFromList` - Fired when a file is deleted from the list
 - `WarpMovedItemIndex` - Fired when an item is moved within list
+- `WarpUpdatedItemCursor` - Fired when an item's cursor is updated
 
 > [!note]
 > If you want to be safe, you can use the `constants` to get the event instead of the string.

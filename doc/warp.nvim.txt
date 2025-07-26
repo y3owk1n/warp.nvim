@@ -67,7 +67,7 @@ M.move_to({direction_or_index})                          *warp.nvim.api.move_to*
     Move current buffer to a new index in list
 
     Parameters: ~
-        {direction_or_index}  (Warp.Config.MoveDirection|number)
+        {direction_or_index}  (Warp.Config.MoveDirection|number)  The direction or index to move to
 
     Returns: ~
         (nil)
@@ -118,7 +118,7 @@ M.goto_index({direction_or_index})                    *warp.nvim.api.goto_index*
     Navigate to a file from warp list by index or direction
 
     Parameters: ~
-        {direction_or_index}  (Warp.Config.MoveDirection|number)
+        {direction_or_index}  (Warp.Config.MoveDirection|number)  The direction or index to move to
 
     Returns: ~
         (nil)
@@ -242,7 +242,7 @@ M.get.all()                                             *warp.nvim.list.get.all*
     Get all items
 
     Returns: ~
-        (Warp.ListItem[])
+        (Warp.ListItem[])  The list of items
 
     See: ~
         |warp.nvim.types.Warp.ListItem|
@@ -257,7 +257,7 @@ M.get.count()                                         *warp.nvim.list.get.count*
     Get the count of the items
 
     Returns: ~
-        (number)
+        (number)  The count of items in the list
 
     Usage: ~
 >lua
@@ -269,10 +269,10 @@ M.get.item_by_index({index})                  *warp.nvim.list.get.item_by_index*
     Get a specific item by index
 
     Parameters: ~
-        {index}  (number)
+        {index}  (number)  The index of the entry
 
     Returns: ~
-        (Warp.ListItem|nil)
+        (Warp.ListItem|nil)  The entry item
 
     See: ~
         |warp.nvim.types.Warp.ListItem|
@@ -287,10 +287,10 @@ M.get.item_by_buf({buf})                        *warp.nvim.list.get.item_by_buf*
     Find the index of an entry by buffer
 
     Parameters: ~
-        {buf}  (number)
+        {buf}  (number)  The buffer number
 
     Returns: ~
-        ({entry:Warp.ListItem,index:number}|nil)
+        ({entry:Warp.ListItem,index:number}|nil)  The entry item and index
 
     Usage: ~
 >lua
@@ -304,7 +304,7 @@ M.action.set({data})                                 *warp.nvim.list.action.set*
     Set the list
 
     Parameters: ~
-        {data}  (Warp.ListItem[])
+        {data}  (Warp.ListItem[])  The list of items
 
     Usage: ~
 >lua
@@ -316,8 +316,8 @@ M.action.on_file_update({from}, {to})     *warp.nvim.list.action.on_file_update*
     Update entries if file or folder was updated
 
     Parameters: ~
-        {from}  (string)
-        {to}    (string)
+        {from}  (string)  The path of the file
+        {to}    (string)  The path of the file
 
     Returns: ~
         (nil)
@@ -328,20 +328,35 @@ M.action.on_file_update({from}, {to})     *warp.nvim.list.action.on_file_update*
 <
 
 
-                                        *warp.nvim.list.action.insert_or_update*
-M.action.insert_or_update({path}, {current_line})
-    Insert or update current buffer in list
+                                      *warp.nvim.list.action.update_line_number*
+M.action.update_line_number({index}, {cursor})
 
     Parameters: ~
-        {path}          (string)
-        {current_line}  (number)
+        {index}   (number)    The index of the entry
+        {cursor}  (number[])  The cursor position as {row, col}
 
     Returns: ~
-        (nil)
+        (boolean)  Whether the operation was successful
 
     Usage: ~
 >lua
-        require('warp.list').insert_or_update(path, current_line)
+        require('warp.list').action.update_line_number(1, [1, 1])
+<
+
+
+M.action.insert({path}, {cursor})                 *warp.nvim.list.action.insert*
+    Insert current buffer to current list
+
+    Parameters: ~
+        {path}    (string)    The path of the file
+        {cursor}  (number[])  The cursor position as {row, col}
+
+    Returns: ~
+        (boolean)  Whether the operation was successful
+
+    Usage: ~
+>lua
+        require('warp.list').insert(path, cursor)
 <
 
 
@@ -349,7 +364,7 @@ M.action.remove_one({idx})                    *warp.nvim.list.action.remove_one*
     Remove an entry from the list
 
     Parameters: ~
-        {idx}  (number)
+        {idx}  (number)  The index of the entry
 
     Returns: ~
         (nil)
@@ -365,11 +380,11 @@ M.action.move_to_index({from_idx}, {to_idx})
     Move an entry to a new index
 
     Parameters: ~
-        {from_idx}  (number)
-        {to_idx}    (number)
+        {from_idx}  (number)  The index of the entry
+        {to_idx}    (number)  The index of the entry
 
     Returns: ~
-        (boolean)
+        (boolean)  Whether the operation was successful
 
     Usage: ~
 >lua
@@ -398,7 +413,7 @@ M.get_storage_dir()                          *warp.nvim.storage.get_storage_dir*
     Get the storage directory
 
     Returns: ~
-        (string)
+        (string)  The storage directory
 
     Usage: ~
 >lua
@@ -410,7 +425,7 @@ M.get_storage_path()                        *warp.nvim.storage.get_storage_path*
     Get a safe, unique JSON file path for the current working directory
 
     Returns: ~
-        (string)
+        (string)  The storage path
 
     Usage: ~
 >lua
@@ -422,10 +437,10 @@ M.load({storage_path?})                                 *warp.nvim.storage.load*
     Load the data from the storage file and set it to the list
 
     Parameters: ~
-        {storage_path?}  (string)
+        {storage_path?}  (string)  The path of the storage file
 
     Returns: ~
-        (Warp.ListItem[])
+        (Warp.ListItem[])  The list of items
 
     Usage: ~
 >lua
@@ -437,8 +452,8 @@ M.save({data?}, {storage_path?})                        *warp.nvim.storage.save*
     Save data to disk
 
     Parameters: ~
-        {data?}          (Warp.ListItem[])
-        {storage_path?}  (string)
+        {data?}          (Warp.ListItem[])  The list of items
+        {storage_path?}  (string)           The path of the storage file
 
     Returns: ~
         (nil)
@@ -494,7 +509,7 @@ M.render_warp_list({parent_item}, {warp_list}, {target_win?})
 
     Parameters: ~
         {parent_item}  (Warp.ListItem|nil)  The parent item before open the window
-        {warp_list}    (Warp.ListItem[])
+        {warp_list}    (Warp.ListItem[])    The list of items
         {target_win?}  (integer)            The window number to render the list
 
     Returns: ~
@@ -541,11 +556,11 @@ M.get_formatted_list_items({parent_item}, {warp_list})
 
     Parameters: ~
         {parent_item}  (Warp.ListItem|nil)  The parent item before open the window
-        {warp_list}    (Warp.ListItem[])
+        {warp_list}    (Warp.ListItem[])    The list of items
 
     Returns: ~
-        (string[])    lines
-        (number|nil)  active_idx
+        (string[])    The formatted lines
+        (number|nil)  The active index
 
     Usage: ~
 >lua
@@ -563,10 +578,10 @@ M.format_string_to_pascal_case({str})
     Convert a string to PascalCase
 
     Parameters: ~
-        {str}  (string)
+        {str}  (string)  The string to convert
 
     Returns: ~
-        (string)
+        (string)  formatted string
 
     Usage: ~
 >lua
@@ -593,10 +608,10 @@ M.file_exists({path})                              *warp.nvim.utils.file_exists*
     Check if a file exists
 
     Parameters: ~
-        {path}  (string)
+        {path}  (string)  The path of the file
 
     Returns: ~
-        (boolean)
+        (boolean)  Whether the file exists
 
     Usage: ~
 >lua
@@ -608,9 +623,9 @@ M.buf_set_keymap({bufnr}, {lhs}, {rhs})         *warp.nvim.utils.buf_set_keymap*
     Set a keymap for a buffer
 
     Parameters: ~
-        {bufnr}  (number)
-        {lhs}    (string)
-        {rhs}    (fun())
+        {bufnr}  (number)  The buffer number
+        {lhs}    (string)  The keymap
+        {rhs}    (fun())   The function to execute
 
     Usage: ~
 >lua
@@ -623,11 +638,11 @@ M.parse_direction_or_index({direction_or_index}, {current_item_idx})
     Parse a direction_or_index to a number
 
     Parameters: ~
-        {direction_or_index}  (Warp.Config.MoveDirection|number)
-        {current_item_idx}    (number|nil)
+        {direction_or_index}  (Warp.Config.MoveDirection|number)  The direction or index to move to
+        {current_item_idx}    (number|nil)                        The current index of the item
 
     Returns: ~
-        (number|nil)
+        (number|nil)  The parsed index
 
     Usage: ~
 >lua
@@ -644,7 +659,7 @@ M.info({msg})                                          *warp.nvim.notifier.info*
     Info notification
 
     Parameters: ~
-        {msg}  (string)
+        {msg}  (string)  The message to display
 
     Usage: ~
 >lua
@@ -656,7 +671,7 @@ M.warn({msg})                                          *warp.nvim.notifier.warn*
     Warn notification
 
     Parameters: ~
-        {msg}  (string)
+        {msg}  (string)  The message to display
 
     Usage: ~
 >lua
@@ -668,7 +683,7 @@ M.error({msg})                                        *warp.nvim.notifier.error*
     Error notification
 
     Parameters: ~
-        {msg}  (string)
+        {msg}  (string)  The message to display
 
     Usage: ~
 >lua
@@ -685,7 +700,7 @@ M.root_detection_fn()                     *warp.nvim.builtins.root_detection_fn*
     Find the root directory based on root markers, or fall back to cwd
 
     Returns: ~
-        (string)
+        (string)  The root path
 
     Usage: ~
 >lua
@@ -698,12 +713,12 @@ M.list_item_format_fn({entry}, {idx}, {is_active})
     Default format for the entry lines
 
     Parameters: ~
-        {entry}      (Warp.ListItem)
-        {idx}        (number)
-        {is_active}  (boolean|nil)
+        {entry}      (Warp.ListItem)  The entry item
+        {idx}        (number)         The index of the entry
+        {is_active}  (boolean|nil)    Whether the entry is active
 
     Returns: ~
-        (string)
+        (string)  The formatted entry in string
 
     Usage: ~
 >lua
@@ -719,11 +734,12 @@ Events related implementations
 Warp.Events                                       *warp.nvim.events.Warp.Events*
 
     Fields: ~
-        {open_list_win}      ("WarpOpenListWin")      When a list window is opened
-        {close_list_win}     ("WarpCloseListWin")     When a list window is closed
-        {added_to_list}      ("WarpAddedToList")      When a file is added to the list
-        {removed_from_list}  ("WarpRemovedFromList")  When a file is removed from the list
-        {moved_item_index}   ("WarpMovedItemIndex")   When an item is moved within list
+        {open_list_win}        ("WarpOpenListWin")        When a list window is opened
+        {close_list_win}       ("WarpCloseListWin")       When a list window is closed
+        {added_to_list}        ("WarpAddedToList")        When a file is added to the list
+        {removed_from_list}    ("WarpRemovedFromList")    When a file is removed from the list
+        {moved_item_index}     ("WarpMovedItemIndex")     When an item is moved within list
+        {updated_item_cursor}  ("WarpUpdatedItemCursor")  When a cursor for an item is updated
 
 
 M.constants                                         *warp.nvim.events.constants*
@@ -841,8 +857,8 @@ Warp.Config.FloatOpts                    *warp.nvim.types.Warp.Config.FloatOpts*
 Warp.ListItem                                    *warp.nvim.types.Warp.ListItem*
 
     Fields: ~
-        {path}  (string)  The path of the file
-        {line}  (number)  The line number of the file
+        {path}    (string)    The path of the file
+        {cursor}  (number[])  The cursor position as {row, col}
 
 
 vim:tw=78:ts=8:noet:ft=help:norl:

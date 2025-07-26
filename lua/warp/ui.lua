@@ -65,7 +65,7 @@ function M.set_standard_buf_options(bufnr, ft)
 end
 
 ---@param parent_item Warp.ListItem|nil The parent item before open the window
----@param warp_list Warp.ListItem[]
+---@param warp_list Warp.ListItem[] The list of items
 ---@param target_win? integer The window number to render the list
 ---@return nil
 ---@usage `require('warp.ui').render_warp_list(parent_item, warp_list, target_win)`
@@ -250,9 +250,9 @@ end
 
 ---Render the entries as lines
 ---@param parent_item Warp.ListItem|nil The parent item before open the window
----@param warp_list Warp.ListItem[]
----@return string[] lines
----@return number|nil active_idx
+---@param warp_list Warp.ListItem[] The list of items
+---@return string[] lines The formatted lines
+---@return number|nil active_idx The active index
 ---@usage `require("warp.ui").get_formatted_list_items(parent_item, warp_list)`
 function M.get_formatted_list_items(parent_item, warp_list)
   local lines = {}

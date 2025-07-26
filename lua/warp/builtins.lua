@@ -9,7 +9,7 @@ local M = {}
 local fn = vim.fn
 
 ---Find the root directory based on root markers, or fall back to cwd
----@return string
+---@return string root_path The root path
 ---@usage `require('warp.builtins').root_detection_fn()`
 function M.root_detection_fn()
   local cwd = vim.fn.getcwd()
@@ -40,10 +40,10 @@ function M.root_detection_fn()
 end
 
 ---Default format for the entry lines
----@param entry Warp.ListItem
----@param idx number
----@param is_active boolean|nil
----@return string
+---@param entry Warp.ListItem The entry item
+---@param idx number The index of the entry
+---@param is_active boolean|nil Whether the entry is active
+---@return string formatted_entry The formatted entry in string
 ---@usage `require('warp.builtins').list_item_format_fn(entry, idx, is_active)`
 function M.list_item_format_fn(entry, idx, is_active)
   local display = fn.fnamemodify(entry.path, ":~:.")
