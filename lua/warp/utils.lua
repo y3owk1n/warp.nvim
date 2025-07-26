@@ -38,7 +38,7 @@ end
 ---@return boolean exists Whether the file exists
 ---@usage `require('warp.utils').file_exists(path)`
 function M.file_exists(path)
-  return vim.loop.fs_stat(path) ~= nil
+  return vim.uv.fs_stat(path) ~= nil
 end
 
 ---Set a keymap for a buffer
