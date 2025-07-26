@@ -1,16 +1,16 @@
 # warp.nvim
 
-> ⚡️ Warp is a lightweight project-local buffer list for Neovim — add, view, jump, reorder, and remove buffers, all from a floating window or a keymap away.
+> ⚡️ Warp is a lightweight project-local file list for Neovim — add, view, jump, reorder, and remove files, all from a floating window or a keymap away.
 
 `warp.nvim` provides a per-project list of important files, allowing you to quickly return to them later. think of it as “files bookmarks,” scoped to your git repo (or any project root).
 
-It's inspired by [ThePrimeagen/harpoon](https://github.com/ThePrimeagen/harpoon), but with a simpler goal: **do one thing well.** No terminals, no fancy workflows — just files you care about, saved per project.
+It's inspired by [ThePrimeagen/harpoon](https://github.com/ThePrimeagen/harpoon), but with a simpler goal: **do one thing well.** No terminals, no fancy workflows — just files you care about, saved per project (or rather per defined root path).
 
 ![warp-demo](https://github.com/user-attachments/assets/09ef6849-bc82-486f-8b0a-f407152bc8fd)
 
 ## ❓ Why `warp.nvim`?
 
-Because sometimes you want a simple list of files you care about, and you want it **per project**, and you want it **to just work**.
+Because sometimes you want a simple list of files you care about, and you want it **per project** or **defined root**, and you want it **to just work**.
 
 - No extra dependencies
 - No terminal management
@@ -81,8 +81,11 @@ require("warp").setup({
   root_markers = { ".git" },
   -- [root_detection_fn] this function must return a path that exists in string
   -- `root_markers` are checked in order, if the function returns a path that doesn't exist, it will fallback to `cwd`
+  -- NOTE: this defines a root for the project to be saved and synced to the storage
+  -- you can do fancy detection like if condition then a root that you want, else then another root or a global root
   root_detection_fn = require("warp.builtins").root_detection_fn,
   -- [list_item_format_fn] this function must return in string
+  -- this function define how the list items are formatted
   list_item_format_fn = require("warp.builtins").list_item_format_fn,
   -- [keymaps] if you don't want certain keymaps, just set it to {}
   keymaps = {
@@ -293,7 +296,7 @@ require("warp").show_list()
 :lua require("warp").show_list()
 ```
 
-### Add a file to the list
+### Add a file to the list or update the marked file line number
 
 ```lua
 require("warp").add()
