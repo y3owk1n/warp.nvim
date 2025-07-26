@@ -173,7 +173,7 @@ M.count                                                    *warp.nvim.api.count*
         (fun():number)
 
     See: ~
-        |warp.nvim.list.count|
+        |warp.nvim.list.get.count|
 
     Usage: ~
 >lua
