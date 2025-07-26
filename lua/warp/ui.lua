@@ -146,12 +146,18 @@ function M.render_warp_list(parent_item, warp_list, target_win)
   ---Setup for move up keymaps
   for _, key in ipairs(keymaps.move_up) do
     utils.buf_set_keymap(bufnr, key, function()
-      local old = api.nvim_win_get_cursor(0)[1]
-      if old > 1 then
-        warp_list[old], warp_list[old - 1] = warp_list[old - 1], warp_list[old]
+      local from_idx = api.nvim_win_get_cursor(0)[1]
+      local to_idx = from_idx - 1
 
+      if to_idx == 0 then
+        return
+      end
+
+      local ok = require("warp.list").action.move_to_index(from_idx, from_idx - 1)
+
+      if ok then
         M.render_warp_list(parent_item, warp_list, warp_list_win_id)
-        pcall(api.nvim_win_set_cursor, warp_list_win_id, { math.max(1, old - 1), 0 })
+        pcall(api.nvim_win_set_cursor, warp_list_win_id, { math.max(1, to_idx), 0 })
       end
     end)
   end
@@ -159,12 +165,18 @@ function M.render_warp_list(parent_item, warp_list, target_win)
   ---Setup for move down keymaps
   for _, key in ipairs(keymaps.move_down) do
     utils.buf_set_keymap(bufnr, key, function()
-      local old = api.nvim_win_get_cursor(0)[1]
-      if old < #warp_list then
-        warp_list[old], warp_list[old + 1] = warp_list[old + 1], warp_list[old]
+      local from_idx = api.nvim_win_get_cursor(0)[1]
+      local to_idx = from_idx + 1
 
+      if to_idx > #warp_list then
+        return
+      end
+
+      local ok = require("warp.list").action.move_to_index(from_idx, to_idx)
+
+      if ok then
         M.render_warp_list(parent_item, warp_list, warp_list_win_id)
-        pcall(api.nvim_win_set_cursor, warp_list_win_id, { math.min(#warp_list, old + 1), 0 })
+        pcall(api.nvim_win_set_cursor, warp_list_win_id, { math.min(#warp_list, to_idx), 0 })
       end
     end)
   end
