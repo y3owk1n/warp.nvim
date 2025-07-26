@@ -816,11 +816,13 @@ Warp.Config                                        *warp.nvim.types.Warp.Config*
 Warp.Config.Keymaps                        *warp.nvim.types.Warp.Config.Keymaps*
 
     Fields: ~
-        {quit?}       (string[])
-        {select?}     (string[])
-        {delete?}     (string[])
-        {move_up?}    (string[])
-        {move_down?}  (string[])
+        {quit?}              (string[])
+        {select?}            (string[])
+        {delete?}            (string[])
+        {move_up?}           (string[])
+        {move_down?}         (string[])
+        {split_horizontal?}  (string[])
+        {split_vertical?}    (string[])
 
 
 Warp.Config.FloatOpts                    *warp.nvim.types.Warp.Config.FloatOpts*
