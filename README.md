@@ -6,7 +6,7 @@
 
 It's inspired by [ThePrimeagen/harpoon](https://github.com/ThePrimeagen/harpoon), but with a simpler goal: **do one thing well.** No terminals, no fancy workflows — just files you care about, saved per project (or rather per defined root path).
 
-![warp-demo](https://github.com/user-attachments/assets/09ef6849-bc82-486f-8b0a-f407152bc8fd)
+![warp-demo](https://github.com/user-attachments/assets/eb750b6b-2654-465f-afb5-35bb8476a317)
 
 ## ❓ Why `warp.nvim`?
 
@@ -496,6 +496,8 @@ This snippet will update the warp list when you do a file rename in `snacks.nvim
 
 ### With `heirline.nvim` statusline
 
+![heirline-demo](https://github.com/user-attachments/assets/156bf72e-a587-4485-9af7-f5cea87043be)
+
 This snippet shows how I add warp to my statusline, it shoud be similar for other statuslines.
 
 ```lua
@@ -550,6 +552,8 @@ end,
 ```
 
 ### With `mini.starter`
+
+![mini-starter-demo](https://github.com/user-attachments/assets/951b9a90-c47e-4540-b617-1a4320d39c8e)
 
 This snippet shows how I add warp to my `mini.starter`, it shoud be similar for other starters / dashboards.
 
