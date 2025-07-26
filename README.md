@@ -503,6 +503,17 @@ opts = function(_, opts)
       condition = function()
         return warp.count() > 0
       end,
+      update = {
+        "User",
+        pattern = {
+          require("warp.events").constants.removed_from_list,
+          require("warp.events").constants.added_to_list,
+          require("warp.events").constants.moved_item_index,
+        },
+        callback = function()
+          vim.cmd("redrawstatus")
+        end,
+      },
       init = function(self)
         local item = warp.get_item_by_buf(0)
         self.current = item and item.index or "-"
