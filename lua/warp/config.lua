@@ -89,6 +89,7 @@ function M.setup_autocmds()
     },
     callback = function()
       storage.save()
+      vim.cmd("redrawstatus")
     end,
   })
 end
