@@ -180,6 +180,10 @@ function M.goto_index(direction_or_index)
     return
   end
 
+  if item and item.index == to_idx then
+    return
+  end
+
   local entry = list.get.item_by_index(to_idx)
   if not entry then
     notify.warn("Not in bound")
