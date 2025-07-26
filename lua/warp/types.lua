@@ -24,6 +24,11 @@ local M = {}
 ---| '"left"'
 ---| '"center"'
 ---| '"right"'
+---@alias Warp.Config.MoveDirection
+---| '"prev"'
+---| '"next"'
+---| '"first"'
+---| '"last"'
 
 ---@class Warp.Config
 ---@field root_markers? string[] The root markers to check, defaults to { ".git" } and fallback to cwd, set to {} to nil it

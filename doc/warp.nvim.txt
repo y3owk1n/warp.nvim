@@ -63,6 +63,21 @@ M.del()                                                      *warp.nvim.api.del*
 <
 
 
+M.move_to({direction_or_index})                          *warp.nvim.api.move_to*
+    Move current buffer to a new index in list
+
+    Parameters: ~
+        {direction_or_index}  (Warp.Config.MoveDirection|number)
+
+    Returns: ~
+        (nil)
+
+    Usage: ~
+>lua
+        require('warp').move_to('prev') or ':WarpMoveTo prev'
+<
+
+
 M.show_list()                                          *warp.nvim.api.show_list*
     Show the list item in window
 
@@ -349,6 +364,23 @@ M.action.remove_one({idx})                    *warp.nvim.list.action.remove_one*
     Usage: ~
 >lua
         require('warp.list').remove_one(idx)
+<
+
+
+                                           *warp.nvim.list.action.move_to_index*
+M.action.move_to_index({from_idx}, {to_idx})
+    Move an entry to a new index
+
+    Parameters: ~
+        {from_idx}  (number)
+        {to_idx}    (number)
+
+    Returns: ~
+        (boolean)
+
+    Usage: ~
+>lua
+        require('warp.list').action.move_to_index(1, 2)
 <
 
 
@@ -669,6 +701,7 @@ Warp.Events                                       *warp.nvim.events.Warp.Events*
         {close_list_win}     ("WarpCloseListWin")     When a list window is closed
         {added_to_list}      ("WarpAddedToList")      When a file is added to the list
         {removed_from_list}  ("WarpRemovedFromList")  When a file is removed from the list
+        {moved_item_index}   ("WarpMovedItemIndex")   When an item is moved within list
 
 
 M.constants                                         *warp.nvim.events.constants*
@@ -736,6 +769,16 @@ Warp.Config.FloatOpts.TitlePos
         ("left")
         ("center")
         ("right")
+
+
+                                     *warp.nvim.types.Warp.Config.MoveDirection*
+Warp.Config.MoveDirection
+
+    Variants: ~
+        ("prev")
+        ("next")
+        ("first")
+        ("last")
 
 
 Warp.Config                                        *warp.nvim.types.Warp.Config*

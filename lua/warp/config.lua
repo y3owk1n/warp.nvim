@@ -85,6 +85,7 @@ function M.setup_autocmds()
       events.constants.close_list_win,
       events.constants.added_to_list,
       events.constants.removed_from_list,
+      events.constants.moved_item_index,
     },
     callback = function()
       storage.save()
@@ -106,6 +107,33 @@ function M.setup_usercmds()
     require("warp").del()
   end, {
     desc = "Delete a file to the list",
+  })
+
+  vim.api.nvim_create_user_command("WarpMoveTo", function(opts)
+    local direction = opts.args
+
+    ---@type number | Warp.Config.MoveDirection
+    local parsed_direction
+
+    -- direction might be "prev" "next" or number, parse it first
+    if direction == "prev" or direction == "next" or direction == "first" or direction == "last" then
+      parsed_direction = direction
+    else
+      local number_direction = tonumber(direction)
+      if not number_direction then
+        require("warp.notifier").error("Need either 'prev', 'next', or number")
+        return
+      end
+      parsed_direction = number_direction
+    end
+
+    require("warp").move_to(parsed_direction)
+  end, {
+    nargs = "*",
+    complete = function()
+      return { "prev", "next" }
+    end,
+    desc = "Move current buffer to a new index in list",
   })
 
   vim.api.nvim_create_user_command("WarpShowList", function()
