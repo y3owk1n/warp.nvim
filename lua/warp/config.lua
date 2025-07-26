@@ -7,8 +7,8 @@
 --->
 ---{
 ---  root_markers = { ".git" },
----  root_detection_fn = require("warp.storage").find_project_root,
----  list_item_format_fn = require("warp.ui").default_list_item_format,
+---  root_detection_fn = require("warp.builtins").root_detection_fn,
+---  list_item_format_fn = require("warp.builtins").list_item_format_fn,
 ---  keymaps = {
 ---    quit = { "q", "<Esc>" },
 ---    select = { "<CR>" },
@@ -31,6 +31,7 @@ local M = {}
 
 local events = require("warp.events")
 local list = require("warp.list")
+local storage = require("warp.storage")
 local utils = require("warp.utils")
 
 ---@type Warp.Config
@@ -41,8 +42,8 @@ M.config = {}
 ---@type Warp.Config
 M.defaults = {
   root_markers = { ".git" },
-  root_detection_fn = require("warp.storage").find_project_root,
-  list_item_format_fn = require("warp.ui").default_list_item_format,
+  root_detection_fn = require("warp.builtins").root_detection_fn,
+  list_item_format_fn = require("warp.builtins").list_item_format_fn,
   keymaps = {
     quit = { "q", "<Esc>" },
     select = { "<CR>" },
@@ -65,7 +66,7 @@ function M.setup_autocmds()
   vim.api.nvim_create_autocmd("DirChanged", {
     group = utils.augroup("dir_changed"),
     callback = function()
-      list.load_list()
+      list.init()
     end,
   })
 
@@ -73,16 +74,20 @@ function M.setup_autocmds()
     group = utils.augroup("checktime"),
     callback = function()
       if vim.o.buftype ~= "nofile" then
-        list.load_list()
+        list.init()
       end
     end,
   })
 
   ---Setup to save list on closing the list window
   vim.api.nvim_create_autocmd("User", {
-    pattern = events.constants.close_list_win,
+    pattern = {
+      events.constants.close_list_win,
+      events.constants.added_to_list,
+      events.constants.removed_from_list,
+    },
     callback = function()
-      require("warp.list").save_list()
+      storage.save()
     end,
   })
 end
@@ -140,7 +145,7 @@ function M.setup(user_config)
   M.setup_autocmds()
   M.setup_usercmds()
 
-  list.load_list()
+  list.init()
 end
 
 return M

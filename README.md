@@ -81,9 +81,9 @@ require("warp").setup({
   root_markers = { ".git" },
   -- [root_detection_fn] this function must return a path that exists in string
   -- `root_markers` are checked in order, if the function returns a path that doesn't exist, it will fallback to `cwd`
-  root_detection_fn = require("warp.storage").find_project_root,
+  root_detection_fn = require("warp.builtins").root_detection_fn,
   -- [list_item_format_fn] this function must return in string
-  list_item_format_fn = require("warp.ui").default_list_item_format,
+  list_item_format_fn = require("warp.builtins").list_item_format_fn,
   -- [keymaps] if you don't want certain keymaps, just set it to {}
   keymaps = {
     quit = { "q", "<Esc>" }, -- quit the warp selection window
@@ -299,7 +299,7 @@ Useful for showing on statusline. See [Integrations](#-integrations) for more de
 ```lua
 ---@param buf number
 ---@return number|nil
-require("warp").get_index_by_buf(buf)
+require("warp").get_item_by_buf(buf)
 ```
 
 ### Get the count of the items
@@ -308,7 +308,7 @@ Useful for showing on statusline. See [Integrations](#-integrations) for more de
 
 ```lua
 ---@return number
-require("warp").get_list_count()
+require("warp").count()
 ```
 
 ## ⌨️ Keybindings
@@ -329,6 +329,7 @@ All the keybindings are customizable in config via `keymaps` field.
 - `WarpOpenListWin` - Fired when a list window is opened
 - `WarpCloseListWin` - Fired when a list window is closed
 - `WarpAddedToList` - Fired when a file is added to the list
+- `WarpRemovedFromList` - Fired when a file is deleted from the list
 
 > [!note]
 > If you want to be safe, you can use the `constants` to get the event instead of the string.
@@ -407,11 +408,12 @@ opts = function(_, opts)
   if warp_exists then
     Warp = {
       condition = function()
-        return warp.get_list_count() > 0
+        return warp.count() > 0
       end,
       init = function(self)
-        self.current = warp.get_index_by_buf(0)
-        self.total = warp.get_list_count()
+        local item = warp.get_item_by_buf(0)
+        self.current = item and item.index or "-"
+        self.total = warp.warp.count()
       end,
       hl = { fg = "teal", bold = true },
       {

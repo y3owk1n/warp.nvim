@@ -7,39 +7,10 @@
 local M = {}
 
 local fn = vim.fn
+local builtins = require("warp.builtins")
 local notify = require("warp.notifier")
 
 local storage_dir = fn.stdpath("data") .. "/warp"
-local cwd = fn.getcwd()
-
----Find the root directory based on root markers, or fall back to cwd
----@return string
----@usage `require('warp.storage').find_project_root()`
-function M.find_project_root()
-  local config = require("warp.config").config
-
-  local root_markers = config.root_markers
-
-  if not root_markers or #root_markers == 0 then
-    return cwd
-  end
-
-  local path = cwd
-
-  while path ~= "/" do
-    for _, marker in ipairs(root_markers) do
-      local full = path .. "/" .. marker
-      if fn.isdirectory(full) == 1 or fn.filereadable(full) == 1 then
-        return path
-      end
-    end
-
-    path = fn.fnamemodify(path, ":h")
-  end
-
-  --- fallback to cwd
-  return cwd
-end
 
 ---Get a safe, unique JSON file path for the current working directory
 ---@return string
@@ -48,7 +19,7 @@ function M.get_storage_path()
   local config = require("warp.config").config
   fn.mkdir(storage_dir, "p")
 
-  local root_detection_fn = M.find_project_root
+  local root_detection_fn = builtins.root_detection_fn
 
   if type(config.root_detection_fn) == "function" then
     root_detection_fn = config.root_detection_fn
@@ -61,11 +32,63 @@ function M.get_storage_path()
 
   if not root or fn.isdirectory(root) == 0 then
     notify.warn("`root_detection_fn` returned an invalid directory, fallback to default implementation.")
-    root = M.find_project_root()
+    root = builtins.root_detection_fn()
   end
 
   local safe_root = fn.fnamemodify(root, ":~"):gsub("/", "%%")
   return storage_dir .. "/" .. safe_root .. ".json"
+end
+
+---Load the data from the storage file and set it to the list
+---@param storage_path? string
+---@return Warp.ListItem[]
+---@usage `require('warp.storage').load()`
+function M.load(storage_path)
+  if not storage_path then
+    storage_path = M.get_storage_path()
+  end
+
+  local f = io.open(storage_path, "r")
+
+  if f then
+    local contents = f:read("*a")
+    f:close()
+    local ok, data = pcall(vim.json.decode, contents)
+    if ok then
+      return data
+    else
+      fn.rename(storage_path, storage_path .. ".bak")
+      notify.warn("Corrupted JSON backed up")
+      return {}
+    end
+  else
+    return {}
+  end
+end
+
+---Save data to disk
+---@param data? Warp.ListItem[]
+---@param storage_path? string
+---@return nil
+---@usage `require('warp.storage').save()`
+function M.save(data, storage_path)
+  if not storage_path then
+    storage_path = M.get_storage_path()
+  end
+
+  if not data then
+    data = require("warp.list").get.all()
+  end
+
+  local ok, encoded = pcall(vim.json.encode, data)
+  if not ok then
+    notify.error("Failed to save list")
+    return
+  end
+
+  local f = assert(io.open(storage_path, "w"))
+  f:write(encoded)
+  f:close()
 end
 
 return M
