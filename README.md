@@ -393,7 +393,7 @@ Useful for showing on statusline. See [Integrations](#-integrations) for more de
 
 ```lua
 ---@param buf number
----@return number|nil
+---@return { entry: Warp.ListItem, index: number }|nil
 require("warp").get_item_by_buf(buf)
 ```
 
