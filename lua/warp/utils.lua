@@ -30,7 +30,7 @@ end
 function M.augroup(name)
   local formatted = M.format_string_to_pascal_case(name)
 
-  return vim.api.nvim_create_augroup("Warp" .. formatted, { clear = true })
+  return api.nvim_create_augroup("Warp" .. formatted, { clear = true })
 end
 
 ---Check if a file exists
