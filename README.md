@@ -10,7 +10,7 @@ It's inspired by [ThePrimeagen/harpoon](https://github.com/ThePrimeagen/harpoon)
 
 ## ❓ Why `warp.nvim`?
 
-Because sometimes you want a simple list of files you care about, and you want it **per project**, and you want it **to just work**.
+Because sometimes you want a simple list of files you care about, and you want it **per project** or **defined root**, and you want it **to just work**.
 
 - No extra dependencies
 - No terminal management
