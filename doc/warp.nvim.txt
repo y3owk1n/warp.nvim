@@ -63,6 +63,17 @@ M.del()                                                      *warp.nvim.api.del*
 <
 
 
+M.move_to()                                              *warp.nvim.api.move_to*
+
+    Returns: ~
+        (nil)
+
+    Usage: ~
+>lua
+        require('warp').move_to('prev') or ':WarpMoveTo prev'
+<
+
+
 M.show_list()                                          *warp.nvim.api.show_list*
     Show the list item in window
 
@@ -349,6 +360,23 @@ M.action.remove_one({idx})                    *warp.nvim.list.action.remove_one*
     Usage: ~
 >lua
         require('warp.list').remove_one(idx)
+<
+
+
+                                           *warp.nvim.list.action.move_to_index*
+M.action.move_to_index({from_idx}, {to_idx})
+    Move an entry to a new index
+
+    Parameters: ~
+        {from_idx}  (number)
+        {to_idx}    (number)
+
+    Returns: ~
+        (boolean)
+
+    Usage: ~
+>lua
+        require('warp.list').action.move_to_index(1, 2)
 <
 
 
@@ -669,6 +697,7 @@ Warp.Events                                       *warp.nvim.events.Warp.Events*
         {close_list_win}     ("WarpCloseListWin")     When a list window is closed
         {added_to_list}      ("WarpAddedToList")      When a file is added to the list
         {removed_from_list}  ("WarpRemovedFromList")  When a file is removed from the list
+        {moved_item_index}   ("WarpMovedItemIndex")   When an item is moved within list
 
 
 M.constants                                         *warp.nvim.events.constants*
@@ -695,8 +724,7 @@ M.emit({event})                                          *warp.nvim.events.emit*
 ==============================================================================
 Types                                                          *warp.nvim.types*
 
-                                *warp.nvim.types.Warp.Config.FloatOpts.Relative*
-Warp.Config.FloatOpts.Relative
+Warp.Config.FloatOpts.Relative  *warp.nvim.types.Warp.Config.FloatOpts.Relative*
 
     Variants: ~
         ("cursor")
@@ -707,8 +735,7 @@ Warp.Config.FloatOpts.Relative
         ("win")
 
 
-                                  *warp.nvim.types.Warp.Config.FloatOpts.Anchor*
-Warp.Config.FloatOpts.Anchor
+Warp.Config.FloatOpts.Anchor      *warp.nvim.types.Warp.Config.FloatOpts.Anchor*
 
     Variants: ~
         ("NE")
@@ -717,8 +744,7 @@ Warp.Config.FloatOpts.Anchor
         ("SW")
 
 
-                                  *warp.nvim.types.Warp.Config.FloatOpts.Border*
-Warp.Config.FloatOpts.Border
+Warp.Config.FloatOpts.Border      *warp.nvim.types.Warp.Config.FloatOpts.Border*
 
     Variants: ~
         ("double")
@@ -729,8 +755,7 @@ Warp.Config.FloatOpts.Border
         ("solid")
 
 
-                                *warp.nvim.types.Warp.Config.FloatOpts.TitlePos*
-Warp.Config.FloatOpts.TitlePos
+Warp.Config.FloatOpts.TitlePos  *warp.nvim.types.Warp.Config.FloatOpts.TitlePos*
 
     Variants: ~
         ("left")
@@ -738,7 +763,17 @@ Warp.Config.FloatOpts.TitlePos
         ("right")
 
 
+Warp.Config.MoveDirection            *warp.nvim.types.Warp.Config.MoveDirection*
+
+    Variants: ~
+        ("prev")
+        ("next")
+        ("first")
+        ("last")
+
+
 Warp.Config                                        *warp.nvim.types.Warp.Config*
+    | number
 
     Fields: ~
         {root_markers?}         (string[])                                                          The root markers to check, defaults to { ".git" } and fallback to cwd, set to {} to nil it

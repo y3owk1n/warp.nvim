@@ -148,6 +148,32 @@ function M.action.remove_one(idx)
   table.remove(warp_list, idx)
 end
 
+---Move an entry to a new index
+---@param from_idx number
+---@param to_idx number
+---@return boolean
+---@usage `require('warp.list').action.move_to_index(1, 2)`
+function M.action.move_to_index(from_idx, to_idx)
+  if from_idx == to_idx then
+    notify.info("Source and destination indices are the same, abort...")
+    return false
+  end
+
+  local len = #warp_list
+  if from_idx < 1 or from_idx > len or to_idx < 1 or to_idx > len then
+    notify.info("Source and destination indices are out of bounds, abort...")
+    return false
+  end
+
+  local entry = warp_list[from_idx]
+
+  table.remove(warp_list, from_idx)
+
+  table.insert(warp_list, to_idx, entry)
+
+  return true
+end
+
 ---Prune missing files from list
 ---@return nil
 ---@usage `require('warp.list').action.prune()`

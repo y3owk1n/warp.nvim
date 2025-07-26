@@ -163,6 +163,8 @@ See the example below for how to configure **warp.nvim** with keybindings.
   event = "VeryLazy",
   cmd = {
     "WarpAddFile",
+    "WarpDelFile",
+    "WarpMoveTo",
     "WarpShowList",
     "WarpClearCurrentList",
     "WarpClearAllList",
@@ -188,9 +190,29 @@ See the example below for how to configure **warp.nvim** with keybindings.
       desc = "[Warp] Delete",
     },
     {
-      "<leader>hh",
+      "<leader>he",
       "<cmd>WarpShowList<cr>",
       desc = "[Warp] Show list",
+    },
+    {
+      "<leader>hl",
+      "<cmd>WarpMoveTo next<cr>",
+      desc = "[Warp] Move to next index",
+    },
+    {
+      "<leader>hh",
+      "<cmd>WarpMoveTo prev<cr>",
+      desc = "[Warp] Move to prev index",
+    },
+    {
+      "<leader>hL",
+      "<cmd>WarpMoveTo last<cr>",
+      desc = "[Warp] Move to the last index",
+    },
+    {
+      "<leader>hH",
+      "<cmd>WarpMoveTo first<cr>",
+      desc = "[Warp] Move to first index",
     },
     {
       "<leader>hx",
@@ -275,6 +297,24 @@ require("warp").goto_index(idx)
 :lua require("warp").goto_index(idx)
 ```
 
+### Move to direction or index
+
+```lua
+---@alias Warp.Config.MoveDirection
+---| '"prev"'
+---| '"next"'
+---| '"first"'
+---| '"last"'
+
+---@param direction_or_index Warp.Config.MoveDirection | number
+require("warp").move_to(direction_or_index)
+
+-- or any of the equivalents
+
+:WarpMoveTo {direction_or_index}
+:lua require("warp").move_to(direction_or_index)
+````
+
 ### Clear or empty current list
 
 ```lua
@@ -346,6 +386,7 @@ All the keybindings are customizable in config via `keymaps` field.
 - `WarpCloseListWin` - Fired when a list window is closed
 - `WarpAddedToList` - Fired when a file is added to the list
 - `WarpRemovedFromList` - Fired when a file is deleted from the list
+- `WarpMovedItemIndex` - Fired when an item is moved within list
 
 > [!note]
 > If you want to be safe, you can use the `constants` to get the event instead of the string.

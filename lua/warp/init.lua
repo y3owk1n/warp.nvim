@@ -59,6 +59,53 @@ function M.del()
   events.emit(events.constants.removed_from_list)
 end
 
+---Move current buffer to a new index in list
+---@param direction_or_index Warp.Config.MoveDirection | number
+---@return nil
+---@usage `require('warp').move_to('prev') or ':WarpMoveTo prev'`
+function M.move_to(direction_or_index)
+  local buf = api.nvim_get_current_buf()
+  local item = list.get.item_by_buf(buf)
+
+  if not item then
+    notify.warn("Current buffer is not in warp list")
+    return
+  end
+
+  ---@type integer
+  local to_idx
+
+  if type(direction_or_index) == "number" then
+    to_idx = direction_or_index
+  end
+
+  if direction_or_index == "first" then
+    to_idx = 1
+  end
+
+  if direction_or_index == "last" then
+    to_idx = list.get.count()
+  end
+
+  if direction_or_index == "prev" then
+    to_idx = item.index - 1
+  end
+
+  if direction_or_index == "next" then
+    to_idx = item.index + 1
+  end
+
+  if not to_idx then
+    notify.warn("Invalid direction_or_index")
+    return
+  end
+
+  local ok = list.action.move_to_index(item.index, to_idx)
+  if ok then
+    events.emit(events.constants.moved_item_index)
+  end
+end
+
 ---Show the list item in window
 ---@return nil
 ---@usage `require('warp').show_list() or ':WarpShowList'`
