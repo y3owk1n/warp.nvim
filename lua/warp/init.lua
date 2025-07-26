@@ -43,6 +43,22 @@ function M.add()
   events.emit(events.constants.added_to_list)
 end
 
+---Remove current buffer from warp list
+---@return nil
+---@usage `require('warp').del() or ':WarpDelFile'`
+function M.del()
+  local buf = api.nvim_get_current_buf()
+  local item = list.get.item_by_buf(buf)
+
+  if not item then
+    notify.warn("Current buffer is not in warp list")
+    return
+  end
+
+  list.action.remove_one(item.index)
+  events.emit(events.constants.removed_from_list)
+end
+
 ---Show the list item in window
 ---@return nil
 ---@usage `require('warp').show_list() or ':WarpShowList'`

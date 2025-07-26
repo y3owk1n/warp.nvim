@@ -130,7 +130,7 @@ function M.render_warp_list(parent_item, warp_list, target_win)
   for _, key in ipairs(keymaps.delete) do
     utils.buf_set_keymap(bufnr, key, function()
       local old = api.nvim_win_get_cursor(0)[1]
-      table.remove(warp_list, old)
+      require("warp.list").action.remove_one(old)
       if #warp_list > 0 then
         M.render_warp_list(parent_item, warp_list, warp_list_win_id)
         pcall(api.nvim_win_set_cursor, warp_list_win_id, { math.max(1, old), 0 })

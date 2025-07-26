@@ -183,6 +183,11 @@ See the example below for how to configure **warp.nvim** with keybindings.
       desc = "[Warp] Add",
     },
     {
+      "<leader>hd",
+      "<cmd>WarpDelFile<cr>",
+      desc = "[Warp] Delete",
+    },
+    {
       "<leader>hh",
       "<cmd>WarpShowList<cr>",
       desc = "[Warp] Show list",
@@ -245,6 +250,17 @@ require("warp").add()
 
 :WarpAddFile
 :lua require("warp").add()
+```
+
+## Delete a file from the list
+
+```lua
+require("warp").del()
+
+-- or any of the equivalents
+
+:WarpDelFile
+:lua require("warp").del()
 ```
 
 ### Go to a specific index in the list
