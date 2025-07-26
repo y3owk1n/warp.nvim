@@ -110,28 +110,33 @@ function M.setup_usercmds()
   })
 
   vim.api.nvim_create_user_command("WarpMoveTo", function(opts)
-    local direction = opts.args
-
     ---@type number | Warp.Config.MoveDirection
     local parsed_direction
 
-    -- direction might be "prev" "next" or number, parse it first
-    if direction == "prev" or direction == "next" or direction == "first" or direction == "last" then
-      parsed_direction = direction
+    local number_index = tonumber(opts.args)
+    if number_index then
+      parsed_direction = number_index
     else
-      local number_direction = tonumber(direction)
-      if not number_direction then
-        require("warp.notifier").error("Need either 'prev', 'next', or number")
-        return
-      end
-      parsed_direction = number_direction
+      local direction = opts.args
+      parsed_direction = direction
     end
 
     require("warp").move_to(parsed_direction)
   end, {
     nargs = "*",
     complete = function()
-      return { "prev", "next" }
+      local count = require("warp").count()
+
+      ---@type Warp.Config.MoveDirection[]
+      local directions = { "prev", "next", "first", "last" }
+
+      if count > 0 then
+        for i = 1, count do
+          table.insert(directions, tostring(i))
+        end
+      end
+
+      return directions
     end,
     desc = "Move current buffer to a new index in list",
   })
@@ -155,16 +160,34 @@ function M.setup_usercmds()
   })
 
   vim.api.nvim_create_user_command("WarpGoToIndex", function(opts)
-    local index = tonumber(opts.args)
+    ---@type number | Warp.Config.MoveDirection
+    local parsed_direction
 
-    if not index then
-      vim.notify("[Warp:] Failed to warp, need a number", vim.log.levels.ERROR)
-      return
+    local number_index = tonumber(opts.args)
+    if number_index then
+      parsed_direction = number_index
+    else
+      local direction = opts.args
+      parsed_direction = direction
     end
 
-    require("warp").goto_index(index)
+    require("warp").goto_index(parsed_direction)
   end, {
     nargs = "*",
+    complete = function()
+      local count = require("warp").count()
+
+      ---@type Warp.Config.MoveDirection[]
+      local directions = { "prev", "next", "first", "last" }
+
+      if count > 0 then
+        for i = 1, count do
+          table.insert(directions, tostring(i))
+        end
+      end
+
+      return directions
+    end,
     desc = "Go to a specific index in the list",
   })
 end

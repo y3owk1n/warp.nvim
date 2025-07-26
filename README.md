@@ -157,6 +157,9 @@ require("warp").setup({
 
 See the example below for how to configure **warp.nvim** with keybindings.
 
+> [!NOTE]
+> The example below showcases all of the potential keybindings that you can do, you don't have to use all of them...
+
 ```lua
 {
   "y3owk1n/warp.nvim",
@@ -175,9 +178,16 @@ See the example below for how to configure **warp.nvim** with keybindings.
   opts = {},
   keys = {
     {
+      ---For which key usage
       "<leader>h",
       "",
       desc = "warp",
+    },
+    {
+      ---For which key usage
+      "<leader>hm",
+      "",
+      desc = "move",
     },
     {
       "<leader>ha",
@@ -195,22 +205,22 @@ See the example below for how to configure **warp.nvim** with keybindings.
       desc = "[Warp] Show list",
     },
     {
-      "<leader>hl",
+      "<leader>hml",
       "<cmd>WarpMoveTo next<cr>",
       desc = "[Warp] Move to next index",
     },
     {
-      "<leader>hh",
+      "<leader>hmh",
       "<cmd>WarpMoveTo prev<cr>",
       desc = "[Warp] Move to prev index",
     },
     {
-      "<leader>hL",
+      "<leader>hmL",
       "<cmd>WarpMoveTo last<cr>",
       desc = "[Warp] Move to the last index",
     },
     {
-      "<leader>hH",
+      "<leader>hmH",
       "<cmd>WarpMoveTo first<cr>",
       desc = "[Warp] Move to first index",
     },
@@ -223,6 +233,26 @@ See the example below for how to configure **warp.nvim** with keybindings.
       "<leader>hX",
       "<cmd>WarpClearAllList<cr>",
       desc = "[Warp] Clear all lists",
+    },
+    {
+      "<leader>hl",
+      "<cmd>WarpGoToIndex next<cr>",
+      desc = "[Warp] Goto next index",
+    },
+    {
+      "<leader>hh",
+      "<cmd>WarpGoToIndex prev<cr>",
+      desc = "[Warp] Goto prev index",
+    },
+    {
+      "<leader>hH",
+      "<cmd>WarpGoToIndex first<cr>",
+      desc = "[Warp] Goto first index",
+    },
+    {
+      "<leader>hL",
+      "<cmd>WarpGoToIndex last<cr>",
+      desc = "[Warp] Goto last index",
     },
     {
       "<leader>1",
@@ -288,13 +318,19 @@ require("warp").del()
 ### Go to a specific index in the list
 
 ```lua
----@param idx number
-require("warp").goto_index(idx)
+---@alias Warp.Config.MoveDirection
+---| '"prev"'
+---| '"next"'
+---| '"first"'
+---| '"last"'
+
+---@param direction_or_index Warp.Config.MoveDirection | number
+require("warp").goto_index(direction_or_index)
 
 -- or any of the equivalents
 
-:WarpGoToIndex {idx}
-:lua require("warp").goto_index(idx)
+:WarpGoToIndex {direction_or_index}
+:lua require("warp").goto_index(direction_or_index)
 ```
 
 ### Move to direction or index
