@@ -43,6 +43,8 @@ local M = {}
 ---@field delete? string[]
 ---@field move_up? string[]
 ---@field move_down? string[]
+---@field split_horizontal? string[]
+---@field split_vertical? string[]
 
 ---@class Warp.Config.FloatOpts
 ---@field width? integer The width of the window, more than 1 = absolute, less than 1 = calculated percentage

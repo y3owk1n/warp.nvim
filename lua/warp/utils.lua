@@ -47,7 +47,12 @@ end
 ---@param rhs fun()
 ---@usage `require('warp.utils').buf_set_keymap(bufnr, lhs, rhs)`
 function M.buf_set_keymap(bufnr, lhs, rhs)
-  api.nvim_buf_set_keymap(bufnr, "n", lhs, "", { callback = rhs, nowait = true })
+  vim.keymap.set("n", lhs, rhs, {
+    buffer = bufnr,
+    noremap = true,
+    silent = true,
+    nowait = true,
+  })
 end
 
 ---Parse a direction_or_index to a number
