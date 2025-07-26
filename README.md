@@ -506,7 +506,7 @@ opts = function(_, opts)
       init = function(self)
         local item = warp.get_item_by_buf(0)
         self.current = item and item.index or "-"
-        self.total = warp.warp.count()
+        self.total = warp.count()
       end,
       hl = { fg = "teal", bold = true },
       {
