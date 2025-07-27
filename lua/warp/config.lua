@@ -6,6 +6,7 @@
 ---
 --->
 ---{
+---  auto_prune = false,
 ---  root_markers = { ".git" },
 ---  root_detection_fn = require("warp.builtins").root_detection_fn,
 ---  list_item_format_fn = require("warp.builtins").list_item_format_fn,
@@ -42,6 +43,7 @@ M.config = {}
 ---@private
 ---@type Warp.Config
 M.defaults = {
+  auto_prune = false,
   root_markers = { ".git" },
   root_detection_fn = require("warp.builtins").root_detection_fn,
   list_item_format_fn = require("warp.builtins").list_item_format_fn,

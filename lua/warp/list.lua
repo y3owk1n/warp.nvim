@@ -179,6 +179,10 @@ end
 ---@return nil
 ---@usage `require('warp.list').action.prune()`
 function M.action.prune()
+  if not require("warp.config").config.auto_prune then
+    return
+  end
+
   local i = 1
   local pruned = 0
   while i <= #warp_list do

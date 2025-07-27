@@ -31,6 +31,7 @@ local M = {}
 ---| '"last"'
 
 ---@class Warp.Config
+---@field auto_prune? boolean Whether to auto prune the list, defaults to false
 ---@field root_markers? string[] The root markers to check, defaults to { ".git" } and fallback to cwd, set to {} to nil it
 ---@field root_detection_fn? fun(): string The function to detect the root, defaults to `require("warp.storage").find_project_root`
 ---@field list_item_format_fn? fun(entry: Warp.ListItem, idx: number, is_active: boolean|nil): string[] The function to format the list items lines, defaults to `require("warp.ui").default_list_item_format`
