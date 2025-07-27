@@ -29,24 +29,26 @@ function M.create_native_float_win(bufnr, title, target_win, win_opts)
 
   local config_float_opts = require("warp.config").config.float_opts or {}
 
+  local default_border = (vim.fn.exists("+winborder") == 1 and vim.o.winborder ~= "") and vim.o.winborder or "single"
+
   ---@type vim.api.keyset.win_config
   local default_win_opts = {
     relative = config_float_opts.relative,
     anchor = config_float_opts.anchor,
     style = "minimal",
-    width = config_float_opts.width,
-    height = config_float_opts.height,
+    width = config_float_opts.width > 1 and config_float_opts.width
+      or math.floor(vim.o.columns * config_float_opts.width),
+    height = config_float_opts.height > 1 and config_float_opts.height
+      or math.floor(vim.o.lines * config_float_opts.height),
     title = "'warp.nvim' " .. (title or ""),
-    title_pos = "left",
-    border = config_float_opts.border,
+    title_pos = config_float_opts.title_pos or "left",
+    border = config_float_opts.border or default_border,
     zindex = config_float_opts.zindex,
     focusable = config_float_opts.focusable,
   }
 
-  default_win_opts.width = math.floor(vim.o.columns * default_win_opts.width)
-  default_win_opts.height = math.floor(vim.o.lines * default_win_opts.height)
-  default_win_opts.row = math.floor((vim.o.lines - default_win_opts.height) / 2)
-  default_win_opts.col = math.floor((vim.o.columns - default_win_opts.width) / 2)
+  default_win_opts.row = config_float_opts.row or math.floor((vim.o.lines - default_win_opts.height) / 2)
+  default_win_opts.col = config_float_opts.col or math.floor((vim.o.columns - default_win_opts.width) / 2)
 
   win_opts = vim.tbl_deep_extend("force", default_win_opts, win_opts or {})
 
