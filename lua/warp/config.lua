@@ -18,12 +18,6 @@
 ---    move_down = { "<C-j>" },
 ---    show_help = { "g?" },
 ---  },
---- float_opts = {
----   width = 0.5,
----   height = 0.5,
----   relative = "editor",
----   title_pos = "left",
---- },
 ---}
 ---<
 ---
@@ -57,12 +51,6 @@ M.defaults = {
     split_horizontal = { "<C-w>s" },
     split_vertical = { "<C-w>v" },
     show_help = { "g?" },
-  },
-  float_opts = {
-    width = 0.5,
-    height = 0.5,
-    relative = "editor",
-    title_pos = "left",
   },
 }
 

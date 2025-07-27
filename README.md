@@ -105,49 +105,18 @@ require("warp").setup({
     split_vertical = { "<C-w>v" }, -- vertical split
     show_help = { "g?" }, -- show the help menu
   },
-  float_opts = {
-    width = 0.5,
-    height = 0.5,
-    relative = "editor",
-    title_pos = "left",
-  },
 }
 ```
 
 ### Type Definitions
 
 ```lua
----@alias Warp.Config.FloatOpts.Relative
----| '"cursor"'
----| '"editor"'
----| '"laststatus"'
----| '"mouse"'
----| '"tabline"'
----| '"win"'
----@alias Warp.Config.FloatOpts.Anchor
----| '"NE"'
----| '"NW"'
----| '"SE"'
----| '"SW"'
----@alias Warp.Config.FloatOpts.Border
----| '"double"'
----| '"none"'
----| '"rounded"'
----| '"shadow"'
----| '"single"'
----| '"solid"'
----@alias Warp.Config.FloatOpts.TitlePos
----| '"left"'
----| '"center"'
----| '"right"'
-
 ---@class Warp.Config
 ---@field auto_prune? boolean Whether to auto prune the list, defaults to false
 ---@field root_markers? string[] The root markers to check, defaults to { ".git" } and fallback to cwd, set to {} to nil it
 ---@field root_detection_fn? fun(): string? The function to detect the root, defaults to `require("warp.storage").find_project_root`
 ---@field list_item_format_fn? fun(entry: Warp.ListItem, idx: number, is_active: boolean|nil): string The function to format the list items lines
 ---@field keymaps? Warp.Config.Keymaps The keymaps for actions
----@field float_opts? Warp.Config.FloatOpts The floating window options
 
 ---@class Warp.Config.Keymaps
 ---@field quit? string[]
@@ -158,16 +127,6 @@ require("warp").setup({
 ---@field split_horizontal? string[]
 ---@field split_vertical? string[]
 ---@field show_help? string[]
-
----@class Warp.Config.FloatOpts
----@field width? integer The width of the window, more than 1 = absolute, less than 1 = calculated percentage
----@field height? integer The height of the window, more than 1 = absolute, less than 1 = calculated percentage
----@field relative? Warp.Config.FloatOpts.Relative The relative position of the window, defaults to "editor"
----@field anchor? Warp.Config.FloatOpts.Anchor The anchor position of the window, no default
----@field title_pos? Warp.Config.FloatOpts.TitlePos The position of the title, defaults to "left"
----@field border? Warp.Config.FloatOpts.Border The border style of the window, no default
----@field zindex? integer The z-index of the window, no default
----@field focusable? boolean Whether the window is focusable, no default
 ```
 
 ## 🚀 Quick Start
