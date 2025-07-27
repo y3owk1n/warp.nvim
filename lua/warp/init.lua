@@ -218,6 +218,10 @@ function M.goto_index(direction_or_index)
     return
   end
   if not utils.file_exists(entry.path) then
+    if not require("warp.config").config.auto_prune then
+      notify.warn("file no longer exists but not pruning it")
+      return
+    end
     notify.warn("file no longer exists – removed")
     list.action.remove_one(to_idx)
     events.emit(events.constants.removed_from_list)

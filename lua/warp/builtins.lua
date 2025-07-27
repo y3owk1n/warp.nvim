@@ -43,9 +43,10 @@ end
 ---@param entry Warp.ListItem The entry item
 ---@param idx number The index of the entry
 ---@param is_active boolean|nil Whether the entry is active
+---@param is_file_exists boolean|nil Whether the file exists in the system and reachable
 ---@return Warp.FormattedLineOpts[] formatted_entry The formatted entry
----@usage `require('warp.builtins').list_item_format_fn(entry, idx, is_active)`
-function M.list_item_format_fn(entry, idx, is_active)
+---@usage `require('warp.builtins').list_item_format_fn(entry, idx, is_active, is_file_exists)`
+function M.list_item_format_fn(entry, idx, is_active, is_file_exists)
   ---@type Warp.FormattedLineOpts
   local spacer = {
     display_text = " ",
@@ -58,6 +59,8 @@ function M.list_item_format_fn(entry, idx, is_active)
 
   local has_devicons, nvim_web_devicons = pcall(require, "nvim-web-devicons")
 
+  ---@type Warp.FormattedLineOpts
+  ---@diagnostic disable-next-line: missing-fields
   local display_ft_icon = {}
 
   if has_devicons then
@@ -70,10 +73,17 @@ function M.list_item_format_fn(entry, idx, is_active)
     }
   end
 
+  ---@type Warp.FormattedLineOpts
   local display_path = {
     display_text = fn.fnamemodify(entry.path, ":~:."),
   }
 
+  if not is_file_exists then
+    display_path.display_text = display_path.display_text .. "  "
+    display_path.hl_group = "Error"
+  end
+
+  ---@type Warp.FormattedLineOpts
   local display_active_marker = {
     display_text = "*",
   }

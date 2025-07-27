@@ -284,8 +284,10 @@ function M.get_formatted_list_items(parent_item, warp_list)
       active_idx = idx
     end
 
+    local is_file_exists = require("warp.utils").file_exists(entry.path)
+
     ---@diagnostic disable-next-line: need-check-nil
-    local formatted_line_data = utils.parse_format_fn_result(formatter_fn(entry, idx, is_active))
+    local formatted_line_data = utils.parse_format_fn_result(formatter_fn(entry, idx, is_active, is_file_exists))
 
     local formatted_line = utils.convert_parsed_format_result_to_string(formatted_line_data)
 

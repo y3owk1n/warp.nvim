@@ -77,6 +77,12 @@ require("warp").setup({
 ```lua
 ---@type Warp.Config
 {
+  -- [auto_prune] automatically prunes by checking if it's a readable file
+  -- if `auto_prune` is set to `true`, it will prune all the unreadable files
+  -- if `auto_prune` is set to `false`, it will not prune any files but warns you in the list and during navigation
+  -- default is `false` by assuming git branch management, and files might be deleted, and you still want to keep it
+  -- this gives the flexibility of how you want to keep the files in your fingertips and manage them yourself
+  auto_prune = false,
   -- [root_markers] order based markers for root detection, disable root_markers by setting it to {} and it will fallback to only `cwd` as root
   root_markers = { ".git" },
   -- [root_detection_fn] this function must return a path that exists in string
@@ -135,6 +141,7 @@ require("warp").setup({
 ---| '"right"'
 
 ---@class Warp.Config
+---@field auto_prune? boolean Whether to auto prune the list, defaults to false
 ---@field root_markers? string[] The root markers to check, defaults to { ".git" } and fallback to cwd, set to {} to nil it
 ---@field root_detection_fn? fun(): string? The function to detect the root, defaults to `require("warp.storage").find_project_root`
 ---@field list_item_format_fn? fun(entry: Warp.ListItem, idx: number, is_active: boolean|nil): string The function to format the list items lines
@@ -486,9 +493,10 @@ Below is the default implementation. You can override it by setting `list_item_f
 ---@param entry Warp.ListItem The entry item
 ---@param idx number The index of the entry
 ---@param is_active boolean|nil Whether the entry is active
+---@param is_file_exists boolean|nil Whether the file exists in the system and reachable
 ---@return Warp.FormattedLineOpts[] formatted_entry The formatted entry
----@usage `require('warp.builtins').list_item_format_fn(entry, idx, is_active)`
-function M.list_item_format_fn(entry, idx, is_active)
+---@usage `require('warp.builtins').list_item_format_fn(entry, idx, is_active, is_file_exists)`
+function M.list_item_format_fn(entry, idx, is_active, is_file_exists)
   ---@type Warp.FormattedLineOpts
   local spacer = {
     display_text = " ",
@@ -501,6 +509,8 @@ function M.list_item_format_fn(entry, idx, is_active)
 
   local has_devicons, nvim_web_devicons = pcall(require, "nvim-web-devicons")
 
+  ---@type Warp.FormattedLineOpts
+  ---@diagnostic disable-next-line: missing-fields
   local display_ft_icon = {}
 
   if has_devicons then
@@ -513,10 +523,17 @@ function M.list_item_format_fn(entry, idx, is_active)
     }
   end
 
+  ---@type Warp.FormattedLineOpts
   local display_path = {
     display_text = fn.fnamemodify(entry.path, ":~:."),
   }
 
+  if not is_file_exists then
+    display_path.display_text = display_path.display_text .. "  "
+    display_path.hl_group = "Error"
+  end
+
+  ---@type Warp.FormattedLineOpts
   local display_active_marker = {
     display_text = "*",
   }
@@ -657,7 +674,7 @@ opts = function(_, opts)
           end
 
           local statusline = table.concat(output, " ")
-          return string.format("󱡁 %s", statusline)
+          return string.format("󱐋 %s", statusline)
         end,
       },
     }
