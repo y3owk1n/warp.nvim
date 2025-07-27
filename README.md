@@ -6,7 +6,7 @@
 
 It's inspired by [ThePrimeagen/harpoon](https://github.com/ThePrimeagen/harpoon), but with a simpler goal: **do one thing well.** No terminals, no fancy workflows — just files you care about, saved per project (or rather per defined root path).
 
-![warp-demo](https://github.com/user-attachments/assets/eb750b6b-2654-465f-afb5-35bb8476a317)
+![warp-main](https://github.com/user-attachments/assets/59a8e78f-3c2b-4170-b6c8-d4acdf4348a4)
 
 ## ❓ Why `warp.nvim`?
 
@@ -637,7 +637,7 @@ This snippet will update the warp list when you do a file rename in `snacks.nvim
 
 ### With `heirline.nvim` statusline
 
-![heirline-demo](https://github.com/user-attachments/assets/156bf72e-a587-4485-9af7-f5cea87043be)
+![warp-statusline](https://github.com/user-attachments/assets/82925ba3-7e65-4127-afc9-7c54a7953851)
 
 This snippet shows how I add warp to my statusline, it shoud be similar for other statuslines.
 
