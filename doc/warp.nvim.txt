@@ -212,6 +212,7 @@ Default Configuration:
     delete = { "dd" },
     move_up = { "<C-k>" },
     move_down = { "<C-j>" },
+    show_help = { "g?" },
   },
  float_opts = {
    width = 0.5,
