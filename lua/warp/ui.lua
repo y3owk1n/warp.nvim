@@ -59,7 +59,7 @@ function M.render_warp_list(parent_item, warp_list, target_win, active_bufnr, ft
 
   local line_widths = vim.tbl_map(vim.fn.strdisplaywidth, lines)
   local max_line_width = math.max(unpack(line_widths), 60)
-  local max_height = #lines < 8 and 8 or math.min(#lines, vim.o.lines)
+  local max_height = #lines < 8 and 8 or math.min(#lines, vim.o.lines - 3)
 
   ---@type vim.api.keyset.win_config
   local win_opts = {
