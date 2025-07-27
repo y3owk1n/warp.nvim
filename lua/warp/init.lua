@@ -223,9 +223,9 @@ function M.goto_index(direction_or_index)
     events.emit(events.constants.removed_from_list)
     return
   end
-  local current_path = vim.api.nvim_buf_get_name(0)
-  if current_path ~= vim.fn.fnamemodify(entry.path, ":p") then
-    vim.cmd("edit " .. vim.fn.fnameescape(entry.path))
+  local current_path = api.nvim_buf_get_name(0)
+  if current_path ~= fn.fnamemodify(entry.path, ":p") then
+    vim.cmd("edit " .. fn.fnameescape(entry.path))
   end
 
   ---Try to set but do not crash it

@@ -12,7 +12,7 @@ local fn = vim.fn
 ---@return string root_path The root path
 ---@usage `require('warp.builtins').root_detection_fn()`
 function M.root_detection_fn()
-  local cwd = vim.fn.getcwd()
+  local cwd = fn.getcwd()
 
   local config = require("warp.config").config
 
