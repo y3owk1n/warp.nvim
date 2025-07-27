@@ -29,6 +29,7 @@
 
 local M = {}
 
+local api = vim.api
 local events = require("warp.events")
 local list = require("warp.list")
 local storage = require("warp.storage")
@@ -67,7 +68,7 @@ M.defaults = {
 function M.setup_autocmds()
   -- Re-initialize the list when the directory changes
   -- So that root detection can do it's work and ensure getting the right list
-  vim.api.nvim_create_autocmd("DirChanged", {
+  api.nvim_create_autocmd("DirChanged", {
     group = utils.augroup("dir_changed"),
     callback = function()
       list.init()
@@ -77,7 +78,7 @@ function M.setup_autocmds()
   -- Re-initialize the list when the file is focused
   -- This is to ensure if so happens to edit the same list but at different terminal instance
   -- Maybe there is a better way to do this
-  vim.api.nvim_create_autocmd({ "FocusGained", "TermClose", "TermLeave" }, {
+  api.nvim_create_autocmd({ "FocusGained", "TermClose", "TermLeave" }, {
     group = utils.augroup("checktime"),
     callback = function()
       if vim.o.buftype ~= "nofile" then
@@ -88,7 +89,7 @@ function M.setup_autocmds()
 
   -- Best effor to update the cursor position when leaving the file
   -- NOTE: Not sure if these are the best events to use, but they seem to work
-  vim.api.nvim_create_autocmd({ "BufLeave", "VimLeavePre" }, {
+  api.nvim_create_autocmd({ "BufLeave", "VimLeavePre" }, {
     callback = function(args)
       local buf = args.buf
       local item = list.get.item_by_buf(buf)
@@ -97,7 +98,7 @@ function M.setup_autocmds()
         return
       end
 
-      local cursor = vim.api.nvim_win_get_cursor(0)
+      local cursor = api.nvim_win_get_cursor(0)
 
       if item.entry.cursor ~= cursor then
         local ok = list.action.update_line_number(item.index, cursor)
@@ -112,7 +113,7 @@ function M.setup_autocmds()
   -- Most operations do not trigger a `save` to the fs, but emit events after the operation is done
   -- I am assuming that most of these events will cause a diff in the list, so we should save it to the fs and
   -- redraw the statusline
-  vim.api.nvim_create_autocmd("User", {
+  api.nvim_create_autocmd("User", {
     pattern = {
       events.constants.close_list_win,
       events.constants.added_to_list,
@@ -131,25 +132,25 @@ end
 ----Setup user commands
 ---@return nil
 function M.setup_usercmds()
-  vim.api.nvim_create_user_command("WarpAddFile", function()
+  api.nvim_create_user_command("WarpAddFile", function()
     require("warp").add()
   end, {
     desc = "Add a file to the list",
   })
 
-  vim.api.nvim_create_user_command("WarpAddOnScreenFiles", function()
+  api.nvim_create_user_command("WarpAddOnScreenFiles", function()
     require("warp").add_all_onscreen()
   end, {
     desc = "Add all on screen buffer to list",
   })
 
-  vim.api.nvim_create_user_command("WarpDelFile", function()
+  api.nvim_create_user_command("WarpDelFile", function()
     require("warp").del()
   end, {
     desc = "Delete a file to the list",
   })
 
-  vim.api.nvim_create_user_command("WarpMoveTo", function(opts)
+  api.nvim_create_user_command("WarpMoveTo", function(opts)
     ---@type number | Warp.Config.MoveDirection
     local parsed_direction
 
@@ -181,25 +182,25 @@ function M.setup_usercmds()
     desc = "Move current buffer to a new index in list",
   })
 
-  vim.api.nvim_create_user_command("WarpShowList", function()
+  api.nvim_create_user_command("WarpShowList", function()
     require("warp").show_list()
   end, {
     desc = "Show the list of files",
   })
 
-  vim.api.nvim_create_user_command("WarpClearCurrentList", function()
+  api.nvim_create_user_command("WarpClearCurrentList", function()
     require("warp").clear_current_list()
   end, {
     desc = "Clear the current list",
   })
 
-  vim.api.nvim_create_user_command("WarpClearAllList", function()
+  api.nvim_create_user_command("WarpClearAllList", function()
     require("warp").clear_all_list()
   end, {
     desc = "Clear all lists",
   })
 
-  vim.api.nvim_create_user_command("WarpGoToIndex", function(opts)
+  api.nvim_create_user_command("WarpGoToIndex", function(opts)
     ---@type number | Warp.Config.MoveDirection
     local parsed_direction
 

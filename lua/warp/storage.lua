@@ -7,6 +7,7 @@
 local M = {}
 
 local fn = vim.fn
+local json = vim.json
 local builtins = require("warp.builtins")
 local notify = require("warp.notifier")
 
@@ -60,7 +61,7 @@ function M.load(storage_path)
   end
 
   local contents_ok, contents = pcall(function()
-    local lines = vim.fn.readfile(storage_path)
+    local lines = fn.readfile(storage_path)
     return table.concat(lines, "\n")
   end)
 
@@ -68,7 +69,7 @@ function M.load(storage_path)
     return {}
   end
 
-  local data_ok, data = pcall(vim.json.decode, contents)
+  local data_ok, data = pcall(json.decode, contents)
 
   if not data_ok then
     fn.rename(storage_path, storage_path .. ".bak")
@@ -99,7 +100,7 @@ function M.save(data, storage_path)
     data = require("warp.list").get.all()
   end
 
-  local ok, encoded = pcall(vim.json.encode, data)
+  local ok, encoded = pcall(json.encode, data)
   if not ok then
     notify.error("Failed to save list")
     return
@@ -113,7 +114,7 @@ function M.save(data, storage_path)
   last_saved_storage_path = storage_path
 
   local tmp_path = storage_path .. ".tmp"
-  vim.fn.writefile({ encoded }, tmp_path)
+  fn.writefile({ encoded }, tmp_path)
   os.rename(tmp_path, storage_path)
 end
 

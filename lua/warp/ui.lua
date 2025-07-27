@@ -7,6 +7,7 @@
 local M = {}
 
 local api = vim.api
+local str_utfindex = vim.str_utfindex
 local builtins = require("warp.builtins")
 local events = require("warp.events")
 local notify = require("warp.notifier")
@@ -46,7 +47,7 @@ function M.create_native_float_win(bufnr, title, target_win)
   win_opts.row = math.floor((vim.o.lines - win_opts.height) / 2)
   win_opts.col = math.floor((vim.o.columns - win_opts.width) / 2)
 
-  local win = vim.api.nvim_open_win(bufnr, true, win_opts)
+  local win = api.nvim_open_win(bufnr, true, win_opts)
 
   return win
 end
@@ -57,13 +58,13 @@ end
 ---@return nil
 ---@usage `require('warp.ui').set_standard_buf_options(bufnr, ft)`
 function M.set_standard_buf_options(bufnr, ft)
-  vim.api.nvim_set_option_value("filetype", ft, { scope = "local", buf = bufnr })
-  vim.api.nvim_set_option_value("buftype", "nofile", { scope = "local", buf = bufnr })
-  vim.api.nvim_set_option_value("bufhidden", "wipe", { scope = "local", buf = bufnr })
-  vim.api.nvim_set_option_value("swapfile", false, { scope = "local", buf = bufnr })
-  vim.api.nvim_set_option_value("modifiable", false, { scope = "local", buf = bufnr })
-  vim.api.nvim_set_option_value("readonly", true, { scope = "local", buf = bufnr })
-  vim.api.nvim_set_option_value("buflisted", false, { scope = "local", buf = bufnr })
+  api.nvim_set_option_value("filetype", ft, { scope = "local", buf = bufnr })
+  api.nvim_set_option_value("buftype", "nofile", { scope = "local", buf = bufnr })
+  api.nvim_set_option_value("bufhidden", "wipe", { scope = "local", buf = bufnr })
+  api.nvim_set_option_value("swapfile", false, { scope = "local", buf = bufnr })
+  api.nvim_set_option_value("modifiable", false, { scope = "local", buf = bufnr })
+  api.nvim_set_option_value("readonly", true, { scope = "local", buf = bufnr })
+  api.nvim_set_option_value("buflisted", false, { scope = "local", buf = bufnr })
 end
 
 ---@param parent_item Warp.ListItem|nil The parent item before open the window
@@ -79,13 +80,13 @@ function M.render_warp_list(parent_item, warp_list, target_win)
   local bufnr = active_warp_list_bufnr
 
   if not bufnr then
-    bufnr = vim.api.nvim_create_buf(false, true)
+    bufnr = api.nvim_create_buf(false, true)
   else
-    vim.api.nvim_set_option_value("modifiable", true, { scope = "local", buf = bufnr })
-    vim.api.nvim_set_option_value("readonly", false, { scope = "local", buf = bufnr })
+    api.nvim_set_option_value("modifiable", true, { scope = "local", buf = bufnr })
+    api.nvim_set_option_value("readonly", false, { scope = "local", buf = bufnr })
   end
 
-  vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, lines)
+  api.nvim_buf_set_lines(bufnr, 0, -1, false, lines)
 
   M.set_list_item_hl_fn(bufnr, lines, line_data)
 
@@ -102,7 +103,7 @@ function M.render_warp_list(parent_item, warp_list, target_win)
 
   ---Set the cursor to the current sequence
   if active_idx then
-    vim.api.nvim_win_set_cursor(warp_list_win_id, { active_idx, 0 })
+    api.nvim_win_set_cursor(warp_list_win_id, { active_idx, 0 })
   end
 
   ---Start setting keymaps
@@ -229,8 +230,8 @@ end
 ---@return nil
 ---@usage `require('warp.ui').close_win(win)`
 function M.close_win(win)
-  if win and vim.api.nvim_win_is_valid(win) then
-    vim.api.nvim_win_close(win, true)
+  if win and api.nvim_win_is_valid(win) then
+    api.nvim_win_close(win, true)
   end
 end
 
@@ -302,7 +303,7 @@ end
 ---@return nil
 ---@usage `require("warp.ui").set_list_item_hl_fn(bufnr, lines, line_data)`
 function M.set_list_item_hl_fn(bufnr, lines, line_data)
-  vim.api.nvim_buf_clear_namespace(bufnr, ns, 0, -1)
+  api.nvim_buf_clear_namespace(bufnr, ns, 0, -1)
 
   for line_number, line in ipairs(line_data) do
     local actual_line = lines[line_number]
@@ -311,11 +312,11 @@ function M.set_list_item_hl_fn(bufnr, lines, line_data)
       if data.hl_group then
         local byte_start = actual_line:find(data.display_text, 1, true)
 
-        local hl_item_start_col = vim.str_utfindex(actual_line:sub(1, byte_start - 1), "utf-8")
-        local hl_item_end_col = hl_item_start_col + vim.str_utfindex(data.display_text, "utf-8")
+        local hl_item_start_col = str_utfindex(actual_line:sub(1, byte_start - 1), "utf-8")
+        local hl_item_end_col = hl_item_start_col + str_utfindex(data.display_text, "utf-8")
 
         if hl_item_start_col then
-          vim.api.nvim_buf_set_extmark(bufnr, ns, line_number - 1, hl_item_start_col, {
+          api.nvim_buf_set_extmark(bufnr, ns, line_number - 1, hl_item_start_col, {
             end_col = hl_item_end_col,
             hl_group = data.hl_group,
           })
