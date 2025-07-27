@@ -54,10 +54,11 @@ end
 
 ---Set standard buffer options
 ---@param bufnr integer The buffer number
+---@param winid integer|nil The window number
 ---@param ft string The filetype
 ---@return nil
 ---@usage `require('warp.ui').set_standard_buf_options(bufnr, ft)`
-function M.set_standard_buf_options(bufnr, ft)
+function M.set_standard_buf_options(bufnr, winid, ft)
   api.nvim_set_option_value("filetype", ft, { scope = "local", buf = bufnr })
   api.nvim_set_option_value("buftype", "nofile", { scope = "local", buf = bufnr })
   api.nvim_set_option_value("bufhidden", "wipe", { scope = "local", buf = bufnr })
@@ -65,6 +66,10 @@ function M.set_standard_buf_options(bufnr, ft)
   api.nvim_set_option_value("modifiable", false, { scope = "local", buf = bufnr })
   api.nvim_set_option_value("readonly", true, { scope = "local", buf = bufnr })
   api.nvim_set_option_value("buflisted", false, { scope = "local", buf = bufnr })
+
+  if winid then
+    api.nvim_set_option_value("cursorline", true, { scope = "local", win = winid })
+  end
 end
 
 ---@param parent_item Warp.ListItem|nil The parent item before open the window
@@ -88,13 +93,13 @@ function M.render_warp_list(parent_item, warp_list, target_win)
 
   api.nvim_buf_set_lines(bufnr, 0, -1, false, lines)
 
-  M.set_list_item_hl_fn(bufnr, lines, line_data)
-
-  M.set_standard_buf_options(bufnr, "warp-list")
-
   local title = "List"
 
   local warp_list_win_id = M.create_native_float_win(bufnr, title, target_win)
+
+  M.set_list_item_hl_fn(bufnr, lines, line_data)
+
+  M.set_standard_buf_options(bufnr, warp_list_win_id, "warp-list")
 
   if not warp_list_win_id then
     notify.error("Failed to open native float window for warp list")
