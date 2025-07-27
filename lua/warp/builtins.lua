@@ -39,7 +39,7 @@ function M.root_detection_fn()
   return cwd
 end
 
----Default format for the entry lines
+---Default format for the entry lines for warp list
 ---@param entry Warp.ListItem The entry item
 ---@param idx number The index of the entry
 ---@param is_active boolean|nil Whether the entry is active
@@ -97,6 +97,34 @@ function M.list_item_format_fn(entry, idx, is_active, is_file_exists)
     display_path,
     is_active and spacer,
     is_active and display_active_marker,
+  }
+end
+
+---Default format for the entry lines for help
+---@param keys string[]
+---@param description string
+---@return Warp.FormattedLineOpts[] formatted_entry The formatted entry
+---@usage `require('warp.builtins').help_item_format_fn(keys, description)`
+function M.help_item_format_fn(keys, description)
+  ---@type Warp.FormattedLineOpts
+  local separator = {
+    display_text = " │ ",
+  }
+
+  ---@type Warp.FormattedLineOpts
+  local display_key = {
+    display_text = table.concat(keys, ", "),
+  }
+
+  ---@type Warp.FormattedLineOpts
+  local display_description = {
+    display_text = description,
+  }
+
+  return {
+    display_description,
+    separator,
+    display_key,
   }
 end
 
