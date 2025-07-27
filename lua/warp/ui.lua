@@ -171,7 +171,8 @@ function M.render_warp_list(parent_item, warp_list, target_win)
       require("warp.list").action.remove_one(old)
       if #warp_list > 0 then
         M.render_warp_list(parent_item, warp_list, warp_list_win_id)
-        pcall(api.nvim_win_set_cursor, warp_list_win_id, { math.max(1, old), 0 })
+        local validated_cursor_row = old > #warp_list and #warp_list or old
+        pcall(api.nvim_win_set_cursor, warp_list_win_id, { validated_cursor_row, 0 })
       else
         M.close_win(warp_list_win_id)
         events.emit(events.constants.close_list_win)
