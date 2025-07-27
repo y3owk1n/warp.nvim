@@ -15,22 +15,6 @@ local utils = require("warp.utils")
 
 local ns = api.nvim_create_namespace("warp_list_ns")
 
----Create a floating window for native
----@param bufnr integer The buffer to open
----@param target_win? integer The window number to render the list
----@param win_opts? vim.api.keyset.win_config The window options
----@return integer|nil win_id The window handle
----@usage `require('warp.ui').create_native_float_win(bufnr, target_win, win_opts)`
-function M.create_native_float_win(bufnr, target_win, win_opts)
-  if target_win then
-    return target_win
-  end
-
-  local win = api.nvim_open_win(bufnr, false, win_opts or {})
-
-  return win
-end
-
 ---Set standard buffer options
 ---@param bufnr integer The buffer number
 ---@param ft string The filetype
@@ -75,7 +59,7 @@ function M.render_warp_list(parent_item, warp_list, target_win, active_bufnr, ft
 
   local line_widths = vim.tbl_map(vim.fn.strdisplaywidth, lines)
   local max_line_width = math.max(unpack(line_widths), 60)
-  local max_height = math.min(#lines, vim.o.lines, 12)
+  local max_height = #lines < 8 and 8 or math.min(#lines, vim.o.lines)
 
   ---@type vim.api.keyset.win_config
   local win_opts = {
@@ -88,7 +72,7 @@ function M.render_warp_list(parent_item, warp_list, target_win, active_bufnr, ft
     title = string.format("'warp.nvim' %s", title),
   }
 
-  local warp_list_win_id = M.create_native_float_win(bufnr, target_win, win_opts)
+  local warp_list_win_id = target_win or api.nvim_open_win(bufnr, false, win_opts)
 
   vim.wo[warp_list_win_id].cursorline = true
 
@@ -272,7 +256,7 @@ function M.render_help(target_win)
     title = string.format("'warp.nvim' %s", title),
   }
 
-  local warp_help_win_id = M.create_native_float_win(bufnr, target_win, win_opts)
+  local warp_help_win_id = target_win or api.nvim_open_win(bufnr, false, win_opts)
 
   vim.wo[warp_help_win_id].cursorline = true
 
