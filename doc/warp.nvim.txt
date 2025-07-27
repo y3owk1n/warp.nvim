@@ -214,12 +214,6 @@ Default Configuration:
     move_down = { "<C-j>" },
     show_help = { "g?" },
   },
- float_opts = {
-   width = 0.5,
-   height = 0.5,
-   relative = "editor",
-   title_pos = "left",
- },
 }
 <
 
@@ -484,12 +478,11 @@ UI                                                                *warp.nvim.ui*
 UI related implementations
 
                                           *warp.nvim.ui.create_native_float_win*
-M.create_native_float_win({bufnr}, {title?}, {target_win?}, {win_opts?})
+M.create_native_float_win({bufnr}, {target_win?}, {win_opts?})
     Create a floating window for native
 
     Parameters: ~
         {bufnr}        (integer)                    The buffer to open
-        {title?}       (string)                     The title appended after `Time Machine`
         {target_win?}  (integer)                    The window number to render the list
         {win_opts?}    (vim.api.keyset.win_config)  The window options
 
@@ -498,7 +491,7 @@ M.create_native_float_win({bufnr}, {title?}, {target_win?}, {win_opts?})
 
     Usage: ~
 >lua
-        require('warp.ui').create_native_float_win(bufnr, title, target_win, win_opts)
+        require('warp.ui').create_native_float_win(bufnr, target_win, win_opts)
 <
 
 
@@ -772,6 +765,9 @@ M.info({msg})                                          *warp.nvim.notifier.info*
     Parameters: ~
         {msg}  (string)  The message to display
 
+    Returns: ~
+        (nil)
+
     Usage: ~
 >lua
         require('warp.notifier').info("Hello world")
@@ -784,6 +780,9 @@ M.warn({msg})                                          *warp.nvim.notifier.warn*
     Parameters: ~
         {msg}  (string)  The message to display
 
+    Returns: ~
+        (nil)
+
     Usage: ~
 >lua
         require('warp.notifier').warn("Hello world")
@@ -795,6 +794,9 @@ M.error({msg})                                        *warp.nvim.notifier.error*
 
     Parameters: ~
         {msg}  (string)  The message to display
+
+    Returns: ~
+        (nil)
 
     Usage: ~
 >lua
@@ -895,49 +897,6 @@ M.emit({event})                                          *warp.nvim.events.emit*
 ==============================================================================
 Types                                                          *warp.nvim.types*
 
-                                *warp.nvim.types.Warp.Config.FloatOpts.Relative*
-Warp.Config.FloatOpts.Relative
-
-    Variants: ~
-        ("cursor")
-        ("editor")
-        ("laststatus")
-        ("mouse")
-        ("tabline")
-        ("win")
-
-
-                                  *warp.nvim.types.Warp.Config.FloatOpts.Anchor*
-Warp.Config.FloatOpts.Anchor
-
-    Variants: ~
-        ("NE")
-        ("NW")
-        ("SE")
-        ("SW")
-
-
-                                  *warp.nvim.types.Warp.Config.FloatOpts.Border*
-Warp.Config.FloatOpts.Border
-
-    Variants: ~
-        ("double")
-        ("none")
-        ("rounded")
-        ("shadow")
-        ("single")
-        ("solid")
-
-
-                                *warp.nvim.types.Warp.Config.FloatOpts.TitlePos*
-Warp.Config.FloatOpts.TitlePos
-
-    Variants: ~
-        ("left")
-        ("center")
-        ("right")
-
-
                                      *warp.nvim.types.Warp.Config.MoveDirection*
 Warp.Config.MoveDirection
 
@@ -956,7 +915,6 @@ Warp.Config                                        *warp.nvim.types.Warp.Config*
         {root_detection_fn?}    (fun():string)                                                        The function to detect the root, defaults to `require("warp.storage").find_project_root`
         {list_item_format_fn?}  (fun(entry:Warp.ListItem,idx:number,is_active:boolean|nil):string[])  The function to format the list items lines, defaults to `require("warp.ui").default_list_item_format`
         {keymaps?}              (Warp.Config.Keymaps)                                                 The keymaps for actions
-        {float_opts?}           (Warp.Config.FloatOpts)                                               The floating window options
 
 
 Warp.Config.Keymaps                        *warp.nvim.types.Warp.Config.Keymaps*
@@ -970,19 +928,6 @@ Warp.Config.Keymaps                        *warp.nvim.types.Warp.Config.Keymaps*
         {split_horizontal?}  (string[])
         {split_vertical?}    (string[])
         {show_help?}         (string[])
-
-
-Warp.Config.FloatOpts                    *warp.nvim.types.Warp.Config.FloatOpts*
-
-    Fields: ~
-        {width?}      (integer)                         The width of the window, more than 1 = absolute, less than 1 = calculated percentage
-        {height?}     (integer)                         The height of the window, more than 1 = absolute, less than 1 = calculated percentage
-        {relative?}   (Warp.Config.FloatOpts.Relative)  The relative position of the window, defaults to "editor"
-        {anchor?}     (Warp.Config.FloatOpts.Anchor)    The anchor position of the window, no default
-        {title_pos?}  (Warp.Config.FloatOpts.TitlePos)  The position of the title, defaults to "left"
-        {border?}     (Warp.Config.FloatOpts.Border)    The border style of the window, no default
-        {zindex?}     (integer)                         The z-index of the window, no default
-        {focusable?}  (boolean)                         Whether the window is focusable, no default
 
 
 Warp.ListItem                                    *warp.nvim.types.Warp.ListItem*
