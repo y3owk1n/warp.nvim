@@ -103,6 +103,7 @@ require("warp").setup({
     move_down = { "<C-j>" }, -- move an item down in the warp selection window
     split_horizontal = { "<C-w>s" }, -- horizontal split
     split_vertical = { "<C-w>v" }, -- vertical split
+    show_help = { "g?" }, -- show the help menu
   },
   float_opts = {
     width = 0.5,
@@ -156,6 +157,7 @@ require("warp").setup({
 ---@field move_down? string[]
 ---@field split_horizontal? string[]
 ---@field split_vertical? string[]
+---@field show_help? string[]
 
 ---@class Warp.Config.FloatOpts
 ---@field width? integer The width of the window, more than 1 = absolute, less than 1 = calculated percentage
@@ -565,6 +567,7 @@ All the keybindings are customizable in config via `keymaps` field.
 | `<C-w>s` | Split horizontal | Split the window horizontally |
 | `<C-w>v` | Split vertical | Split the window vertically |
 | `1 - 9` | Quick Select | Select the item based on the number |
+| `g?` | Help | Show the help menu |
 
 ## 🕰️ Events
 
@@ -711,7 +714,6 @@ opts = function(_, opts)
     new_section("e: Explore", "lua require('mini.files').open(vim.uv.cwd(), true)", "Navigate"),
     new_section("f: Find File", "Pick files", "Navigate"),
     new_section("g: Grep Text", "Pick grep_live", "Navigate"),
-    new_section("s: Restore", "lua require('persistence').load()", "Session"),
   }
 
   if warp_exists then

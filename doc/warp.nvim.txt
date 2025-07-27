@@ -483,31 +483,31 @@ UI                                                                *warp.nvim.ui*
 UI related implementations
 
                                           *warp.nvim.ui.create_native_float_win*
-M.create_native_float_win({bufnr}, {title?}, {target_win?})
+M.create_native_float_win({bufnr}, {title?}, {target_win?}, {win_opts?})
     Create a floating window for native
 
     Parameters: ~
-        {bufnr}        (integer)  The buffer to open
-        {title?}       (string)   The title appended after `Time Machine`
-        {target_win?}  (integer)  The window number to render the list
+        {bufnr}        (integer)                    The buffer to open
+        {title?}       (string)                     The title appended after `Time Machine`
+        {target_win?}  (integer)                    The window number to render the list
+        {win_opts?}    (vim.api.keyset.win_config)  The window options
 
     Returns: ~
         (integer|nil)  The window handle
 
     Usage: ~
 >lua
-        require('warp.ui').create_native_float_win(bufnr, title, target_win)
+        require('warp.ui').create_native_float_win(bufnr, title, target_win, win_opts)
 <
 
 
                                          *warp.nvim.ui.set_standard_buf_options*
-M.set_standard_buf_options({bufnr}, {winid}, {ft})
+M.set_standard_buf_options({bufnr}, {ft})
     Set standard buffer options
 
     Parameters: ~
-        {bufnr}  (integer)      The buffer number
-        {winid}  (integer|nil)  The window number
-        {ft}     (string)       The filetype
+        {bufnr}  (integer)  The buffer number
+        {ft}     (string)   The filetype
 
     Returns: ~
         (nil)
@@ -519,19 +519,37 @@ M.set_standard_buf_options({bufnr}, {winid}, {ft})
 
 
                                                  *warp.nvim.ui.render_warp_list*
-M.render_warp_list({parent_item}, {warp_list}, {target_win?})
+M.render_warp_list({parent_item}, {warp_list}, {target_win?}, {active_bufnr?}, {ft_name})
+    Render the warp list
 
     Parameters: ~
-        {parent_item}  (Warp.ListItem|nil)  The parent item before open the window
-        {warp_list}    (Warp.ListItem[])    The list of items
-        {target_win?}  (integer)            The window number to render the list
+        {parent_item}    (Warp.ListItem|nil)  The parent item before open the window
+        {warp_list}      (Warp.ListItem[])    The list of items
+        {target_win?}    (integer)            The window number to render the list
+        {active_bufnr?}  (integer)            The active buffer number
+        {ft_name}        (string)             The filetype name
 
     Returns: ~
         (nil)
 
     Usage: ~
 >lua
-        require('warp.ui').render_warp_list(parent_item, warp_list, target_win)
+        require('warp.ui').render_warp_list(parent_item, warp_list, target_win, active_bufnr, ft_name)
+<
+
+
+M.render_help({target_win?})                          *warp.nvim.ui.render_help*
+    Render the help window
+
+    Parameters: ~
+        {target_win?}  (integer)  The window number to render the list
+
+    Returns: ~
+        (nil)
+
+    Usage: ~
+>lua
+        require('warp.ui').render_help(target_win)
 <
 
 
@@ -550,8 +568,11 @@ M.close_win({win?})                                     *warp.nvim.ui.close_win*
 <
 
 
-M.is_warp_list_win_active()               *warp.nvim.ui.is_warp_list_win_active*
-    Find if the warp list window is active and get it's detail
+M.is_ft_win_active({ft})                         *warp.nvim.ui.is_ft_win_active*
+    Find if the the given filetype window is active and get it's detail
+
+    Parameters: ~
+        {ft}  (string)  The filetype
 
     Returns: ~
         (boolean)      window is active
@@ -560,7 +581,7 @@ M.is_warp_list_win_active()               *warp.nvim.ui.is_warp_list_win_active*
 
     Usage: ~
 >lua
-        require('warp.ui').is_warp_list_win_active()
+        require('warp.ui').is_ft_win_active(ft)
 <
 
 
@@ -598,6 +619,18 @@ M.set_list_item_hl_fn({bufnr}, {lines}, {line_data})
     Usage: ~
 >lua
         require("warp.ui").set_list_item_hl_fn(bufnr, lines, line_data)
+<
+
+
+M.get_formatted_help_lines()             *warp.nvim.ui.get_formatted_help_lines*
+
+    Returns: ~
+        (string[])                  The formatted lines
+        (Warp.FormattedLineOpts[])  The formatted entry
+
+    Usage: ~
+>lua
+        require('warp.ui').get_help_lines()
 <
 
 
@@ -787,7 +820,7 @@ M.root_detection_fn()                     *warp.nvim.builtins.root_detection_fn*
 
                                         *warp.nvim.builtins.list_item_format_fn*
 M.list_item_format_fn({entry}, {idx}, {is_active}, {is_file_exists})
-    Default format for the entry lines
+    Default format for the entry lines for warp list
 
     Parameters: ~
         {entry}           (Warp.ListItem)  The entry item
@@ -801,6 +834,23 @@ M.list_item_format_fn({entry}, {idx}, {is_active}, {is_file_exists})
     Usage: ~
 >lua
         require('warp.builtins').list_item_format_fn(entry, idx, is_active, is_file_exists)
+<
+
+
+                                        *warp.nvim.builtins.help_item_format_fn*
+M.help_item_format_fn({keys}, {description})
+    Default format for the entry lines for help
+
+    Parameters: ~
+        {keys}         (string[])
+        {description}  (string)
+
+    Returns: ~
+        (Warp.FormattedLineOpts[])  The formatted entry
+
+    Usage: ~
+>lua
+        require('warp.builtins').help_item_format_fn(keys, description)
 <
 
 
@@ -918,6 +968,7 @@ Warp.Config.Keymaps                        *warp.nvim.types.Warp.Config.Keymaps*
         {move_down?}         (string[])
         {split_horizontal?}  (string[])
         {split_vertical?}    (string[])
+        {show_help?}         (string[])
 
 
 Warp.Config.FloatOpts                    *warp.nvim.types.Warp.Config.FloatOpts*

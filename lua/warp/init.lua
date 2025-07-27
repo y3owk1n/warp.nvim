@@ -132,7 +132,9 @@ function M.show_list()
     return
   end
 
-  local is_active, active_win = require("warp.ui").is_warp_list_win_active()
+  local ft_name = "warp-list"
+
+  local is_active, active_win, active_bufnr = require("warp.ui").is_ft_win_active(ft_name)
 
   if is_active then
     require("warp.ui").close_win(active_win)
@@ -140,7 +142,7 @@ function M.show_list()
     return
   end
 
-  require("warp.ui").render_warp_list(entry, warp_list)
+  require("warp.ui").render_warp_list(entry, warp_list, active_win, active_bufnr, ft_name)
   events.emit(events.constants.open_list_win)
 end
 
