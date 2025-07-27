@@ -12,6 +12,8 @@ local events = require("warp.events")
 local notify = require("warp.notifier")
 local utils = require("warp.utils")
 
+local ns = api.nvim_create_namespace("warp_list_ns")
+
 ---Create a floating window for native
 ---@param bufnr integer The buffer to open
 ---@param title? string The title appended after `Time Machine`
@@ -70,7 +72,7 @@ end
 ---@return nil
 ---@usage `require('warp.ui').render_warp_list(parent_item, warp_list, target_win)`
 function M.render_warp_list(parent_item, warp_list, target_win)
-  local lines, active_idx = M.get_formatted_list_items(parent_item, warp_list)
+  local lines, active_idx, line_data = M.get_formatted_list_items(parent_item, warp_list)
 
   local _, _, active_warp_list_bufnr = M.is_warp_list_win_active()
 
@@ -84,6 +86,8 @@ function M.render_warp_list(parent_item, warp_list, target_win)
   end
 
   vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, lines)
+
+  M.set_list_item_hl_fn(bufnr, lines, line_data)
 
   M.set_standard_buf_options(bufnr, "warp-list")
 
@@ -253,9 +257,11 @@ end
 ---@param warp_list Warp.ListItem[] The list of items
 ---@return string[] lines The formatted lines
 ---@return number|nil active_idx The active index
+---@return Warp.FormattedLineOpts[] formatted_raw_data The raw data of the formatted lines
 ---@usage `require("warp.ui").get_formatted_list_items(parent_item, warp_list)`
 function M.get_formatted_list_items(parent_item, warp_list)
   local lines = {}
+  local formatted_raw_data = {}
 
   ---@type number|nil
   local active_idx
@@ -278,17 +284,45 @@ function M.get_formatted_list_items(parent_item, warp_list)
     end
 
     ---@diagnostic disable-next-line: need-check-nil
-    local formatted_line = formatter_fn(entry, idx, is_active)
+    local formatted_line_data = utils.parse_format_fn_result(formatter_fn(entry, idx, is_active))
 
-    if type(formatted_line) ~= "string" then
-      notify.warn("`list_item_format_fn` should return a string, fallback to default implementation")
-      formatted_line = builtins.list_item_format_fn(entry, idx, is_active)
-    end
+    local formatted_line = utils.convert_parsed_format_result_to_string(formatted_line_data)
 
     lines[idx] = formatted_line
+    formatted_raw_data[idx] = formatted_line_data
   end
 
-  return lines, active_idx
+  return lines, active_idx, formatted_raw_data
+end
+
+---Set the highlight for the list items
+---@param bufnr number The buffer number
+---@param lines string[] The lines in the buffer
+---@param line_data Warp.ListItem[] The list items
+---@return nil
+---@usage `require("warp.ui").set_list_item_hl_fn(bufnr, lines, line_data)`
+function M.set_list_item_hl_fn(bufnr, lines, line_data)
+  vim.api.nvim_buf_clear_namespace(bufnr, ns, 0, -1)
+
+  for line_number, line in ipairs(line_data) do
+    local actual_line = lines[line_number]
+
+    for _, data in ipairs(line) do
+      if data.hl_group then
+        local byte_start = actual_line:find(data.display_text, 1, true)
+
+        local hl_item_start_col = vim.str_utfindex(actual_line:sub(1, byte_start - 1), "utf-8")
+        local hl_item_end_col = hl_item_start_col + vim.str_utfindex(data.display_text, "utf-8")
+
+        if hl_item_start_col then
+          vim.api.nvim_buf_set_extmark(bufnr, ns, line_number - 1, hl_item_start_col, {
+            end_col = hl_item_end_col,
+            hl_group = data.hl_group,
+          })
+        end
+      end
+    end
+  end
 end
 
 return M

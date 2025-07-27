@@ -111,4 +111,58 @@ function M.get_all_onscreen_bufs()
   return result
 end
 
+---Parse a format result and ensure all in string
+---@param format_result table The format result
+---@return Warp.FormattedLineOpts[] raw The parsed format result
+---@usage `require('warp.utils').parse_format_fn_result(format_result)`
+function M.parse_format_fn_result(format_result)
+  local parsed = {}
+
+  for _, item in ipairs(format_result) do
+    if type(item) ~= "table" then
+      goto continue
+    end
+
+    local parsed_item = {}
+
+    if item.display_text then
+      if type(item.display_text) == "string" then
+        parsed_item.display_text = item.display_text
+      end
+
+      if type(item.display_text) == "number" then
+        parsed_item.display_text = tostring(item.display_text)
+      end
+    end
+
+    if item.hl_group then
+      if type(item.hl_group) == "string" then
+        parsed_item.hl_group = item.hl_group
+      end
+    end
+
+    table.insert(parsed, parsed_item)
+
+    ::continue::
+  end
+
+  return parsed
+end
+
+---Convert a parsed format result to string
+---@param parsed Warp.FormattedLineOpts[] The parsed format result
+---@return string lines The formatted lines
+---@usage `require('warp.utils').convert_parsed_format_result_to_string(parsed)`
+function M.convert_parsed_format_result_to_string(parsed)
+  local display_lines = {}
+
+  for _, item in ipairs(parsed) do
+    if item.display_text then
+      table.insert(display_lines, item.display_text)
+    end
+  end
+
+  return table.concat(display_lines, "")
+end
+
 return M

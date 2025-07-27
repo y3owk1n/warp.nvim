@@ -84,8 +84,9 @@ require("warp").setup({
   -- NOTE: this defines a root for the project to be saved and synced to the storage
   -- you can do fancy detection like if condition then a root that you want, else then another root or a global root
   root_detection_fn = require("warp.builtins").root_detection_fn,
-  -- [list_item_format_fn] this function must return in string
-  -- this function define how the list items are formatted
+  -- [list_item_format_fn] this function must return in Warp.FormattedLineOpts[]
+  -- Warp.FormattedLineOpts is a table with 2 fields, display_text and optional hl_group
+  -- passing anything other than specified format will be ommited
   list_item_format_fn = require("warp.builtins").list_item_format_fn,
   -- [keymaps] if you don't want certain keymaps, just set it to {}
   keymaps = {
@@ -427,6 +428,110 @@ Useful for showing on statusline. See [Integrations](#-integrations) for more de
 ```lua
 ---@return number
 require("warp").count()
+```
+
+### Builtins
+
+### `root_detection_fn`
+
+This function must return a string that exists in string. It will be used as the root path for the project.
+
+Below is the default implementation. You can override it by setting `root_detection_fn` in config.
+
+```lua
+---Find the root directory based on root markers, or fall back to cwd
+---@return string root_path The root path
+---@usage `require('warp.builtins').root_detection_fn()`
+function M.root_detection_fn()
+  local cwd = vim.fn.getcwd()
+
+  local config = require("warp.config").config
+
+  local root_markers = config.root_markers
+
+  if not root_markers or #root_markers == 0 then
+    return cwd
+  end
+
+  local path = cwd
+
+  while path ~= "/" do
+    for _, marker in ipairs(root_markers) do
+      local full = path .. "/" .. marker
+      if fn.isdirectory(full) == 1 or fn.filereadable(full) == 1 then
+        return path
+      end
+    end
+
+    path = fn.fnamemodify(path, ":h")
+  end
+
+  --- fallback to cwd
+  return cwd
+end
+```
+
+#### `list_item_format_fn`
+
+This function must return in `Warp.FormattedLineOpts[]`. `Warp.FormattedLineOpts` is a table with 2 fields, `display_text` and optional `hl_group`. Passing anything other than specified format will be ommited.
+
+Below is the default implementation. You can override it by setting `list_item_format_fn` in config.
+
+```lua
+---@class Warp.FormattedLineOpts
+---@field display_text string The display text
+---@field hl_group? string The highlight group of the text
+
+---Default format for the entry lines
+---@param entry Warp.ListItem The entry item
+---@param idx number The index of the entry
+---@param is_active boolean|nil Whether the entry is active
+---@return Warp.FormattedLineOpts[] formatted_entry The formatted entry
+---@usage `require('warp.builtins').list_item_format_fn(entry, idx, is_active)`
+function M.list_item_format_fn(entry, idx, is_active)
+  ---@type Warp.FormattedLineOpts
+  local spacer = {
+    display_text = " ",
+  }
+
+  ---@type Warp.FormattedLineOpts
+  local display_idx = {
+    display_text = tostring(idx),
+  }
+
+  local has_devicons, nvim_web_devicons = pcall(require, "nvim-web-devicons")
+
+  local display_ft_icon = {}
+
+  if has_devicons then
+    local ft_icon, ft_icon_hl = nvim_web_devicons.get_icon(entry.path, nil, { default = true })
+
+    ---@type Warp.FormattedLineOpts
+    display_ft_icon = {
+      display_text = ft_icon,
+      hl_group = ft_icon_hl,
+    }
+  end
+
+  local display_path = {
+    display_text = fn.fnamemodify(entry.path, ":~:."),
+  }
+
+  local display_active_marker = {
+    display_text = "*",
+  }
+
+  return {
+    spacer,
+    display_idx,
+    has_devicons and spacer,
+    has_devicons and display_ft_icon,
+    spacer,
+    display_path,
+    is_active and spacer,
+    is_active and display_active_marker,
+  }
+end
 ```
 
 ## ⌨️ Keybindings

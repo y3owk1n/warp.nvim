@@ -571,12 +571,31 @@ M.get_formatted_list_items({parent_item}, {warp_list})
         {warp_list}    (Warp.ListItem[])    The list of items
 
     Returns: ~
-        (string[])    The formatted lines
-        (number|nil)  The active index
+        (string[])                  The formatted lines
+        (number|nil)                The active index
+        (Warp.FormattedLineOpts[])  The raw data of the formatted lines
 
     Usage: ~
 >lua
         require("warp.ui").get_formatted_list_items(parent_item, warp_list)
+<
+
+
+                                              *warp.nvim.ui.set_list_item_hl_fn*
+M.set_list_item_hl_fn({bufnr}, {lines}, {line_data})
+    Set the highlight for the list items
+
+    Parameters: ~
+        {bufnr}      (number)           The buffer number
+        {lines}      (string[])         The lines in the buffer
+        {line_data}  (Warp.ListItem[])  The list items
+
+    Returns: ~
+        (nil)
+
+    Usage: ~
+>lua
+        require("warp.ui").set_list_item_hl_fn(bufnr, lines, line_data)
 <
 
 
@@ -674,6 +693,38 @@ M.get_all_onscreen_bufs()                *warp.nvim.utils.get_all_onscreen_bufs*
 <
 
 
+                                        *warp.nvim.utils.parse_format_fn_result*
+M.parse_format_fn_result({format_result})
+    Parse a format result and ensure all in string
+
+    Parameters: ~
+        {format_result}  (table)  The format result
+
+    Returns: ~
+        (Warp.FormattedLineOpts[])  The parsed format result
+
+    Usage: ~
+>lua
+        require('warp.utils').parse_format_fn_result(format_result)
+<
+
+
+                        *warp.nvim.utils.convert_parsed_format_result_to_string*
+M.convert_parsed_format_result_to_string({parsed})
+    Convert a parsed format result to string
+
+    Parameters: ~
+        {parsed}  (Warp.FormattedLineOpts[])  The parsed format result
+
+    Returns: ~
+        (string)  The formatted lines
+
+    Usage: ~
+>lua
+        require('warp.utils').convert_parsed_format_result_to_string(parsed)
+<
+
+
 ==============================================================================
 Notifier                                                    *warp.nvim.notifier*
 
@@ -742,7 +793,7 @@ M.list_item_format_fn({entry}, {idx}, {is_active})
         {is_active}  (boolean|nil)    Whether the entry is active
 
     Returns: ~
-        (string)  The formatted entry in string
+        (Warp.FormattedLineOpts[])  The formatted entry
 
     Usage: ~
 >lua
@@ -790,8 +841,7 @@ M.emit({event})                                          *warp.nvim.events.emit*
 ==============================================================================
 Types                                                          *warp.nvim.types*
 
-                                *warp.nvim.types.Warp.Config.FloatOpts.Relative*
-Warp.Config.FloatOpts.Relative
+Warp.Config.FloatOpts.Relative  *warp.nvim.types.Warp.Config.FloatOpts.Relative*
 
     Variants: ~
         ("cursor")
@@ -802,8 +852,7 @@ Warp.Config.FloatOpts.Relative
         ("win")
 
 
-                                  *warp.nvim.types.Warp.Config.FloatOpts.Anchor*
-Warp.Config.FloatOpts.Anchor
+Warp.Config.FloatOpts.Anchor      *warp.nvim.types.Warp.Config.FloatOpts.Anchor*
 
     Variants: ~
         ("NE")
@@ -812,8 +861,7 @@ Warp.Config.FloatOpts.Anchor
         ("SW")
 
 
-                                  *warp.nvim.types.Warp.Config.FloatOpts.Border*
-Warp.Config.FloatOpts.Border
+Warp.Config.FloatOpts.Border      *warp.nvim.types.Warp.Config.FloatOpts.Border*
 
     Variants: ~
         ("double")
@@ -824,8 +872,7 @@ Warp.Config.FloatOpts.Border
         ("solid")
 
 
-                                *warp.nvim.types.Warp.Config.FloatOpts.TitlePos*
-Warp.Config.FloatOpts.TitlePos
+Warp.Config.FloatOpts.TitlePos  *warp.nvim.types.Warp.Config.FloatOpts.TitlePos*
 
     Variants: ~
         ("left")
@@ -833,8 +880,7 @@ Warp.Config.FloatOpts.TitlePos
         ("right")
 
 
-                                     *warp.nvim.types.Warp.Config.MoveDirection*
-Warp.Config.MoveDirection
+Warp.Config.MoveDirection            *warp.nvim.types.Warp.Config.MoveDirection*
 
     Variants: ~
         ("prev")
@@ -846,11 +892,11 @@ Warp.Config.MoveDirection
 Warp.Config                                        *warp.nvim.types.Warp.Config*
 
     Fields: ~
-        {root_markers?}         (string[])                                                          The root markers to check, defaults to { ".git" } and fallback to cwd, set to {} to nil it
-        {root_detection_fn?}    (fun():string)                                                      The function to detect the root, defaults to `require("warp.storage").find_project_root`
-        {list_item_format_fn?}  (fun(entry:Warp.ListItem,idx:number,is_active:boolean|nil):string)  The function to format the list items lines, defaults to `require("warp.ui").default_list_item_format`
-        {keymaps?}              (Warp.Config.Keymaps)                                               The keymaps for actions
-        {float_opts?}           (Warp.Config.FloatOpts)                                             The floating window options
+        {root_markers?}         (string[])                                                            The root markers to check, defaults to { ".git" } and fallback to cwd, set to {} to nil it
+        {root_detection_fn?}    (fun():string)                                                        The function to detect the root, defaults to `require("warp.storage").find_project_root`
+        {list_item_format_fn?}  (fun(entry:Warp.ListItem,idx:number,is_active:boolean|nil):string[])  The function to format the list items lines, defaults to `require("warp.ui").default_list_item_format`
+        {keymaps?}              (Warp.Config.Keymaps)                                                 The keymaps for actions
+        {float_opts?}           (Warp.Config.FloatOpts)                                               The floating window options
 
 
 Warp.Config.Keymaps                        *warp.nvim.types.Warp.Config.Keymaps*
@@ -883,6 +929,13 @@ Warp.ListItem                                    *warp.nvim.types.Warp.ListItem*
     Fields: ~
         {path}    (string)    The path of the file
         {cursor}  (number[])  The cursor position as {row, col}
+
+
+Warp.FormattedLineOpts                  *warp.nvim.types.Warp.FormattedLineOpts*
+
+    Fields: ~
+        {display_text}  (string)  The display text
+        {hl_group?}     (string)  The highlight group of the text
 
 
 vim:tw=78:ts=8:noet:ft=help:norl:
