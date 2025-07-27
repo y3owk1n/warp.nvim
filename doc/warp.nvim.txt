@@ -501,12 +501,13 @@ M.create_native_float_win({bufnr}, {title?}, {target_win?})
 
 
                                          *warp.nvim.ui.set_standard_buf_options*
-M.set_standard_buf_options({bufnr}, {ft})
+M.set_standard_buf_options({bufnr}, {winid}, {ft})
     Set standard buffer options
 
     Parameters: ~
-        {bufnr}  (integer)  The buffer number
-        {ft}     (string)   The filetype
+        {bufnr}  (integer)      The buffer number
+        {winid}  (integer|nil)  The window number
+        {ft}     (string)       The filetype
 
     Returns: ~
         (nil)
