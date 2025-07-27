@@ -43,16 +43,51 @@ end
 ---@param entry Warp.ListItem The entry item
 ---@param idx number The index of the entry
 ---@param is_active boolean|nil Whether the entry is active
----@return string formatted_entry The formatted entry in string
+---@return Warp.FormattedLineOpts[] formatted_entry The formatted entry
 ---@usage `require('warp.builtins').list_item_format_fn(entry, idx, is_active)`
 function M.list_item_format_fn(entry, idx, is_active)
-  local display = fn.fnamemodify(entry.path, ":~:.")
+  ---@type Warp.FormattedLineOpts
+  local spacer = {
+    display_text = " ",
+  }
 
-  if is_active then
-    display = display .. " *"
+  ---@type Warp.FormattedLineOpts
+  local display_idx = {
+    display_text = tostring(idx),
+  }
+
+  local has_devicons, nvim_web_devicons = pcall(require, "nvim-web-devicons")
+
+  local display_ft_icon = {}
+
+  if has_devicons then
+    local ft_icon, ft_icon_hl = nvim_web_devicons.get_icon(entry.path, nil, { default = true })
+
+    ---@type Warp.FormattedLineOpts
+    display_ft_icon = {
+      display_text = ft_icon,
+      hl_group = ft_icon_hl,
+    }
   end
 
-  return string.format(" %d %s", idx, display)
+  local display_path = {
+    display_text = fn.fnamemodify(entry.path, ":~:."),
+  }
+
+  local display_active_marker = {
+    display_text = "*",
+  }
+
+  return {
+    spacer,
+    display_idx,
+    has_devicons and spacer,
+    has_devicons and display_ft_icon,
+    spacer,
+    display_path,
+    is_active and spacer,
+    is_active and display_active_marker,
+  }
 end
 
 return M
