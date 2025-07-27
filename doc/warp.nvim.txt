@@ -477,24 +477,6 @@ UI                                                                *warp.nvim.ui*
 
 UI related implementations
 
-                                          *warp.nvim.ui.create_native_float_win*
-M.create_native_float_win({bufnr}, {target_win?}, {win_opts?})
-    Create a floating window for native
-
-    Parameters: ~
-        {bufnr}        (integer)                    The buffer to open
-        {target_win?}  (integer)                    The window number to render the list
-        {win_opts?}    (vim.api.keyset.win_config)  The window options
-
-    Returns: ~
-        (integer|nil)  The window handle
-
-    Usage: ~
->lua
-        require('warp.ui').create_native_float_win(bufnr, target_win, win_opts)
-<
-
-
                                          *warp.nvim.ui.set_standard_buf_options*
 M.set_standard_buf_options({bufnr}, {ft})
     Set standard buffer options
