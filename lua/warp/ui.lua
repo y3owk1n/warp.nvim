@@ -15,48 +15,6 @@ local utils = require("warp.utils")
 
 local ns = api.nvim_create_namespace("warp_list_ns")
 
----Create a floating window for native
----@param bufnr integer The buffer to open
----@param title? string The title appended after `Time Machine`
----@param target_win? integer The window number to render the list
----@param win_opts? vim.api.keyset.win_config The window options
----@return integer|nil win_id The window handle
----@usage `require('warp.ui').create_native_float_win(bufnr, title, target_win, win_opts)`
-function M.create_native_float_win(bufnr, title, target_win, win_opts)
-  if target_win then
-    return target_win
-  end
-
-  local config_float_opts = require("warp.config").config.float_opts or {}
-
-  local default_border = (vim.fn.exists("+winborder") == 1 and vim.o.winborder ~= "") and vim.o.winborder or "single"
-
-  ---@type vim.api.keyset.win_config
-  local default_win_opts = {
-    relative = config_float_opts.relative,
-    anchor = config_float_opts.anchor,
-    style = "minimal",
-    width = config_float_opts.width > 1 and config_float_opts.width
-      or math.floor(vim.o.columns * config_float_opts.width),
-    height = config_float_opts.height > 1 and config_float_opts.height
-      or math.floor(vim.o.lines * config_float_opts.height),
-    title = "'warp.nvim' " .. (title or ""),
-    title_pos = config_float_opts.title_pos or "left",
-    border = config_float_opts.border or default_border,
-    zindex = config_float_opts.zindex,
-    focusable = config_float_opts.focusable,
-  }
-
-  default_win_opts.row = config_float_opts.row or math.floor((vim.o.lines - default_win_opts.height) / 2)
-  default_win_opts.col = config_float_opts.col or math.floor((vim.o.columns - default_win_opts.width) / 2)
-
-  win_opts = vim.tbl_deep_extend("force", default_win_opts, win_opts or {})
-
-  local win = api.nvim_open_win(bufnr, false, win_opts)
-
-  return win
-end
-
 ---Set standard buffer options
 ---@param bufnr integer The buffer number
 ---@param ft string The filetype
@@ -99,7 +57,22 @@ function M.render_warp_list(parent_item, warp_list, target_win, active_bufnr, ft
   M.set_list_item_hl_fn(bufnr, lines, line_data)
   M.set_standard_buf_options(bufnr, ft_name)
 
-  local warp_list_win_id = M.create_native_float_win(bufnr, title, target_win)
+  local line_widths = vim.tbl_map(vim.fn.strdisplaywidth, lines)
+  local max_line_width = math.max(unpack(line_widths), 60)
+  local max_height = #lines < 8 and 8 or math.min(#lines, vim.o.lines - 3)
+
+  ---@type vim.api.keyset.win_config
+  local win_opts = {
+    style = "minimal",
+    relative = "editor",
+    width = max_line_width,
+    height = max_height,
+    row = math.floor((vim.o.lines - max_height) / 2),
+    col = math.floor((vim.o.columns - max_line_width) / 2),
+    title = string.format("'warp.nvim' %s", title),
+  }
+
+  local warp_list_win_id = target_win or api.nvim_open_win(bufnr, false, win_opts)
 
   vim.wo[warp_list_win_id].cursorline = true
 
@@ -274,14 +247,16 @@ function M.render_help(target_win)
 
   ---@type vim.api.keyset.win_config
   local win_opts = {
+    style = "minimal",
     relative = "cursor",
     row = 0,
     col = 0,
     width = max_line_width,
     height = #lines,
+    title = string.format("'warp.nvim' %s", title),
   }
 
-  local warp_help_win_id = M.create_native_float_win(bufnr, title, target_win, win_opts)
+  local warp_help_win_id = target_win or api.nvim_open_win(bufnr, false, win_opts)
 
   vim.wo[warp_help_win_id].cursorline = true
 
@@ -420,13 +395,13 @@ function M.get_formatted_help_lines()
   ---@type table<string, string>
   local description_map = {
     quit = "Quit warp list",
-    select = "Select an item",
-    split_horizontal = "Split horizontally",
-    split_vertical = "Split vertically",
-    delete = "Delete an item",
-    move_up = "Move up",
-    move_down = "Move down",
-    show_help = "Show help",
+    select = "Select current item",
+    split_horizontal = "Select current item & split horizontally",
+    split_vertical = "Select current item & split vertically",
+    delete = "Delete current item",
+    move_up = "Move current item upwards",
+    move_down = "Move current item downwards",
+    show_help = "Show help menu",
   }
 
   ---@type number
