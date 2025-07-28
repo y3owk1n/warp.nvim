@@ -584,8 +584,7 @@ M.get_formatted_list_items({parent_item}, {warp_list})
 <
 
 
-                                              *warp.nvim.ui.set_list_item_hl_fn*
-M.set_list_item_hl_fn({bufnr}, {line_data})
+M.set_list_item_hl_fn({bufnr}, {line_data})   *warp.nvim.ui.set_list_item_hl_fn*
     Set the highlight for the list items
 
     Parameters: ~
@@ -819,6 +818,9 @@ M.list_item_format_fn({entry}, {idx}, {is_active}, {is_file_exists})
     Returns: ~
         (Warp.FormattedLineOpts[])  The formatted entry
 
+    See: ~
+        |warp.nvim.types.Warp.FormattedLineOpts|
+
     Usage: ~
 >lua
         require('warp.builtins').list_item_format_fn(entry, idx, is_active, is_file_exists)
@@ -882,8 +884,7 @@ M.emit({event})                                          *warp.nvim.events.emit*
 ==============================================================================
 Types                                                          *warp.nvim.types*
 
-                                     *warp.nvim.types.Warp.Config.MoveDirection*
-Warp.Config.MoveDirection
+Warp.Config.MoveDirection            *warp.nvim.types.Warp.Config.MoveDirection*
 
     Variants: ~
         ("prev")

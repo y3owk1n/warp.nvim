@@ -91,8 +91,8 @@ function M.setup_autocmds()
   -- NOTE: Not sure if these are the best events to use, but they seem to work
   api.nvim_create_autocmd({ "BufLeave", "VimLeavePre" }, {
     callback = function(args)
-      local buf = args.buf
-      local item = list.get.item_by_buf(buf)
+      local bufnr = args.buf
+      local item = list.get.item_by_buf(bufnr)
 
       if not item then
         return
