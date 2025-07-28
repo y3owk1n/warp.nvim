@@ -445,28 +445,14 @@ function M.set_list_item_hl_fn(bufnr, line_data)
   api.nvim_buf_clear_namespace(bufnr, ns, 0, -1)
 
   for line_number, line in ipairs(line_data) do
-    local temp_position = "before"
-    local virt_text_before = {}
-    local virt_text_after = {}
-
-    -- Assuming that whatever before the first `non virtual` data is for the front part
-    -- and whatever after the first `non virtual` data is for the back part
-    -- The first `non virtual` text will be the anchor and the rest are rendered accordingly
     for _, data in ipairs(line) do
       if data.is_virtual then
-        if temp_position == "before" then
-          table.insert(virt_text_before, { data.display_text, data.hl_group })
-        end
-        if temp_position == "after" then
-          table.insert(virt_text_after, { data.display_text, data.hl_group })
-        end
-      end
-
-      if not data.is_virtual then
-        temp_position = "after"
-      end
-
-      if data.hl_group then
+        -- set the virtual text in the right position with it's hl group
+        api.nvim_buf_set_extmark(bufnr, ns, line_number - 1, data.col_start, {
+          virt_text = { { data.display_text, data.hl_group } },
+          virt_text_pos = "inline",
+        })
+      else
         if data.col_start and data.col_end then
           api.nvim_buf_set_extmark(bufnr, ns, line_number - 1, data.col_start, {
             end_col = data.col_end,
@@ -475,16 +461,6 @@ function M.set_list_item_hl_fn(bufnr, line_data)
         end
       end
     end
-
-    api.nvim_buf_set_extmark(bufnr, ns, line_number - 1, 0, {
-      virt_text = virt_text_before,
-      virt_text_pos = "inline",
-    })
-
-    api.nvim_buf_set_extmark(bufnr, ns, line_number - 1, 0, {
-      virt_text = virt_text_after,
-      virt_text_pos = "eol_right_align",
-    })
   end
 end
 
