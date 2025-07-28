@@ -446,7 +446,13 @@ function M.set_list_item_hl_fn(bufnr, line_data)
 
   for line_number, line in ipairs(line_data) do
     for _, data in ipairs(line) do
-      if data.hl_group then
+      if data.is_virtual then
+        -- set the virtual text in the right position with it's hl group
+        api.nvim_buf_set_extmark(bufnr, ns, line_number - 1, data.col_start, {
+          virt_text = { { data.display_text, data.hl_group } },
+          virt_text_pos = "inline",
+        })
+      else
         if data.col_start and data.col_end then
           api.nvim_buf_set_extmark(bufnr, ns, line_number - 1, data.col_start, {
             end_col = data.col_end,
