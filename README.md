@@ -41,7 +41,7 @@ Just you, your files, and a fast way to warp between them.
 - [Keybindings](#%EF%B8%8F-keybindings)
 - [Events](#%EF%B8%8F-events)
 - [Integrations](#-integrations)
-- [UI Customization Example](#%EF%B8%8F-ui-customization-example)
+- [UI Customization Example](#-ui-customization-example)
 - [Contributing](#-contributing)
 
 ## 📦 Installation
@@ -724,6 +724,8 @@ end
 ## 🧩 UI Customization Example
 
 ### Put the floating window to bottom left like `mini.visits`
+
+![warp-bottom-left-float](https://github.com/user-attachments/assets/77aaf5f4-6e8e-4595-8afd-5f3d0b193e02)
 
 ```lua
 opts = {
