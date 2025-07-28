@@ -23,8 +23,8 @@ Types ·····································
 ==============================================================================
 Main modules                                                              *warp*
 
-                                                                  *warp.setup()*
 M.setup                                                             *warp.setup*
+    Entry point to setup the plugin
 
     Type: ~
         (fun(user_config?:Warp.Config))
@@ -493,7 +493,8 @@ UI modules                                                             *warp.ui*
 
 UI related implementations
 
-M.set_standard_buf_options({bufnr}, {ft})     *warp.ui.set_standard_buf_options*
+                                              *warp.ui.set_standard_buf_options*
+M.set_standard_buf_options({bufnr}, {ft})
     Set standard buffer options
 
     Parameters: ~
@@ -618,18 +619,19 @@ M.get_formatted_help_lines()                  *warp.ui.get_formatted_help_lines*
 <
 
 
-M.set_list_item_hl_fn({bufnr}, {line_data})        *warp.ui.set_list_item_hl_fn*
+                                                   *warp.ui.set_list_item_hl_fn*
+M.set_list_item_hl_fn({bufnr}, {line_data})
     Set the highlight for the list items
 
     Parameters: ~
-        {bufnr}      (number)                      The buffer number
-        {line_data}  (Warp.FormattedLineOpts[][])  The formatted line data
+        {bufnr}      (number)                     The buffer number
+        {line_data}  (Warp.ComputedLineOpts[][])  The formatted line data
 
     Returns: ~
         (nil)
 
     See: ~
-        |warp.types.Warp.FormattedLineOpts|
+        |warp.types.Warp.ComputedLineOpts|
 
     Usage: ~
 >lua
@@ -642,8 +644,7 @@ Utility functions                                                   *warp.utils*
 
 Utilities related implementations
 
-                                       *warp.utils.format_string_to_pascal_case*
-M.format_string_to_pascal_case({string})
+M.format_string_to_pascal_case({string})*warp.utils.format_string_to_pascal_case*
     Convert a string to PascalCase
 
     Parameters: ~
@@ -734,17 +735,19 @@ M.get_all_onscreen_bufs()                     *warp.utils.get_all_onscreen_bufs*
 <
 
 
-M.parse_format_fn_result({format_result})    *warp.utils.parse_format_fn_result*
+                                             *warp.utils.parse_format_fn_result*
+M.parse_format_fn_result({format_result})
     Parse a format result and ensure all in string
 
     Parameters: ~
         {format_result}  (Warp.FormattedLineOpts[])  The format result
 
     Returns: ~
-        (Warp.FormattedLineOpts[])  The parsed format result
+        (Warp.ComputedLineOpts[])  The parsed format result
 
     See: ~
         |warp.types.Warp.FormattedLineOpts|
+        |warp.types.Warp.ComputedLineOpts|
 
     Usage: ~
 >lua
@@ -757,13 +760,13 @@ M.convert_parsed_format_result_to_string({parsed})
     Convert a parsed format result to string
 
     Parameters: ~
-        {parsed}  (Warp.FormattedLineOpts[])  The parsed format result
+        {parsed}  (Warp.ComputedLineOpts[])  The parsed format result
 
     Returns: ~
         (string)  The formatted lines
 
     See: ~
-        |warp.types.Warp.FormattedLineOpts|
+        |warp.types.Warp.ComputedLineOpts|
 
     Usage: ~
 >lua
@@ -860,7 +863,8 @@ M.list_item_format_fn({warp_item_entry}, {index}, {is_active}, {is_file_exists})
 <
 
 
-M.help_item_format_fn({keys}, {description}) *warp.builtins.help_item_format_fn*
+                                             *warp.builtins.help_item_format_fn*
+M.help_item_format_fn({keys}, {description})
     Default format for the entry lines for help
 
     Parameters: ~
@@ -931,12 +935,12 @@ Warp.Config.MoveDirection                 *warp.types.Warp.Config.MoveDirection*
 Warp.Config                                             *warp.types.Warp.Config*
 
     Fields: ~
-        {auto_prune?}           (boolean)                                                                         Whether to auto prune the list, defaults to false
-        {root_markers?}         (string[])                                                                        The root markers to check, defaults to { ".git" } and fallback to cwd, set to {} to nil it
-        {root_detection_fn?}    (fun():string)                                                                    The function to detect the root, defaults to `require("warp.storage").find_project_root`
-        {list_item_format_fn?}  (fun(warp_item_entry:Warp.ListItem,index:number,is_active:boolean|nil):string[])  The function to format the list items lines, defaults to `require("warp.ui").default_list_item_format`
-        {keymaps?}              (Warp.Config.Keymaps)                                                             The keymaps for actions
-        {window?}               (Warp.Config.Window)                                                              The windows configurations
+        {auto_prune?}           (boolean)                                                                                                                    Whether to auto prune the list, defaults to false
+        {root_markers?}         (string[])                                                                                                                   The root markers to check, defaults to { ".git" } and fallback to cwd, set to {} to nil it
+        {root_detection_fn?}    (fun():string)                                                                                                               The function to detect the root, defaults to `require("warp.storage").find_project_root`
+        {list_item_format_fn?}  (fun(warp_item_entry:Warp.ListItem,index:number,is_active:boolean|nil,is_file_exists:boolean|nil):Warp.FormattedLineOpts[])  The function to format the list items lines, defaults to `require("warp.ui").default_list_item_format`
+        {keymaps?}              (Warp.Config.Keymaps)                                                                                                        The keymaps for actions
+        {window?}               (Warp.Config.Window)                                                                                                         The windows configurations
 
 
 Warp.Config.Keymaps                             *warp.types.Warp.Config.Keymaps*
@@ -965,8 +969,14 @@ Warp.FormattedLineOpts                       *warp.types.Warp.FormattedLineOpts*
         {display_text}  (string)   The display text
         {hl_group?}     (string)   The highlight group of the text
         {is_virtual?}   (boolean)  Whether the line is virtual
-        {col_start?}    (number)   The start column of the text, NOTE: this is calculated and for type purpose only
-        {col_end?}      (number)   The end column of the text, NOTE: this is calculated and for type purpose only
+
+
+                                              *warp.types.Warp.ComputedLineOpts*
+Warp.ComputedLineOpts : Warp.FormattedLineOpts
+
+    Fields: ~
+        {col_start?}  (number)  The start column of the text, NOTE: this is calculated and for type purpose only
+        {col_end?}    (number)  The end column of the text, NOTE: this is calculated and for type purpose only
 
 
 Warp.Config.Window                               *warp.types.Warp.Config.Window*
