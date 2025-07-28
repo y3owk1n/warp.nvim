@@ -276,8 +276,6 @@ function M.render_help(target_win)
     win_opts = vim.tbl_deep_extend("force", win_opts, user_win_opts(lines))
   end
 
-  Snacks.debug(win_opts)
-
   local warp_help_win_id = target_win or api.nvim_open_win(bufnr, false, win_opts)
 
   vim.wo[warp_help_win_id].cursorline = vim.o.cursorline
