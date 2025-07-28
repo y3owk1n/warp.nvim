@@ -214,6 +214,10 @@ Default Configuration:
     move_down = { "<C-j>" },
     show_help = { "g?" },
   },
+ window = {
+   list = {},
+   help = {},
+ },
 }
 <
 
@@ -897,6 +901,7 @@ Warp.Config                                        *warp.nvim.types.Warp.Config*
         {root_detection_fn?}    (fun():string)                                                        The function to detect the root, defaults to `require("warp.storage").find_project_root`
         {list_item_format_fn?}  (fun(entry:Warp.ListItem,idx:number,is_active:boolean|nil):string[])  The function to format the list items lines, defaults to `require("warp.ui").default_list_item_format`
         {keymaps?}              (Warp.Config.Keymaps)                                                 The keymaps for actions
+        {window?}               (Warp.Config.Window)                                                  The windows configurations
 
 
 Warp.Config.Keymaps                        *warp.nvim.types.Warp.Config.Keymaps*
@@ -924,6 +929,13 @@ Warp.FormattedLineOpts                  *warp.nvim.types.Warp.FormattedLineOpts*
     Fields: ~
         {display_text}  (string)  The display text
         {hl_group?}     (string)  The highlight group of the text
+
+
+Warp.Config.Window                          *warp.nvim.types.Warp.Config.Window*
+
+    Fields: ~
+        {list?}  (vim.api.keyset.win_config|fun(lines:string[]):vim.api.keyset.win_config)  The window configurations for the list window
+        {help?}  (vim.api.keyset.win_config|fun(lines:string[]):vim.api.keyset.win_config)  The window configurations for the help window
 
 
 vim:tw=78:ts=8:noet:ft=help:norl:

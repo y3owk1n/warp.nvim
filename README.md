@@ -105,6 +105,15 @@ require("warp").setup({
     split_vertical = { "<C-w>v" }, -- vertical split
     show_help = { "g?" }, -- show the help menu
   },
+  -- [window] window configurations
+  window = {
+    -- [window.list] window configurations for the list window
+    -- can be a table of `win_config` or a function that takes a list of lines and returns a `win_config`
+    list = {},
+    -- [window.help] window configurations for the help window
+    -- can be a table of `win_config` or a function that takes a list of lines and returns a `win_config`
+    help = {},
+  },
 }
 ```
 
@@ -117,6 +126,7 @@ require("warp").setup({
 ---@field root_detection_fn? fun(): string? The function to detect the root, defaults to `require("warp.storage").find_project_root`
 ---@field list_item_format_fn? fun(entry: Warp.ListItem, idx: number, is_active: boolean|nil): string The function to format the list items lines
 ---@field keymaps? Warp.Config.Keymaps The keymaps for actions
+---@field window? Warp.Config.Window The windows configurations
 
 ---@class Warp.Config.Keymaps
 ---@field quit? string[]
@@ -127,11 +137,24 @@ require("warp").setup({
 ---@field split_horizontal? string[]
 ---@field split_vertical? string[]
 ---@field show_help? string[]
+
+---@class Warp.ListItem
+---@field path string The path of the file
+---@field cursor number[] The cursor position as {row, col}
+
+---@class Warp.FormattedLineOpts
+---@field display_text string The display text
+---@field hl_group? string The highlight group of the text
+
+---@class Warp.Config.Window
+---@field list? vim.api.keyset.win_config|fun(lines: string[]):vim.api.keyset.win_config The window configurations for the list window
+---@field help? vim.api.keyset.win_config|fun(lines:string[]):vim.api.keyset.win_config The window configurations for the help window
 ```
 
 ## 🚀 Quick Start
 
-See the example below for how to configure **warp.nvim** with keybindings.
+See the example below for how to configure **warp.nvim** with keybindings. In my opinion, the defaults are good enough
+that you probably don't need to configure anything and start working on it.
 
 > [!NOTE]
 > The example below showcases all of the potential keybindings that you can do, you don't have to use all of them...
