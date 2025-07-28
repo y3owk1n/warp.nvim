@@ -18,6 +18,10 @@
 ---    move_down = { "<C-j>" },
 ---    show_help = { "g?" },
 ---  },
+--- window = {
+---   list = {},
+---   help = {},
+--- },
 ---}
 ---<
 ---
@@ -51,6 +55,10 @@ M.defaults = {
     split_horizontal = { "<C-w>s" },
     split_vertical = { "<C-w>v" },
     show_help = { "g?" },
+  },
+  window = {
+    list = {},
+    help = {},
   },
 }
 

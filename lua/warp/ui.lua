@@ -61,6 +61,8 @@ function M.render_warp_list(parent_item, warp_list, target_win, active_bufnr, ft
   local max_line_width = math.max(unpack(line_widths), 60)
   local max_height = #lines < 8 and 8 or math.min(#lines, vim.o.lines - 3)
 
+  local user_win_opts = require("warp.config").config.window.list or {}
+
   ---@type vim.api.keyset.win_config
   local win_opts = {
     style = "minimal",
@@ -71,6 +73,14 @@ function M.render_warp_list(parent_item, warp_list, target_win, active_bufnr, ft
     col = math.floor((vim.o.columns - max_line_width) / 2),
     title = string.format("'warp.nvim' %s", title),
   }
+
+  if type(user_win_opts) == "table" then
+    win_opts = vim.tbl_deep_extend("force", win_opts, user_win_opts)
+  end
+
+  if type(user_win_opts) == "function" then
+    win_opts = vim.tbl_deep_extend("force", win_opts, user_win_opts(lines))
+  end
 
   local warp_list_win_id = target_win or api.nvim_open_win(bufnr, false, win_opts)
 
@@ -245,6 +255,8 @@ function M.render_help(target_win)
   local line_widths = vim.tbl_map(vim.fn.strdisplaywidth, lines)
   local max_line_width = math.max(unpack(line_widths))
 
+  local user_win_opts = require("warp.config").config.window.help or {}
+
   ---@type vim.api.keyset.win_config
   local win_opts = {
     style = "minimal",
@@ -255,6 +267,16 @@ function M.render_help(target_win)
     height = #lines,
     title = string.format("'warp.nvim' %s", title),
   }
+
+  if type(user_win_opts) == "table" then
+    win_opts = vim.tbl_deep_extend("force", win_opts, user_win_opts)
+  end
+
+  if type(user_win_opts) == "function" then
+    win_opts = vim.tbl_deep_extend("force", win_opts, user_win_opts(lines))
+  end
+
+  Snacks.debug(win_opts)
 
   local warp_help_win_id = target_win or api.nvim_open_win(bufnr, false, win_opts)
 

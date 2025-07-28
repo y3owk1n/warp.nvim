@@ -13,6 +13,7 @@ local M = {}
 ---@field root_detection_fn? fun(): string The function to detect the root, defaults to `require("warp.storage").find_project_root`
 ---@field list_item_format_fn? fun(entry: Warp.ListItem, idx: number, is_active: boolean|nil): string[] The function to format the list items lines, defaults to `require("warp.ui").default_list_item_format`
 ---@field keymaps? Warp.Config.Keymaps The keymaps for actions
+---@field window? Warp.Config.Window The windows configurations
 
 ---@class Warp.Config.Keymaps
 ---@field quit? string[]
@@ -31,5 +32,9 @@ local M = {}
 ---@class Warp.FormattedLineOpts
 ---@field display_text string The display text
 ---@field hl_group? string The highlight group of the text
+
+---@class Warp.Config.Window
+---@field list? vim.api.keyset.win_config|fun(lines: string[]):vim.api.keyset.win_config The window configurations for the list window
+---@field help? vim.api.keyset.win_config|fun(lines:string[]):vim.api.keyset.win_config The window configurations for the help window
 
 return M
