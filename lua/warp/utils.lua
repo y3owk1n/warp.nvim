@@ -118,6 +118,8 @@ end
 function M.parse_format_fn_result(format_result)
   local parsed = {}
 
+  local current_col = 0
+
   for _, item in ipairs(format_result) do
     if type(item) ~= "table" then
       goto continue
@@ -133,6 +135,11 @@ function M.parse_format_fn_result(format_result)
       if type(item.display_text) == "number" then
         parsed_item.display_text = tostring(item.display_text)
       end
+
+      ---calculate the start and end column one by one
+      parsed_item.col_start = current_col
+      current_col = parsed_item.col_start + #parsed_item.display_text
+      parsed_item.col_end = current_col
     end
 
     if item.hl_group then

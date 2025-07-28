@@ -7,7 +7,6 @@
 local M = {}
 
 local api = vim.api
-local str_utfindex = vim.str_utfindex
 local builtins = require("warp.builtins")
 local events = require("warp.events")
 local notify = require("warp.notifier")
@@ -54,7 +53,7 @@ function M.render_warp_list(parent_item, warp_list, target_win, active_bufnr, ft
 
   api.nvim_buf_set_lines(bufnr, 0, -1, false, lines)
 
-  M.set_list_item_hl_fn(bufnr, lines, line_data)
+  M.set_list_item_hl_fn(bufnr, line_data)
   M.set_standard_buf_options(bufnr, ft_name)
 
   local line_widths = vim.tbl_map(vim.fn.strdisplaywidth, lines)
@@ -249,7 +248,7 @@ function M.render_help(target_win)
 
   api.nvim_buf_set_lines(bufnr, 0, -1, false, lines)
 
-  M.set_list_item_hl_fn(bufnr, lines, line_data)
+  M.set_list_item_hl_fn(bufnr, line_data)
   M.set_standard_buf_options(bufnr, ft)
 
   local line_widths = vim.tbl_map(vim.fn.strdisplaywidth, lines)
@@ -333,10 +332,13 @@ end
 ---@param warp_list Warp.ListItem[] The list of items
 ---@return string[] lines The formatted lines
 ---@return number|nil active_idx The active index
----@return Warp.FormattedLineOpts[] formatted_raw_data The raw data of the formatted lines
+---@return Warp.FormattedLineOpts[][] formatted_raw_data The raw data of the formatted lines
 ---@usage `require("warp.ui").get_formatted_list_items(parent_item, warp_list)`
 function M.get_formatted_list_items(parent_item, warp_list)
+  ---@type string[]
   local lines = {}
+
+  ---@type Warp.FormattedLineOpts[][]
   local formatted_raw_data = {}
 
   ---@type number|nil
@@ -375,26 +377,18 @@ end
 
 ---Set the highlight for the list items
 ---@param bufnr number The buffer number
----@param lines string[] The lines in the buffer
----@param line_data Warp.ListItem[] The list items
+---@param line_data Warp.FormattedLineOpts[][] The formatted line data
 ---@return nil
 ---@usage `require("warp.ui").set_list_item_hl_fn(bufnr, lines, line_data)`
-function M.set_list_item_hl_fn(bufnr, lines, line_data)
+function M.set_list_item_hl_fn(bufnr, line_data)
   api.nvim_buf_clear_namespace(bufnr, ns, 0, -1)
 
   for line_number, line in ipairs(line_data) do
-    local actual_line = lines[line_number]
-
     for _, data in ipairs(line) do
       if data.hl_group then
-        local byte_start = actual_line:find(data.display_text, 1, true)
-
-        local hl_item_start_col = str_utfindex(actual_line:sub(1, byte_start - 1), "utf-8")
-        local hl_item_end_col = hl_item_start_col + str_utfindex(data.display_text, "utf-8")
-
-        if hl_item_start_col then
-          api.nvim_buf_set_extmark(bufnr, ns, line_number - 1, hl_item_start_col, {
-            end_col = hl_item_end_col,
+        if data.col_start and data.col_end then
+          api.nvim_buf_set_extmark(bufnr, ns, line_number - 1, data.col_start, {
+            end_col = data.col_end,
             hl_group = data.hl_group,
           })
         end
