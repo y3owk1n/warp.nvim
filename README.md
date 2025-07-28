@@ -481,16 +481,29 @@ Below is the default implementation. You can override it by setting `list_item_f
 ---@param is_file_exists boolean|nil Whether the file exists in the system and reachable
 ---@return Warp.FormattedLineOpts[] formatted_entry The formatted entry
 ---@usage `require('warp.builtins').list_item_format_fn(entry, idx, is_active, is_file_exists)`
-function M.list_item_format_fn(entry, idx, is_active, is_file_exists)
+function M.list_item_format_fn(warp_item_entry, index, is_active, is_file_exists)
   ---@type Warp.FormattedLineOpts
-  local spacer = {
+  local virtual_spacer = {
     display_text = " ",
+    is_virtual = true,
   }
 
   ---@type Warp.FormattedLineOpts
-  local display_idx = {
-    display_text = tostring(idx),
+  ---@diagnostic disable-next-line: missing-fields
+  local display_index = {
+    display_text = tostring(index),
+    is_virtual = true,
   }
+
+  if is_active then
+    display_index.display_text = "*"
+    display_index.hl_group = "Added"
+  end
+
+  if not is_file_exists then
+    display_index.display_text = "x"
+    display_index.hl_group = "Error"
+  end
 
   local has_devicons, nvim_web_devicons = pcall(require, "nvim-web-devicons")
 
@@ -499,39 +512,31 @@ function M.list_item_format_fn(entry, idx, is_active, is_file_exists)
   local display_ft_icon = {}
 
   if has_devicons then
-    local ft_icon, ft_icon_hl = nvim_web_devicons.get_icon(entry.path, nil, { default = true })
+    local ft_icon, ft_icon_hl = nvim_web_devicons.get_icon(warp_item_entry.path, nil, { default = true })
 
     ---@type Warp.FormattedLineOpts
     display_ft_icon = {
       display_text = ft_icon,
       hl_group = ft_icon_hl,
+      is_virtual = true,
     }
   end
 
   ---@type Warp.FormattedLineOpts
   local display_path = {
-    display_text = fn.fnamemodify(entry.path, ":~:."),
+    display_text = fn.fnamemodify(warp_item_entry.path, ":~:."),
   }
 
   if not is_file_exists then
-    display_path.display_text = display_path.display_text .. "  "
     display_path.hl_group = "Error"
   end
 
-  ---@type Warp.FormattedLineOpts
-  local display_active_marker = {
-    display_text = "*",
-  }
-
   return {
-    spacer,
-    display_idx,
-    has_devicons and spacer,
+    display_index,
+    has_devicons and virtual_spacer,
     has_devicons and display_ft_icon,
-    spacer,
+    virtual_spacer,
     display_path,
-    is_active and spacer,
-    is_active and display_active_marker,
   }
 end
 ```
@@ -734,7 +739,7 @@ opts = {
       -- get all the line widths
       local line_widths = vim.tbl_map(vim.fn.strdisplaywidth, lines)
       -- set the width te either the max width or at least 20 characters
-      local max_width = math.max(math.max(unpack(line_widths)), 20)
+      local max_width = math.max(math.max(unpack(line_widths)), 30)
       -- set the height to if the number of lines is less than 8 then 8
       -- otherwise the number of lines
       local max_height = #lines < 8 and 8 or math.min(#lines, vim.o.lines - 3)
