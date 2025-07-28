@@ -965,10 +965,11 @@ Warp.ListItem                                    *warp.nvim.types.Warp.ListItem*
 Warp.FormattedLineOpts                  *warp.nvim.types.Warp.FormattedLineOpts*
 
     Fields: ~
-        {display_text}  (string)  The display text
-        {hl_group?}     (string)  The highlight group of the text
-        {col_start?}    (number)  The start column of the text, NOTE: this is calculated and for type purpose only
-        {col_end?}      (number)  The end column of the text, NOTE: this is calculated and for type purpose only
+        {display_text}  (string)   The display text
+        {hl_group?}     (string)   The highlight group of the text
+        {is_virtual?}   (boolean)  Whether the line is virtual
+        {col_start?}    (number)   The start column of the text, NOTE: this is calculated and for type purpose only
+        {col_end?}      (number)   The end column of the text, NOTE: this is calculated and for type purpose only
 
 
 Warp.Config.Window                          *warp.nvim.types.Warp.Config.Window*
