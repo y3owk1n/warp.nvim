@@ -32,6 +32,7 @@ local M = {}
 ---@class Warp.FormattedLineOpts
 ---@field display_text string The display text
 ---@field hl_group? string The highlight group of the text
+---@field is_virtual? boolean Whether the line is virtual
 ---@field col_start? number The start column of the text, NOTE: this is calculated and for type purpose only
 ---@field col_end? number The end column of the text, NOTE: this is calculated and for type purpose only
 

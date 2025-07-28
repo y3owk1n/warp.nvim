@@ -134,6 +134,8 @@ function M.parse_format_fn_result(format_result)
     ---@diagnostic disable-next-line: missing-fields
     local parsed_item = {}
 
+    parsed_item.is_virtual = item.is_virtual or false
+
     if item.display_text then
       if type(item.display_text) == "string" then
         parsed_item.display_text = item.display_text
@@ -143,10 +145,12 @@ function M.parse_format_fn_result(format_result)
         parsed_item.display_text = tostring(item.display_text)
       end
 
-      ---calculate the start and end column one by one
-      parsed_item.col_start = current_col
-      current_col = parsed_item.col_start + #parsed_item.display_text
-      parsed_item.col_end = current_col
+      if not parsed_item.is_virtual then
+        ---calculate the start and end column one by one
+        parsed_item.col_start = current_col
+        current_col = parsed_item.col_start + #parsed_item.display_text
+        parsed_item.col_end = current_col
+      end
     end
 
     if item.hl_group then
@@ -172,7 +176,7 @@ function M.convert_parsed_format_result_to_string(parsed)
   local display_lines = {}
 
   for _, item in ipairs(parsed) do
-    if item.display_text then
+    if item.display_text and not item.is_virtual then
       table.insert(display_lines, item.display_text)
     end
   end

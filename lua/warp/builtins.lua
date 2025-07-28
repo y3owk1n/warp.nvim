@@ -49,13 +49,15 @@ end
 ---@usage `require('warp.builtins').list_item_format_fn(warp_item_entry, index, is_active, is_file_exists)`
 function M.list_item_format_fn(warp_item_entry, index, is_active, is_file_exists)
   ---@type Warp.FormattedLineOpts
-  local spacer = {
+  local virtual_spacer = {
     display_text = " ",
+    is_virtual = true,
   }
 
   ---@type Warp.FormattedLineOpts
   local display_index = {
     display_text = tostring(index),
+    is_virtual = true,
   }
 
   local has_devicons, nvim_web_devicons = pcall(require, "nvim-web-devicons")
@@ -71,6 +73,7 @@ function M.list_item_format_fn(warp_item_entry, index, is_active, is_file_exists
     display_ft_icon = {
       display_text = ft_icon,
       hl_group = ft_icon_hl,
+      is_virtual = true,
     }
   end
 
@@ -80,7 +83,6 @@ function M.list_item_format_fn(warp_item_entry, index, is_active, is_file_exists
   }
 
   if not is_file_exists then
-    display_path.display_text = string.format("%s %s", display_path.display_text, "")
     display_path.hl_group = "Error"
   end
 
@@ -88,17 +90,26 @@ function M.list_item_format_fn(warp_item_entry, index, is_active, is_file_exists
   local display_active_marker = {
     display_text = "",
     hl_group = "Added",
+    is_virtual = true,
+  }
+
+  ---@type Warp.FormattedLineOpts
+  local display_error_marker = {
+    display_text = "",
+    hl_group = "Error",
+    is_virtual = true,
   }
 
   return {
-    spacer,
     display_index,
-    has_devicons and spacer,
+    has_devicons and virtual_spacer,
     has_devicons and display_ft_icon,
-    spacer,
+    virtual_spacer,
     display_path,
-    is_active and spacer,
+    is_active and virtual_spacer,
     is_active and display_active_marker,
+    not is_file_exists and virtual_spacer,
+    not is_file_exists and display_error_marker,
   }
 end
 
