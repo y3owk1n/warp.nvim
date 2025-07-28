@@ -1,4 +1,4 @@
----@mod warp.nvim.events Events
+---@mod warp.events Events modules
 
 ---@brief [[
 ---Events related implementations

@@ -1,4 +1,4 @@
----@mod warp.nvim.config Configurations
+---@mod warp.config Configurations
 ---@brief [[
 ---Configuration related implementations
 ---
@@ -36,7 +36,7 @@ local storage = require("warp.storage")
 local utils = require("warp.utils")
 
 ---@type Warp.Config
----@see warp.nvim.types.Warp.Config
+---@see warp.types.Warp.Config
 M.config = {}
 
 ---@private

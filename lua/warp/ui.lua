@@ -1,4 +1,4 @@
----@mod warp.nvim.ui UI
+---@mod warp.ui UI modules
 
 ---@brief [[
 ---UI related implementations
@@ -29,14 +29,14 @@ function M.set_standard_buf_options(bufnr, ft)
   api.nvim_set_option_value("buflisted", false, { scope = "local", buf = bufnr })
 end
 
----Render the warp list
+---Render the warp list window
 ---@param parent_item Warp.ListItem|nil The parent item before open the window
 ---@param warp_list Warp.ListItem[] The list of items
 ---@param active_winid? integer The active window to render the list, if exists then will use it
 ---@param active_bufnr? integer The active buffer number
 ---@param ft_name string The filetype name
 ---@return nil
----@see warp.nvim.types.Warp.ListItem
+---@see warp.types.Warp.ListItem
 ---@usage `require('warp.ui').render_warp_list(parent_item, warp_list, active_winid, active_bufnr, ft_name)`
 function M.render_warp_list(parent_item, warp_list, active_winid, active_bufnr, ft_name)
   local title = "list"
@@ -334,8 +334,8 @@ end
 ---@return string[] lines The formatted lines
 ---@return number|nil active_index The active index
 ---@return Warp.FormattedLineOpts[][] formatted_raw_data The raw data of the formatted lines
----@see warp.nvim.types.Warp.ListItem
----@see warp.nvim.types.Warp.FormattedLineOpts
+---@see warp.types.Warp.ListItem
+---@see warp.types.Warp.FormattedLineOpts
 ---@usage `require("warp.ui").get_formatted_list_items(parent_item, warp_list)`
 function M.get_formatted_list_items(parent_item, warp_list)
   ---@type string[]
@@ -381,7 +381,7 @@ end
 ---Render the entries of help items as lines
 ---@return string[] lines The formatted lines
 ---@return Warp.FormattedLineOpts[][] formatted_raw_data The raw data of the formatted lines
----@see warp.nvim.types.Warp.FormattedLineOpts
+---@see warp.types.Warp.FormattedLineOpts
 ---@usage `require('warp.ui').get_help_lines()`
 function M.get_formatted_help_lines()
   ---@type string[]
@@ -437,9 +437,9 @@ end
 
 ---Set the highlight for the list items
 ---@param bufnr number The buffer number
----@param line_data Warp.FormattedLineOpts[][] The formatted line data
+---@param line_data Warp.ComputedLineOpts[][] The formatted line data
 ---@return nil
----@see warp.nvim.types.Warp.FormattedLineOpts
+---@see warp.types.Warp.ComputedLineOpts
 ---@usage `require("warp.ui").set_list_item_hl_fn(bufnr, lines, line_data)`
 function M.set_list_item_hl_fn(bufnr, line_data)
   api.nvim_buf_clear_namespace(bufnr, ns, 0, -1)

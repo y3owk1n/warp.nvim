@@ -1,4 +1,4 @@
----@mod warp.nvim.utils Utilities
+---@mod warp.utils Utility functions
 
 ---@brief [[
 ---Utilities related implementations
@@ -59,7 +59,7 @@ end
 ---@param direction_or_index Warp.Config.MoveDirection | number The direction or index to move to
 ---@param current_item_index number|nil The current index of the item
 ---@return number|nil parsed_index The parsed index
----@see warp.nvim.types.Warp.Config.MoveDirection
+---@see warp.types.Warp.Config.MoveDirection
 ---@usage `require('warp.utils').parse_direction_or_index('prev')`
 function M.parse_direction_or_index(direction_or_index, current_item_index)
   ---@type number
@@ -115,11 +115,12 @@ end
 
 ---Parse a format result and ensure all in string
 ---@param format_result Warp.FormattedLineOpts[] The format result
----@return Warp.FormattedLineOpts[] raw The parsed format result
----@see warp.nvim.types.Warp.FormattedLineOpts
+---@return Warp.ComputedLineOpts[] raw The parsed format result
+---@see warp.types.Warp.FormattedLineOpts
+---@see warp.types.Warp.ComputedLineOpts
 ---@usage `require('warp.utils').parse_format_fn_result(format_result)`
 function M.parse_format_fn_result(format_result)
-  ---@type Warp.FormattedLineOpts[]
+  ---@type Warp.ComputedLineOpts[]
   local parsed = {}
 
   ---@type number keep track of the col counts to proper compute every col position
@@ -130,7 +131,7 @@ function M.parse_format_fn_result(format_result)
       goto continue
     end
 
-    ---@type Warp.FormattedLineOpts
+    ---@type Warp.ComputedLineOpts
     ---@diagnostic disable-next-line: missing-fields
     local parsed_item = {}
 
@@ -172,9 +173,9 @@ function M.parse_format_fn_result(format_result)
 end
 
 ---Convert a parsed format result to string
----@param parsed Warp.FormattedLineOpts[] The parsed format result
+---@param parsed Warp.ComputedLineOpts[] The parsed format result
 ---@return string lines The formatted lines
----@see warp.nvim.types.Warp.FormattedLineOpts
+---@see warp.types.Warp.ComputedLineOpts
 ---@usage `require('warp.utils').convert_parsed_format_result_to_string(parsed)`
 function M.convert_parsed_format_result_to_string(parsed)
   local display_lines = {}

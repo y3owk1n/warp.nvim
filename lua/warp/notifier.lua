@@ -1,4 +1,4 @@
----@mod warp.nvim.notifier Notifier
+---@mod warp.notifier Notifier modules
 
 ---@brief [[
 ---Notification related implementations

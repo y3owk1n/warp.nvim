@@ -1,4 +1,4 @@
-*warp.nvim.txt*
+*warp.txt*
 
 Warp is a lightweight project-local buffer list for Neovim — add, view, jump, reorder, and remove buffers, all from a floating window.
 
@@ -7,31 +7,31 @@ Warp is a lightweight project-local buffer list for Neovim — add, view, jump, 
 It's inspired by https://github.com/ThePrimeagen/harpoon, but with a simpler goal: do one thing well. No terminals, no fancy workflows — just files you care about, saved per project.
 
 ==============================================================================
-Table of Contents                                                *warp.nvim.toc*
+Table of Contents                                                     *warp.toc*
 
-API ···························································· |warp.nvim.api|
-Configurations ·············································· |warp.nvim.config|
-List ·························································· |warp.nvim.list|
-Storage ···················································· |warp.nvim.storage|
-UI ······························································ |warp.nvim.ui|
-Utilities ···················································· |warp.nvim.utils|
-Notifier ·················································· |warp.nvim.notifier|
-Builtins ·················································· |warp.nvim.builtins|
-Events ······················································ |warp.nvim.events|
-Types ························································ |warp.nvim.types|
+Main modules ···························································· |warp|
+Configurations ··················································· |warp.config|
+List modules ······················································· |warp.list|
+Storage modules ················································· |warp.storage|
+UI modules ··························································· |warp.ui|
+Utility functions ················································· |warp.utils|
+Notifier modules ··············································· |warp.notifier|
+Builtins functions ············································· |warp.builtins|
+Events modules ··················································· |warp.events|
+Types ····························································· |warp.types|
 
 ==============================================================================
-API                                                              *warp.nvim.api*
+Main modules                                                              *warp*
 
-M.setup                                                    *warp.nvim.api.setup*
-    Entry point to setup the plugin
+                                                                  *warp.setup()*
+M.setup                                                             *warp.setup*
 
     Type: ~
         (fun(user_config?:Warp.Config))
 
     See: ~
-        |warp.nvim.config.config|
-        |warp.nvim.types.Warp.Config|
+        |warp.config.config|
+        |warp.types.Warp.Config|
 
     Usage: ~
 >lua
@@ -39,7 +39,7 @@ M.setup                                                    *warp.nvim.api.setup*
 <
 
 
-M.add()                                                      *warp.nvim.api.add*
+M.add()                                                               *warp.add*
     Add current buffer to list
 
     Returns: ~
@@ -51,7 +51,7 @@ M.add()                                                      *warp.nvim.api.add*
 <
 
 
-M.add_all_onscreen()                            *warp.nvim.api.add_all_onscreen*
+M.add_all_onscreen()                                     *warp.add_all_onscreen*
     Add all on screen buffer to list
 
     Returns: ~
@@ -63,7 +63,7 @@ M.add_all_onscreen()                            *warp.nvim.api.add_all_onscreen*
 <
 
 
-M.del()                                                      *warp.nvim.api.del*
+M.del()                                                               *warp.del*
     Remove current buffer from warp list
 
     Returns: ~
@@ -75,7 +75,7 @@ M.del()                                                      *warp.nvim.api.del*
 <
 
 
-M.move_to({direction_or_index})                          *warp.nvim.api.move_to*
+M.move_to({direction_or_index})                                   *warp.move_to*
     Move current buffer to a new index in list
 
     Parameters: ~
@@ -90,7 +90,7 @@ M.move_to({direction_or_index})                          *warp.nvim.api.move_to*
 <
 
 
-M.show_list()                                          *warp.nvim.api.show_list*
+M.show_list()                                                   *warp.show_list*
     Show the list item in window
 
     Returns: ~
@@ -102,7 +102,7 @@ M.show_list()                                          *warp.nvim.api.show_list*
 <
 
 
-M.clear_current_list()                        *warp.nvim.api.clear_current_list*
+M.clear_current_list()                                 *warp.clear_current_list*
     Clear current project's list
 
     Returns: ~
@@ -114,7 +114,7 @@ M.clear_current_list()                        *warp.nvim.api.clear_current_list*
 <
 
 
-M.clear_all_list()                                *warp.nvim.api.clear_all_list*
+M.clear_all_list()                                         *warp.clear_all_list*
     Clear all the lists across all projects
 
     Returns: ~
@@ -126,7 +126,7 @@ M.clear_all_list()                                *warp.nvim.api.clear_all_list*
 <
 
 
-M.goto_index({direction_or_index})                    *warp.nvim.api.goto_index*
+M.goto_index({direction_or_index})                             *warp.goto_index*
     Navigate to a file from warp list by index or direction
 
     Parameters: ~
@@ -141,14 +141,14 @@ M.goto_index({direction_or_index})                    *warp.nvim.api.goto_index*
 <
 
 
-M.on_file_update                                  *warp.nvim.api.on_file_update*
+M.on_file_update                                           *warp.on_file_update*
     Update entries if file or folder was updated
 
     Type: ~
         (fun(from:string,to:string):nil)
 
     See: ~
-        |warp.nvim.list.action.on_file_update|
+        |warp.list.action.on_file_update|
 
     Usage: ~
 >lua
@@ -163,14 +163,14 @@ M.on_file_update                                  *warp.nvim.api.on_file_update*
 <
 
 
-M.get_item_by_buf                                *warp.nvim.api.get_item_by_buf*
+M.get_item_by_buf                                         *warp.get_item_by_buf*
     Find the item of an entry by buffer
 
     Type: ~
         (fun(buf:number):{entry:Warp.ListItem,index:number}|nil)
 
     See: ~
-        |warp.nvim.list.get.item_by_buf|
+        |warp.list.get.item_by_buf|
 
     Usage: ~
 >lua
@@ -178,14 +178,14 @@ M.get_item_by_buf                                *warp.nvim.api.get_item_by_buf*
 <
 
 
-M.count                                                    *warp.nvim.api.count*
+M.count                                                             *warp.count*
     Get the count of the items
 
     Type: ~
         (fun():number)
 
     See: ~
-        |warp.nvim.list.get.count|
+        |warp.list.get.count|
 
     Usage: ~
 >lua
@@ -194,7 +194,7 @@ M.count                                                    *warp.nvim.api.count*
 
 
 ==============================================================================
-Configurations                                                *warp.nvim.config*
+Configurations                                                     *warp.config*
 
 Configuration related implementations
 
@@ -222,21 +222,21 @@ Default Configuration:
 <
 
 
-M.config                                               *warp.nvim.config.config*
+M.config                                                    *warp.config.config*
 
     Type: ~
         (Warp.Config)
 
     See: ~
-        |warp.nvim.types.Warp.Config|
+        |warp.types.Warp.Config|
 
 
 ==============================================================================
-List                                                            *warp.nvim.list*
+List modules                                                         *warp.list*
 
 List related implementations, important functions are re-exported to the main module.
 
-M.init()                                                   *warp.nvim.list.init*
+M.init()                                                        *warp.list.init*
     Initialize the list by getting the data from storage and set it
 
     Returns: ~
@@ -250,14 +250,14 @@ M.init()                                                   *warp.nvim.list.init*
 
 ------------------------------------------------------------------------------
 
-M.get.all()                                             *warp.nvim.list.get.all*
+M.get.all()                                                  *warp.list.get.all*
     Get all items
 
     Returns: ~
         (Warp.ListItem[])  The list of items
 
     See: ~
-        |warp.nvim.types.Warp.ListItem|
+        |warp.types.Warp.ListItem|
 
     Usage: ~
 >lua
@@ -265,7 +265,7 @@ M.get.all()                                             *warp.nvim.list.get.all*
 <
 
 
-M.get.count()                                         *warp.nvim.list.get.count*
+M.get.count()                                              *warp.list.get.count*
     Get the count of the items
 
     Returns: ~
@@ -277,7 +277,7 @@ M.get.count()                                         *warp.nvim.list.get.count*
 <
 
 
-M.get.item_by_index({index})                  *warp.nvim.list.get.item_by_index*
+M.get.item_by_index({index})                       *warp.list.get.item_by_index*
     Get a specific item by index
 
     Parameters: ~
@@ -287,7 +287,7 @@ M.get.item_by_index({index})                  *warp.nvim.list.get.item_by_index*
         (Warp.ListItem|nil)  The entry item
 
     See: ~
-        |warp.nvim.types.Warp.ListItem|
+        |warp.types.Warp.ListItem|
 
     Usage: ~
 >lua
@@ -295,7 +295,7 @@ M.get.item_by_index({index})                  *warp.nvim.list.get.item_by_index*
 <
 
 
-M.get.item_by_buf({bufnr})                      *warp.nvim.list.get.item_by_buf*
+M.get.item_by_buf({bufnr})                           *warp.list.get.item_by_buf*
     Find the index of an entry by buffer
 
     Parameters: ~
@@ -305,7 +305,7 @@ M.get.item_by_buf({bufnr})                      *warp.nvim.list.get.item_by_buf*
         ({entry:Warp.ListItem,index:number}|nil)  The entry item and index
 
     See: ~
-        |warp.nvim.types.Warp.ListItem|
+        |warp.types.Warp.ListItem|
 
     Usage: ~
 >lua
@@ -315,14 +315,14 @@ M.get.item_by_buf({bufnr})                      *warp.nvim.list.get.item_by_buf*
 
 ------------------------------------------------------------------------------
 
-M.action.set({data})                                 *warp.nvim.list.action.set*
+M.action.set({data})                                      *warp.list.action.set*
     Set the list
 
     Parameters: ~
         {data}  (Warp.ListItem[])  The list of items
 
     See: ~
-        |warp.nvim.types.Warp.ListItem|
+        |warp.types.Warp.ListItem|
 
     Usage: ~
 >lua
@@ -330,7 +330,7 @@ M.action.set({data})                                 *warp.nvim.list.action.set*
 <
 
 
-M.action.on_file_update({from}, {to})     *warp.nvim.list.action.on_file_update*
+M.action.on_file_update({from}, {to})          *warp.list.action.on_file_update*
     Update entries if file or folder was updated
 
     Parameters: ~
@@ -346,7 +346,7 @@ M.action.on_file_update({from}, {to})     *warp.nvim.list.action.on_file_update*
 <
 
 
-                                      *warp.nvim.list.action.update_line_number*
+                                           *warp.list.action.update_line_number*
 M.action.update_line_number({index}, {cursor})
 
     Parameters: ~
@@ -362,7 +362,7 @@ M.action.update_line_number({index}, {cursor})
 <
 
 
-M.action.insert({path}, {cursor})                 *warp.nvim.list.action.insert*
+M.action.insert({path}, {cursor})                      *warp.list.action.insert*
     Insert current buffer to current list
 
     Parameters: ~
@@ -378,7 +378,7 @@ M.action.insert({path}, {cursor})                 *warp.nvim.list.action.insert*
 <
 
 
-M.action.remove_one({index})                  *warp.nvim.list.action.remove_one*
+M.action.remove_one({index})                       *warp.list.action.remove_one*
     Remove an entry from the list
 
     Parameters: ~
@@ -393,7 +393,7 @@ M.action.remove_one({index})                  *warp.nvim.list.action.remove_one*
 <
 
 
-                                           *warp.nvim.list.action.move_to_index*
+                                                *warp.list.action.move_to_index*
 M.action.move_to_index({from_index}, {to_index})
     Move an entry to a new index
 
@@ -410,7 +410,7 @@ M.action.move_to_index({from_index}, {to_index})
 <
 
 
-M.action.prune()                                   *warp.nvim.list.action.prune*
+M.action.prune()                                        *warp.list.action.prune*
     Prune missing files from list
 
     Returns: ~
@@ -423,11 +423,11 @@ M.action.prune()                                   *warp.nvim.list.action.prune*
 
 
 ==============================================================================
-Storage                                                      *warp.nvim.storage*
+Storage modules                                                   *warp.storage*
 
 Storage related implementations
 
-M.get_storage_dir()                          *warp.nvim.storage.get_storage_dir*
+M.get_storage_dir()                               *warp.storage.get_storage_dir*
     Get the storage directory
 
     Returns: ~
@@ -439,7 +439,7 @@ M.get_storage_dir()                          *warp.nvim.storage.get_storage_dir*
 <
 
 
-M.get_storage_path()                        *warp.nvim.storage.get_storage_path*
+M.get_storage_path()                             *warp.storage.get_storage_path*
     Get a safe, unique JSON file path for the current working directory
 
     Returns: ~
@@ -451,7 +451,7 @@ M.get_storage_path()                        *warp.nvim.storage.get_storage_path*
 <
 
 
-M.load({storage_path?})                                 *warp.nvim.storage.load*
+M.load({storage_path?})                                      *warp.storage.load*
     Load the data from the storage file and set it to the list
 
     Parameters: ~
@@ -461,7 +461,7 @@ M.load({storage_path?})                                 *warp.nvim.storage.load*
         (Warp.ListItem[])  The list of items
 
     See: ~
-        |warp.nvim.types.Warp.ListItem|
+        |warp.types.Warp.ListItem|
 
     Usage: ~
 >lua
@@ -469,7 +469,7 @@ M.load({storage_path?})                                 *warp.nvim.storage.load*
 <
 
 
-M.save({data?}, {storage_path?})                        *warp.nvim.storage.save*
+M.save({data?}, {storage_path?})                             *warp.storage.save*
     Save data to disk
 
     Parameters: ~
@@ -480,7 +480,7 @@ M.save({data?}, {storage_path?})                        *warp.nvim.storage.save*
         (nil)
 
     See: ~
-        |warp.nvim.types.Warp.ListItem|
+        |warp.types.Warp.ListItem|
 
     Usage: ~
 >lua
@@ -489,12 +489,11 @@ M.save({data?}, {storage_path?})                        *warp.nvim.storage.save*
 
 
 ==============================================================================
-UI                                                                *warp.nvim.ui*
+UI modules                                                             *warp.ui*
 
 UI related implementations
 
-                                         *warp.nvim.ui.set_standard_buf_options*
-M.set_standard_buf_options({bufnr}, {ft})
+M.set_standard_buf_options({bufnr}, {ft})     *warp.ui.set_standard_buf_options*
     Set standard buffer options
 
     Parameters: ~
@@ -510,9 +509,9 @@ M.set_standard_buf_options({bufnr}, {ft})
 <
 
 
-                                                 *warp.nvim.ui.render_warp_list*
+                                                      *warp.ui.render_warp_list*
 M.render_warp_list({parent_item}, {warp_list}, {active_winid?}, {active_bufnr?}, {ft_name})
-    Render the warp list
+    Render the warp list window
 
     Parameters: ~
         {parent_item}    (Warp.ListItem|nil)  The parent item before open the window
@@ -525,7 +524,7 @@ M.render_warp_list({parent_item}, {warp_list}, {active_winid?}, {active_bufnr?},
         (nil)
 
     See: ~
-        |warp.nvim.types.Warp.ListItem|
+        |warp.types.Warp.ListItem|
 
     Usage: ~
 >lua
@@ -533,7 +532,7 @@ M.render_warp_list({parent_item}, {warp_list}, {active_winid?}, {active_bufnr?},
 <
 
 
-M.render_help({active_winid?})                        *warp.nvim.ui.render_help*
+M.render_help({active_winid?})                             *warp.ui.render_help*
     Render the help window
 
     Parameters: ~
@@ -548,7 +547,7 @@ M.render_help({active_winid?})                        *warp.nvim.ui.render_help*
 <
 
 
-M.close_win({winid?})                                   *warp.nvim.ui.close_win*
+M.close_win({winid?})                                        *warp.ui.close_win*
     Close a window
 
     Parameters: ~
@@ -563,7 +562,7 @@ M.close_win({winid?})                                   *warp.nvim.ui.close_win*
 <
 
 
-M.is_ft_win_active({ft})                         *warp.nvim.ui.is_ft_win_active*
+M.is_ft_win_active({ft})                              *warp.ui.is_ft_win_active*
     Find if the the given filetype window is active and get it's detail
 
     Parameters: ~
@@ -580,7 +579,7 @@ M.is_ft_win_active({ft})                         *warp.nvim.ui.is_ft_win_active*
 <
 
 
-                                         *warp.nvim.ui.get_formatted_list_items*
+                                              *warp.ui.get_formatted_list_items*
 M.get_formatted_list_items({parent_item}, {warp_list})
     Render the entries of list items as lines
 
@@ -594,8 +593,8 @@ M.get_formatted_list_items({parent_item}, {warp_list})
         (Warp.FormattedLineOpts[][])  The raw data of the formatted lines
 
     See: ~
-        |warp.nvim.types.Warp.ListItem|
-        |warp.nvim.types.Warp.FormattedLineOpts|
+        |warp.types.Warp.ListItem|
+        |warp.types.Warp.FormattedLineOpts|
 
     Usage: ~
 >lua
@@ -603,7 +602,7 @@ M.get_formatted_list_items({parent_item}, {warp_list})
 <
 
 
-M.get_formatted_help_lines()             *warp.nvim.ui.get_formatted_help_lines*
+M.get_formatted_help_lines()                  *warp.ui.get_formatted_help_lines*
     Render the entries of help items as lines
 
     Returns: ~
@@ -611,7 +610,7 @@ M.get_formatted_help_lines()             *warp.nvim.ui.get_formatted_help_lines*
         (Warp.FormattedLineOpts[][])  The raw data of the formatted lines
 
     See: ~
-        |warp.nvim.types.Warp.FormattedLineOpts|
+        |warp.types.Warp.FormattedLineOpts|
 
     Usage: ~
 >lua
@@ -619,8 +618,7 @@ M.get_formatted_help_lines()             *warp.nvim.ui.get_formatted_help_lines*
 <
 
 
-                                              *warp.nvim.ui.set_list_item_hl_fn*
-M.set_list_item_hl_fn({bufnr}, {line_data})
+M.set_list_item_hl_fn({bufnr}, {line_data})        *warp.ui.set_list_item_hl_fn*
     Set the highlight for the list items
 
     Parameters: ~
@@ -631,7 +629,7 @@ M.set_list_item_hl_fn({bufnr}, {line_data})
         (nil)
 
     See: ~
-        |warp.nvim.types.Warp.FormattedLineOpts|
+        |warp.types.Warp.FormattedLineOpts|
 
     Usage: ~
 >lua
@@ -640,11 +638,11 @@ M.set_list_item_hl_fn({bufnr}, {line_data})
 
 
 ==============================================================================
-Utilities                                                      *warp.nvim.utils*
+Utility functions                                                   *warp.utils*
 
 Utilities related implementations
 
-                                  *warp.nvim.utils.format_string_to_pascal_case*
+                                       *warp.utils.format_string_to_pascal_case*
 M.format_string_to_pascal_case({string})
     Convert a string to PascalCase
 
@@ -660,7 +658,7 @@ M.format_string_to_pascal_case({string})
 <
 
 
-M.augroup({name})                                      *warp.nvim.utils.augroup*
+M.augroup({name})                                           *warp.utils.augroup*
     Create an augroup
 
     Parameters: ~
@@ -675,7 +673,7 @@ M.augroup({name})                                      *warp.nvim.utils.augroup*
 <
 
 
-M.file_exists({path})                              *warp.nvim.utils.file_exists*
+M.file_exists({path})                                   *warp.utils.file_exists*
     Check if a file exists
 
     Parameters: ~
@@ -690,7 +688,7 @@ M.file_exists({path})                              *warp.nvim.utils.file_exists*
 <
 
 
-M.buf_set_keymap({bufnr}, {lhs}, {rhs})         *warp.nvim.utils.buf_set_keymap*
+M.buf_set_keymap({bufnr}, {lhs}, {rhs})              *warp.utils.buf_set_keymap*
     Set a keymap for a buffer
 
     Parameters: ~
@@ -704,7 +702,7 @@ M.buf_set_keymap({bufnr}, {lhs}, {rhs})         *warp.nvim.utils.buf_set_keymap*
 <
 
 
-                                      *warp.nvim.utils.parse_direction_or_index*
+                                           *warp.utils.parse_direction_or_index*
 M.parse_direction_or_index({direction_or_index}, {current_item_index})
     Parse a direction_or_index to a number
 
@@ -716,7 +714,7 @@ M.parse_direction_or_index({direction_or_index}, {current_item_index})
         (number|nil)  The parsed index
 
     See: ~
-        |warp.nvim.types.Warp.Config.MoveDirection|
+        |warp.types.Warp.Config.MoveDirection|
 
     Usage: ~
 >lua
@@ -724,7 +722,7 @@ M.parse_direction_or_index({direction_or_index}, {current_item_index})
 <
 
 
-M.get_all_onscreen_bufs()                *warp.nvim.utils.get_all_onscreen_bufs*
+M.get_all_onscreen_bufs()                     *warp.utils.get_all_onscreen_bufs*
     Get all on screen visible buffers
 
     Returns: ~
@@ -736,8 +734,7 @@ M.get_all_onscreen_bufs()                *warp.nvim.utils.get_all_onscreen_bufs*
 <
 
 
-                                        *warp.nvim.utils.parse_format_fn_result*
-M.parse_format_fn_result({format_result})
+M.parse_format_fn_result({format_result})    *warp.utils.parse_format_fn_result*
     Parse a format result and ensure all in string
 
     Parameters: ~
@@ -747,7 +744,7 @@ M.parse_format_fn_result({format_result})
         (Warp.FormattedLineOpts[])  The parsed format result
 
     See: ~
-        |warp.nvim.types.Warp.FormattedLineOpts|
+        |warp.types.Warp.FormattedLineOpts|
 
     Usage: ~
 >lua
@@ -755,7 +752,7 @@ M.parse_format_fn_result({format_result})
 <
 
 
-                        *warp.nvim.utils.convert_parsed_format_result_to_string*
+                             *warp.utils.convert_parsed_format_result_to_string*
 M.convert_parsed_format_result_to_string({parsed})
     Convert a parsed format result to string
 
@@ -766,7 +763,7 @@ M.convert_parsed_format_result_to_string({parsed})
         (string)  The formatted lines
 
     See: ~
-        |warp.nvim.types.Warp.FormattedLineOpts|
+        |warp.types.Warp.FormattedLineOpts|
 
     Usage: ~
 >lua
@@ -775,11 +772,11 @@ M.convert_parsed_format_result_to_string({parsed})
 
 
 ==============================================================================
-Notifier                                                    *warp.nvim.notifier*
+Notifier modules                                                 *warp.notifier*
 
 Notification related implementations
 
-M.info({msg})                                          *warp.nvim.notifier.info*
+M.info({msg})                                               *warp.notifier.info*
     Info notification
 
     Parameters: ~
@@ -794,7 +791,7 @@ M.info({msg})                                          *warp.nvim.notifier.info*
 <
 
 
-M.warn({msg})                                          *warp.nvim.notifier.warn*
+M.warn({msg})                                               *warp.notifier.warn*
     Warn notification
 
     Parameters: ~
@@ -809,7 +806,7 @@ M.warn({msg})                                          *warp.nvim.notifier.warn*
 <
 
 
-M.error({msg})                                        *warp.nvim.notifier.error*
+M.error({msg})                                             *warp.notifier.error*
     Error notification
 
     Parameters: ~
@@ -825,11 +822,11 @@ M.error({msg})                                        *warp.nvim.notifier.error*
 
 
 ==============================================================================
-Builtins                                                    *warp.nvim.builtins*
+Builtins functions                                               *warp.builtins*
 
 Builtins related implementations
 
-M.root_detection_fn()                     *warp.nvim.builtins.root_detection_fn*
+M.root_detection_fn()                          *warp.builtins.root_detection_fn*
     Find the root directory based on root markers, or fall back to cwd
 
     Returns: ~
@@ -841,7 +838,7 @@ M.root_detection_fn()                     *warp.nvim.builtins.root_detection_fn*
 <
 
 
-                                        *warp.nvim.builtins.list_item_format_fn*
+                                             *warp.builtins.list_item_format_fn*
 M.list_item_format_fn({warp_item_entry}, {index}, {is_active}, {is_file_exists})
     Default format for the entry lines for warp list
 
@@ -855,7 +852,7 @@ M.list_item_format_fn({warp_item_entry}, {index}, {is_active}, {is_file_exists})
         (Warp.FormattedLineOpts[])  The formatted entry
 
     See: ~
-        |warp.nvim.types.Warp.FormattedLineOpts|
+        |warp.types.Warp.FormattedLineOpts|
 
     Usage: ~
 >lua
@@ -863,8 +860,7 @@ M.list_item_format_fn({warp_item_entry}, {index}, {is_active}, {is_file_exists})
 <
 
 
-                                        *warp.nvim.builtins.help_item_format_fn*
-M.help_item_format_fn({keys}, {description})
+M.help_item_format_fn({keys}, {description}) *warp.builtins.help_item_format_fn*
     Default format for the entry lines for help
 
     Parameters: ~
@@ -875,7 +871,7 @@ M.help_item_format_fn({keys}, {description})
         (Warp.FormattedLineOpts[])  The formatted entry
 
     See: ~
-        |warp.nvim.types.Warp.FormattedLineOpts|
+        |warp.types.Warp.FormattedLineOpts|
 
     Usage: ~
 >lua
@@ -884,11 +880,11 @@ M.help_item_format_fn({keys}, {description})
 
 
 ==============================================================================
-Events                                                        *warp.nvim.events*
+Events modules                                                     *warp.events*
 
 Events related implementations
 
-Warp.Events                                       *warp.nvim.events.Warp.Events*
+Warp.Events                                            *warp.events.Warp.Events*
 
     Fields: ~
         {open_list_win}        ("WarpOpenListWin")        When a list window is opened
@@ -899,13 +895,13 @@ Warp.Events                                       *warp.nvim.events.Warp.Events*
         {updated_item_cursor}  ("WarpUpdatedItemCursor")  When a cursor for an item is updated
 
 
-M.constants                                         *warp.nvim.events.constants*
+M.constants                                              *warp.events.constants*
 
     Type: ~
         (Warp.Events)
 
 
-M.emit({event})                                          *warp.nvim.events.emit*
+M.emit({event})                                               *warp.events.emit*
     Emit an event
 
     Parameters: ~
@@ -921,10 +917,9 @@ M.emit({event})                                          *warp.nvim.events.emit*
 
 
 ==============================================================================
-Types                                                          *warp.nvim.types*
+Types                                                               *warp.types*
 
-                                     *warp.nvim.types.Warp.Config.MoveDirection*
-Warp.Config.MoveDirection
+Warp.Config.MoveDirection                 *warp.types.Warp.Config.MoveDirection*
 
     Variants: ~
         ("prev")
@@ -933,7 +928,7 @@ Warp.Config.MoveDirection
         ("last")
 
 
-Warp.Config                                        *warp.nvim.types.Warp.Config*
+Warp.Config                                             *warp.types.Warp.Config*
 
     Fields: ~
         {auto_prune?}           (boolean)                                                                         Whether to auto prune the list, defaults to false
@@ -944,7 +939,7 @@ Warp.Config                                        *warp.nvim.types.Warp.Config*
         {window?}               (Warp.Config.Window)                                                              The windows configurations
 
 
-Warp.Config.Keymaps                        *warp.nvim.types.Warp.Config.Keymaps*
+Warp.Config.Keymaps                             *warp.types.Warp.Config.Keymaps*
 
     Fields: ~
         {quit?}              (string[])
@@ -957,14 +952,14 @@ Warp.Config.Keymaps                        *warp.nvim.types.Warp.Config.Keymaps*
         {show_help?}         (string[])
 
 
-Warp.ListItem                                    *warp.nvim.types.Warp.ListItem*
+Warp.ListItem                                         *warp.types.Warp.ListItem*
 
     Fields: ~
         {path}    (string)    The path of the file
         {cursor}  (number[])  The cursor position as {row, col}
 
 
-Warp.FormattedLineOpts                  *warp.nvim.types.Warp.FormattedLineOpts*
+Warp.FormattedLineOpts                       *warp.types.Warp.FormattedLineOpts*
 
     Fields: ~
         {display_text}  (string)   The display text
@@ -974,7 +969,7 @@ Warp.FormattedLineOpts                  *warp.nvim.types.Warp.FormattedLineOpts*
         {col_end?}      (number)   The end column of the text, NOTE: this is calculated and for type purpose only
 
 
-Warp.Config.Window                          *warp.nvim.types.Warp.Config.Window*
+Warp.Config.Window                               *warp.types.Warp.Config.Window*
 
     Fields: ~
         {list?}  (vim.api.keyset.win_config|fun(lines:string[]):vim.api.keyset.win_config)  The window configurations for the list window

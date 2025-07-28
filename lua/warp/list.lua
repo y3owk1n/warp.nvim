@@ -1,4 +1,4 @@
----@mod warp.nvim.list List
+---@mod warp.list List modules
 
 ---@brief [[
 ---List related implementations, important functions are re-exported to the main module.
@@ -29,7 +29,7 @@ M.get = {}
 
 ---Get all items
 ---@return Warp.ListItem[] warp_list The list of items
----@see warp.nvim.types.Warp.ListItem
+---@see warp.types.Warp.ListItem
 ---@usage `require('warp.list').get.all()`
 function M.get.all()
   return warp_list
@@ -45,7 +45,7 @@ end
 ---Get a specific item by index
 ---@param index number The index of the entry
 ---@return Warp.ListItem|nil item The entry item
----@see warp.nvim.types.Warp.ListItem
+---@see warp.types.Warp.ListItem
 ---@usage `require('warp.list').get.item_by_index(1)`
 function M.get.item_by_index(index)
   if index < 1 or index > #warp_list then
@@ -57,7 +57,7 @@ end
 ---Find the index of an entry by buffer
 ---@param bufnr number The buffer number
 ---@return { entry: Warp.ListItem, index: number }|nil item The entry item and index
----@see warp.nvim.types.Warp.ListItem
+---@see warp.types.Warp.ListItem
 ---@usage `require('warp.list').get.item_by_buf(0)`
 function M.get.item_by_buf(bufnr)
   local path = fs.normalize(api.nvim_buf_get_name(bufnr))
@@ -77,7 +77,7 @@ M.action = {}
 
 ---Set the list
 ---@param data Warp.ListItem[] The list of items
----@see warp.nvim.types.Warp.ListItem
+---@see warp.types.Warp.ListItem
 ---@usage `require('warp.list').action.set(data)`
 function M.action.set(data)
   warp_list = data
