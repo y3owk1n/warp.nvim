@@ -1,4 +1,4 @@
----@mod warp.nvim.types Types
+---@mod warp.types Types
 
 local M = {}
 ---@alias Warp.Config.MoveDirection
@@ -11,7 +11,7 @@ local M = {}
 ---@field auto_prune? boolean Whether to auto prune the list, defaults to false
 ---@field root_markers? string[] The root markers to check, defaults to { ".git" } and fallback to cwd, set to {} to nil it
 ---@field root_detection_fn? fun(): string The function to detect the root, defaults to `require("warp.storage").find_project_root`
----@field list_item_format_fn? fun(warp_item_entry: Warp.ListItem, index: number, is_active: boolean|nil): string[] The function to format the list items lines, defaults to `require("warp.ui").default_list_item_format`
+---@field list_item_format_fn? fun(warp_item_entry: Warp.ListItem, index: number, is_active: boolean|nil, is_file_exists: boolean|nil): Warp.FormattedLineOpts[] The function to format the list items lines, defaults to `require("warp.ui").default_list_item_format`
 ---@field keymaps? Warp.Config.Keymaps The keymaps for actions
 ---@field window? Warp.Config.Window The windows configurations
 
@@ -33,6 +33,8 @@ local M = {}
 ---@field display_text string The display text
 ---@field hl_group? string The highlight group of the text
 ---@field is_virtual? boolean Whether the line is virtual
+
+---@class Warp.ComputedLineOpts : Warp.FormattedLineOpts
 ---@field col_start? number The start column of the text, NOTE: this is calculated and for type purpose only
 ---@field col_end? number The end column of the text, NOTE: this is calculated and for type purpose only
 

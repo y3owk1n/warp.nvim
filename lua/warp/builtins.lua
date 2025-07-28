@@ -1,4 +1,4 @@
----@mod warp.nvim.builtins Builtins
+---@mod warp.builtins Builtins functions
 
 ---@brief [[
 ---Builtins related implementations
@@ -45,7 +45,7 @@ end
 ---@param is_active boolean|nil Whether the entry is active
 ---@param is_file_exists boolean|nil Whether the file exists in the system and reachable
 ---@return Warp.FormattedLineOpts[] formatted_entry The formatted entry
----@see warp.nvim.types.Warp.FormattedLineOpts
+---@see warp.types.Warp.FormattedLineOpts
 ---@usage `require('warp.builtins').list_item_format_fn(warp_item_entry, index, is_active, is_file_exists)`
 function M.list_item_format_fn(warp_item_entry, index, is_active, is_file_exists)
   ---@type Warp.FormattedLineOpts
@@ -109,7 +109,7 @@ end
 ---@param keys string[] The list of keymaps for the entry
 ---@param description string The description of the entry
 ---@return Warp.FormattedLineOpts[] formatted_entry The formatted entry
----@see warp.nvim.types.Warp.FormattedLineOpts
+---@see warp.types.Warp.FormattedLineOpts
 ---@usage `require('warp.builtins').help_item_format_fn(keys, description)`
 function M.help_item_format_fn(keys, description)
   ---@type Warp.FormattedLineOpts

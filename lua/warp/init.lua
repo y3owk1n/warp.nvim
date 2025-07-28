@@ -1,7 +1,7 @@
 ---@module "warp"
 
 ---@brief [[
----*warp.nvim.txt*
+---*warp.txt*
 ---
 ---Warp is a lightweight project-local buffer list for Neovim — add, view, jump, reorder, and remove buffers, all from a floating window.
 ---
@@ -10,9 +10,9 @@
 ---It's inspired by https://github.com/ThePrimeagen/harpoon, but with a simpler goal: do one thing well. No terminals, no fancy workflows — just files you care about, saved per project.
 ---@brief ]]
 
----@toc warp.nvim.toc
+---@toc warp.toc
 
----@mod warp.nvim.api API
+---@mod warp Main modules
 
 local M = {}
 
@@ -26,8 +26,8 @@ local utils = require("warp.utils")
 
 ---Entry point to setup the plugin
 ---@type fun(user_config?: Warp.Config)
----@see warp.nvim.config.config
----@see warp.nvim.types.Warp.Config
+---@see warp.config.config
+---@see warp.types.Warp.Config
 ---@usage `require('warp').setup(opts)`
 M.setup = require("warp.config").setup
 
@@ -241,7 +241,7 @@ end
 
 ---Update entries if file or folder was updated
 ---@type fun(from: string, to: string): nil
----@see warp.nvim.list.action.on_file_update
+---@see warp.list.action.on_file_update
 ---@usage [[
 ---vim.api.nvim_create_autocmd("User", {
 ---  group = augroup,
@@ -256,13 +256,13 @@ M.on_file_update = require("warp.list").action.on_file_update
 
 ---Find the item of an entry by buffer
 ---@type fun(buf: number): { entry: Warp.ListItem, index: number }|nil
----@see warp.nvim.list.get.item_by_buf
+---@see warp.list.get.item_by_buf
 ---@usage `require('warp').get_item_by_buf(0)`
 M.get_item_by_buf = require("warp.list").get.item_by_buf
 
 ---Get the count of the items
 ---@type fun(): number
----@see warp.nvim.list.get.count
+---@see warp.list.get.count
 ---@usage `require('warp').count()`
 M.count = require("warp.list").get.count
 
