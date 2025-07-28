@@ -41,6 +41,7 @@ Just you, your files, and a fast way to warp between them.
 - [Keybindings](#%EF%B8%8F-keybindings)
 - [Events](#%EF%B8%8F-events)
 - [Integrations](#-integrations)
+- [UI Customization Example](#%EF%B8%8F-ui-customization-example)
 - [Contributing](#-contributing)
 
 ## 📦 Installation
@@ -718,6 +719,35 @@ opts = function(_, opts)
 
   return config
 end
+```
+
+## 🧩 UI Customization Example
+
+### Put the floating window to bottom left like `mini.visits`
+
+```lua
+opts = {
+  window = {
+    list = function(lines)
+      -- get all the line widths
+      local line_widths = vim.tbl_map(vim.fn.strdisplaywidth, lines)
+      -- set the width te either the max width or at least 20 characters
+      local max_width = math.max(math.max(unpack(line_widths)), 20)
+      -- set the height to if the number of lines is less than 8 then 8
+      -- otherwise the number of lines
+      local max_height = #lines < 8 and 8 or math.min(#lines, vim.o.lines - 3)
+      -- get the current height of the TUI
+      local nvim_tui_height = vim.api.nvim_list_uis()[1]
+
+      return {
+        width = max_width,
+        height = max_height,
+        row = nvim_tui_height.height - max_height - 4,
+        col = 0,
+      }
+    end,
+  },
+}
 ```
 
 ## 🤝 Contributing
