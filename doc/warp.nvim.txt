@@ -295,14 +295,17 @@ M.get.item_by_index({index})                  *warp.nvim.list.get.item_by_index*
 <
 
 
-M.get.item_by_buf({buf})                        *warp.nvim.list.get.item_by_buf*
+M.get.item_by_buf({bufnr})                      *warp.nvim.list.get.item_by_buf*
     Find the index of an entry by buffer
 
     Parameters: ~
-        {buf}  (number)  The buffer number
+        {bufnr}  (number)  The buffer number
 
     Returns: ~
         ({entry:Warp.ListItem,index:number}|nil)  The entry item and index
+
+    See: ~
+        |warp.nvim.types.Warp.ListItem|
 
     Usage: ~
 >lua
@@ -317,6 +320,9 @@ M.action.set({data})                                 *warp.nvim.list.action.set*
 
     Parameters: ~
         {data}  (Warp.ListItem[])  The list of items
+
+    See: ~
+        |warp.nvim.types.Warp.ListItem|
 
     Usage: ~
 >lua
@@ -372,28 +378,28 @@ M.action.insert({path}, {cursor})                 *warp.nvim.list.action.insert*
 <
 
 
-M.action.remove_one({idx})                    *warp.nvim.list.action.remove_one*
+M.action.remove_one({index})                  *warp.nvim.list.action.remove_one*
     Remove an entry from the list
 
     Parameters: ~
-        {idx}  (number)  The index of the entry
+        {index}  (number)  The index of the entry
 
     Returns: ~
         (nil)
 
     Usage: ~
 >lua
-        require('warp.list').remove_one(idx)
+        require('warp.list').remove_one(index)
 <
 
 
                                            *warp.nvim.list.action.move_to_index*
-M.action.move_to_index({from_idx}, {to_idx})
+M.action.move_to_index({from_index}, {to_index})
     Move an entry to a new index
 
     Parameters: ~
-        {from_idx}  (number)  The index of the entry
-        {to_idx}    (number)  The index of the entry
+        {from_index}  (number)  The index of the entry
+        {to_index}    (number)  The index of the entry
 
     Returns: ~
         (boolean)  Whether the operation was successful
@@ -454,6 +460,9 @@ M.load({storage_path?})                                 *warp.nvim.storage.load*
     Returns: ~
         (Warp.ListItem[])  The list of items
 
+    See: ~
+        |warp.nvim.types.Warp.ListItem|
+
     Usage: ~
 >lua
         require('warp.storage').load()
@@ -469,6 +478,9 @@ M.save({data?}, {storage_path?})                        *warp.nvim.storage.save*
 
     Returns: ~
         (nil)
+
+    See: ~
+        |warp.nvim.types.Warp.ListItem|
 
     Usage: ~
 >lua
@@ -499,52 +511,55 @@ M.set_standard_buf_options({bufnr}, {ft})
 
 
                                                  *warp.nvim.ui.render_warp_list*
-M.render_warp_list({parent_item}, {warp_list}, {target_win?}, {active_bufnr?}, {ft_name})
+M.render_warp_list({parent_item}, {warp_list}, {active_winid?}, {active_bufnr?}, {ft_name})
     Render the warp list
 
     Parameters: ~
         {parent_item}    (Warp.ListItem|nil)  The parent item before open the window
         {warp_list}      (Warp.ListItem[])    The list of items
-        {target_win?}    (integer)            The window number to render the list
+        {active_winid?}  (integer)            The active window to render the list, if exists then will use it
         {active_bufnr?}  (integer)            The active buffer number
         {ft_name}        (string)             The filetype name
 
     Returns: ~
         (nil)
 
+    See: ~
+        |warp.nvim.types.Warp.ListItem|
+
     Usage: ~
 >lua
-        require('warp.ui').render_warp_list(parent_item, warp_list, target_win, active_bufnr, ft_name)
+        require('warp.ui').render_warp_list(parent_item, warp_list, active_winid, active_bufnr, ft_name)
 <
 
 
-M.render_help({target_win?})                          *warp.nvim.ui.render_help*
+M.render_help({active_winid?})                        *warp.nvim.ui.render_help*
     Render the help window
 
     Parameters: ~
-        {target_win?}  (integer)  The window number to render the list
+        {active_winid?}  (integer)  The active window to render the list, if exists then will use it
 
     Returns: ~
         (nil)
 
     Usage: ~
 >lua
-        require('warp.ui').render_help(target_win)
+        require('warp.ui').render_help(active_winid)
 <
 
 
-M.close_win({win?})                                     *warp.nvim.ui.close_win*
+M.close_win({winid?})                                   *warp.nvim.ui.close_win*
     Close a window
 
     Parameters: ~
-        {win?}  (integer)  The window number
+        {winid?}  (integer)  The window number
 
     Returns: ~
         (nil)
 
     Usage: ~
 >lua
-        require('warp.ui').close_win(win)
+        require('warp.ui').close_win(winid)
 <
 
 
@@ -567,7 +582,7 @@ M.is_ft_win_active({ft})                         *warp.nvim.ui.is_ft_win_active*
 
                                          *warp.nvim.ui.get_formatted_list_items*
 M.get_formatted_list_items({parent_item}, {warp_list})
-    Render the entries as lines
+    Render the entries of list items as lines
 
     Parameters: ~
         {parent_item}  (Warp.ListItem|nil)  The parent item before open the window
@@ -578,9 +593,29 @@ M.get_formatted_list_items({parent_item}, {warp_list})
         (number|nil)                  The active index
         (Warp.FormattedLineOpts[][])  The raw data of the formatted lines
 
+    See: ~
+        |warp.nvim.types.Warp.ListItem|
+        |warp.nvim.types.Warp.FormattedLineOpts|
+
     Usage: ~
 >lua
         require("warp.ui").get_formatted_list_items(parent_item, warp_list)
+<
+
+
+M.get_formatted_help_lines()             *warp.nvim.ui.get_formatted_help_lines*
+    Render the entries of help items as lines
+
+    Returns: ~
+        (string[])                    The formatted lines
+        (Warp.FormattedLineOpts[][])  The raw data of the formatted lines
+
+    See: ~
+        |warp.nvim.types.Warp.FormattedLineOpts|
+
+    Usage: ~
+>lua
+        require('warp.ui').get_help_lines()
 <
 
 
@@ -595,21 +630,12 @@ M.set_list_item_hl_fn({bufnr}, {line_data})
     Returns: ~
         (nil)
 
+    See: ~
+        |warp.nvim.types.Warp.FormattedLineOpts|
+
     Usage: ~
 >lua
         require("warp.ui").set_list_item_hl_fn(bufnr, lines, line_data)
-<
-
-
-M.get_formatted_help_lines()             *warp.nvim.ui.get_formatted_help_lines*
-
-    Returns: ~
-        (string[])                  The formatted lines
-        (Warp.FormattedLineOpts[])  The formatted entry
-
-    Usage: ~
->lua
-        require('warp.ui').get_help_lines()
 <
 
 
@@ -619,11 +645,11 @@ Utilities                                                      *warp.nvim.utils*
 Utilities related implementations
 
                                   *warp.nvim.utils.format_string_to_pascal_case*
-M.format_string_to_pascal_case({str})
+M.format_string_to_pascal_case({string})
     Convert a string to PascalCase
 
     Parameters: ~
-        {str}  (string)  The string to convert
+        {string}  (string)  The string to convert
 
     Returns: ~
         (string)  formatted string
@@ -679,15 +705,18 @@ M.buf_set_keymap({bufnr}, {lhs}, {rhs})         *warp.nvim.utils.buf_set_keymap*
 
 
                                       *warp.nvim.utils.parse_direction_or_index*
-M.parse_direction_or_index({direction_or_index}, {current_item_idx})
+M.parse_direction_or_index({direction_or_index}, {current_item_index})
     Parse a direction_or_index to a number
 
     Parameters: ~
         {direction_or_index}  (Warp.Config.MoveDirection|number)  The direction or index to move to
-        {current_item_idx}    (number|nil)                        The current index of the item
+        {current_item_index}  (number|nil)                        The current index of the item
 
     Returns: ~
         (number|nil)  The parsed index
+
+    See: ~
+        |warp.nvim.types.Warp.Config.MoveDirection|
 
     Usage: ~
 >lua
@@ -712,10 +741,13 @@ M.parse_format_fn_result({format_result})
     Parse a format result and ensure all in string
 
     Parameters: ~
-        {format_result}  (table)  The format result
+        {format_result}  (Warp.FormattedLineOpts[])  The format result
 
     Returns: ~
         (Warp.FormattedLineOpts[])  The parsed format result
+
+    See: ~
+        |warp.nvim.types.Warp.FormattedLineOpts|
 
     Usage: ~
 >lua
@@ -732,6 +764,9 @@ M.convert_parsed_format_result_to_string({parsed})
 
     Returns: ~
         (string)  The formatted lines
+
+    See: ~
+        |warp.nvim.types.Warp.FormattedLineOpts|
 
     Usage: ~
 >lua
@@ -807,21 +842,24 @@ M.root_detection_fn()                     *warp.nvim.builtins.root_detection_fn*
 
 
                                         *warp.nvim.builtins.list_item_format_fn*
-M.list_item_format_fn({entry}, {idx}, {is_active}, {is_file_exists})
+M.list_item_format_fn({warp_item_entry}, {index}, {is_active}, {is_file_exists})
     Default format for the entry lines for warp list
 
     Parameters: ~
-        {entry}           (Warp.ListItem)  The entry item
-        {idx}             (number)         The index of the entry
-        {is_active}       (boolean|nil)    Whether the entry is active
-        {is_file_exists}  (boolean|nil)    Whether the file exists in the system and reachable
+        {warp_item_entry}  (Warp.ListItem)  The entry item
+        {index}            (number)         The index of the entry
+        {is_active}        (boolean|nil)    Whether the entry is active
+        {is_file_exists}   (boolean|nil)    Whether the file exists in the system and reachable
 
     Returns: ~
         (Warp.FormattedLineOpts[])  The formatted entry
 
+    See: ~
+        |warp.nvim.types.Warp.FormattedLineOpts|
+
     Usage: ~
 >lua
-        require('warp.builtins').list_item_format_fn(entry, idx, is_active, is_file_exists)
+        require('warp.builtins').list_item_format_fn(warp_item_entry, index, is_active, is_file_exists)
 <
 
 
@@ -830,11 +868,14 @@ M.help_item_format_fn({keys}, {description})
     Default format for the entry lines for help
 
     Parameters: ~
-        {keys}         (string[])
-        {description}  (string)
+        {keys}         (string[])  The list of keymaps for the entry
+        {description}  (string)    The description of the entry
 
     Returns: ~
         (Warp.FormattedLineOpts[])  The formatted entry
+
+    See: ~
+        |warp.nvim.types.Warp.FormattedLineOpts|
 
     Usage: ~
 >lua
@@ -895,12 +936,10 @@ Warp.Config.MoveDirection
 Warp.Config                                        *warp.nvim.types.Warp.Config*
 
     Fields: ~
-        {auto_prune?}           (boolean)                                                             Whether to auto prune the list, defaults to false
-        {root_markers?}         (string[])                                                            The root markers to check, defaults to { ".git" } and fallback to cwd, set to {} to nil it
-        {root_detection_fn?}    (fun():string)                                                        The function to detect the root, defaults to `require("warp.storage").find_project_root`
-        {list_item_format_fn?}  (fun(entry:Warp.ListItem,idx:number,is_active:boolean|nil):string[])  The function to format the list items lines, defaults to `require("warp.ui").default_list_item_format`
-        {keymaps?}              (Warp.Config.Keymaps)                                                 The keymaps for actions
-        {window?}               (Warp.Config.Window)                                                  The windows configurations
+        {auto_prune?}           (boolean)       Whether to auto prune the list, defaults to false
+        {root_markers?}         (string[])      The root markers to check, defaults to { ".git" } and fallback to cwd, set to {} to nil it
+        {root_detection_fn?}    (fun():string)  The function to detect the root, defaults to `require("warp.storage").find_project_root`
+        {list_item_format_fn?}  (fun)
 
 
 Warp.Config.Keymaps                        *warp.nvim.types.Warp.Config.Keymaps*

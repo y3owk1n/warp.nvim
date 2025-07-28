@@ -55,16 +55,17 @@ function M.get.item_by_index(index)
 end
 
 ---Find the index of an entry by buffer
----@param buf number The buffer number
+---@param bufnr number The buffer number
 ---@return { entry: Warp.ListItem, index: number }|nil item The entry item and index
+---@see warp.nvim.types.Warp.ListItem
 ---@usage `require('warp.list').get.item_by_buf(0)`
-function M.get.item_by_buf(buf)
-  local path = fs.normalize(api.nvim_buf_get_name(buf))
-  for i, entry in ipairs(warp_list) do
+function M.get.item_by_buf(bufnr)
+  local path = fs.normalize(api.nvim_buf_get_name(bufnr))
+  for index, entry in ipairs(warp_list) do
     if fs.normalize(entry.path) == path then
       return {
         entry = entry,
-        index = i,
+        index = index,
       }
     end
   end
@@ -76,6 +77,7 @@ M.action = {}
 
 ---Set the list
 ---@param data Warp.ListItem[] The list of items
+---@see warp.nvim.types.Warp.ListItem
 ---@usage `require('warp.list').action.set(data)`
 function M.action.set(data)
   warp_list = data
@@ -88,13 +90,13 @@ end
 ---@usage `require('warp.list').action.on_file_update(from, to)`
 function M.action.on_file_update(from, to)
   local changed = false
-  for _, entry in ipairs(warp_list) do
-    if entry.path == from then
-      entry.path = to
+  for _, warp_list_entry in ipairs(warp_list) do
+    if warp_list_entry.path == from then
+      warp_list_entry.path = to
       changed = true
-    elseif vim.startswith(entry.path, from .. "/") then
+    elseif vim.startswith(warp_list_entry.path, from .. "/") then
       -- also fix sub-paths if the renamed item is a directory
-      entry.path = to .. entry.path:sub(#from + 1)
+      warp_list_entry.path = to .. warp_list_entry.path:sub(#from + 1)
       changed = true
     end
   end
@@ -109,13 +111,13 @@ end
 ---@return boolean ok Whether the operation was successful
 ---@usage `require('warp.list').action.update_line_number(1, [1, 1])`
 function M.action.update_line_number(index, cursor)
-  local entry = warp_list[index]
+  local warp_list_entry = warp_list[index]
 
-  if not entry then
+  if not warp_list_entry then
     return false
   end
 
-  entry.cursor = cursor
+  warp_list_entry.cursor = cursor
   return true
 end
 
@@ -126,8 +128,8 @@ end
 ---@usage `require('warp.list').insert(path, cursor)`
 function M.action.insert(path, cursor)
   local found = false
-  for _, entry in ipairs(warp_list) do
-    if entry.path == path then
+  for _, warp_list_entry in ipairs(warp_list) do
+    if warp_list_entry.path == path then
       found = true
       break
     end
@@ -142,35 +144,35 @@ function M.action.insert(path, cursor)
 end
 
 ---Remove an entry from the list
----@param idx number The index of the entry
+---@param index number The index of the entry
 ---@return nil
----@usage `require('warp.list').remove_one(idx)`
-function M.action.remove_one(idx)
-  table.remove(warp_list, idx)
+---@usage `require('warp.list').remove_one(index)`
+function M.action.remove_one(index)
+  table.remove(warp_list, index)
 end
 
 ---Move an entry to a new index
----@param from_idx number The index of the entry
----@param to_idx number The index of the entry
+---@param from_index number The index of the entry
+---@param to_index number The index of the entry
 ---@return boolean ok Whether the operation was successful
 ---@usage `require('warp.list').action.move_to_index(1, 2)`
-function M.action.move_to_index(from_idx, to_idx)
-  if from_idx == to_idx then
+function M.action.move_to_index(from_index, to_index)
+  if from_index == to_index then
     notify.info("Source and destination indices are the same, abort...")
     return false
   end
 
-  local len = #warp_list
-  if from_idx < 1 or from_idx > len or to_idx < 1 or to_idx > len then
+  local warp_list_length = #warp_list
+  if from_index < 1 or from_index > warp_list_length or to_index < 1 or to_index > warp_list_length then
     notify.info("Source and destination indices are out of bounds, abort...")
     return false
   end
 
-  local entry = warp_list[from_idx]
+  local warp_list_entry = warp_list[from_index]
 
-  table.remove(warp_list, from_idx)
+  table.remove(warp_list, from_index)
 
-  table.insert(warp_list, to_idx, entry)
+  table.insert(warp_list, to_index, warp_list_entry)
 
   return true
 end
@@ -183,14 +185,14 @@ function M.action.prune()
     return
   end
 
-  local i = 1
+  local walked_index = 1
   local pruned = 0
-  while i <= #warp_list do
-    if not utils.file_exists(warp_list[i].path) then
-      M.action.remove_one(i)
+  while walked_index <= #warp_list do
+    if not utils.file_exists(warp_list[walked_index].path) then
+      M.action.remove_one(walked_index)
       pruned = pruned + 1
     else
-      i = i + 1
+      walked_index = walked_index + 1
     end
   end
 

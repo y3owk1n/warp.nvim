@@ -35,8 +35,8 @@ M.setup = require("warp.config").setup
 ---@return nil
 ---@usage `require('warp').add() or ':WarpAddFile'`
 function M.add()
-  local buf = api.nvim_get_current_buf()
-  local path = fs.normalize(api.nvim_buf_get_name(buf))
+  local bufnr = api.nvim_get_current_buf()
+  local path = fs.normalize(api.nvim_buf_get_name(bufnr))
 
   if not utils.file_exists(path) then
     return
@@ -58,8 +58,8 @@ function M.add_all_onscreen()
 
   local added_count = 0
 
-  for _, buf in ipairs(bufs) do
-    local path = fs.normalize(api.nvim_buf_get_name(buf))
+  for _, bufnr in ipairs(bufs) do
+    local path = fs.normalize(api.nvim_buf_get_name(bufnr))
     local cursor = api.nvim_win_get_cursor(0)
 
     local ok = list.action.insert(path, cursor)
@@ -77,15 +77,15 @@ end
 ---@return nil
 ---@usage `require('warp').del() or ':WarpDelFile'`
 function M.del()
-  local buf = api.nvim_get_current_buf()
-  local item = list.get.item_by_buf(buf)
+  local bufnr = api.nvim_get_current_buf()
+  local warp_item = list.get.item_by_buf(bufnr)
 
-  if not item then
+  if not warp_item then
     notify.warn("Current buffer is not in warp list")
     return
   end
 
-  list.action.remove_one(item.index)
+  list.action.remove_one(warp_item.index)
   events.emit(events.constants.removed_from_list)
 end
 
@@ -94,22 +94,22 @@ end
 ---@return nil
 ---@usage `require('warp').move_to('prev') or ':WarpMoveTo prev'`
 function M.move_to(direction_or_index)
-  local buf = api.nvim_get_current_buf()
-  local item = list.get.item_by_buf(buf)
+  local bufnr = api.nvim_get_current_buf()
+  local warp_item = list.get.item_by_buf(bufnr)
 
-  if not item then
+  if not warp_item then
     notify.warn("Current buffer is not in warp list")
     return
   end
 
-  local to_idx = utils.parse_direction_or_index(direction_or_index, item.index)
+  local to_index = utils.parse_direction_or_index(direction_or_index, warp_item.index)
 
-  if not to_idx then
+  if not to_index then
     notify.warn("Invalid direction_or_index")
     return
   end
 
-  local ok = list.action.move_to_index(item.index, to_idx)
+  local ok = list.action.move_to_index(warp_item.index, to_index)
   if ok then
     events.emit(events.constants.moved_item_index)
   end
@@ -119,9 +119,10 @@ end
 ---@return nil
 ---@usage `require('warp').show_list() or ':WarpShowList'`
 function M.show_list()
-  local item = list.get.item_by_buf(api.nvim_get_current_buf())
+  local bufnr = api.nvim_get_current_buf()
+  local warp_item = list.get.item_by_buf(bufnr)
 
-  local entry = item and item.entry or nil
+  local warp_item_entry = warp_item and warp_item.entry or nil
 
   local warp_list = list.get.all()
 
@@ -134,15 +135,15 @@ function M.show_list()
 
   local ft_name = "warp-list"
 
-  local is_active, active_win, active_bufnr = require("warp.ui").is_ft_win_active(ft_name)
+  local is_active, active_winid, active_bufnr = require("warp.ui").is_ft_win_active(ft_name)
 
   if is_active then
-    require("warp.ui").close_win(active_win)
+    require("warp.ui").close_win(active_winid)
     events.emit(events.constants.close_list_win)
     return
   end
 
-  require("warp.ui").render_warp_list(entry, warp_list, active_win, active_bufnr, ft_name)
+  require("warp.ui").render_warp_list(warp_item_entry, warp_list, active_winid, active_bufnr, ft_name)
   events.emit(events.constants.open_list_win)
 end
 
@@ -200,42 +201,42 @@ end
 ---@return nil
 ---@usage `require('warp').goto_index(1) or ':WarpGoToIndex 1'`
 function M.goto_index(direction_or_index)
-  local buf = api.nvim_get_current_buf()
-  local item = list.get.item_by_buf(buf)
+  local bufnr = api.nvim_get_current_buf()
+  local warp_item = list.get.item_by_buf(bufnr)
 
-  local to_idx = utils.parse_direction_or_index(direction_or_index, item and item.index or nil)
+  local to_index = utils.parse_direction_or_index(direction_or_index, warp_item and warp_item.index or nil)
 
-  if not to_idx then
+  if not to_index then
     notify.warn("Invalid direction_or_index")
     return
   end
 
-  if item and item.index == to_idx then
+  if warp_item and warp_item.index == to_index then
     return
   end
 
-  local entry = list.get.item_by_index(to_idx)
-  if not entry then
+  local warp_item_entry = list.get.item_by_index(to_index)
+  if not warp_item_entry then
     notify.warn("Not in bound")
     return
   end
-  if not utils.file_exists(entry.path) then
+  if not utils.file_exists(warp_item_entry.path) then
     if not require("warp.config").config.auto_prune then
       notify.warn("file no longer exists but not pruning it")
       return
     end
     notify.warn("file no longer exists – removed")
-    list.action.remove_one(to_idx)
+    list.action.remove_one(to_index)
     events.emit(events.constants.removed_from_list)
     return
   end
   local current_path = api.nvim_buf_get_name(0)
-  if current_path ~= fn.fnamemodify(entry.path, ":p") then
-    vim.cmd("edit " .. fn.fnameescape(entry.path))
+  if current_path ~= fn.fnamemodify(warp_item_entry.path, ":p") then
+    vim.cmd("edit " .. fn.fnameescape(warp_item_entry.path))
   end
 
   ---Try to set but do not crash it
-  pcall(api.nvim_win_set_cursor, 0, entry.cursor)
+  pcall(api.nvim_win_set_cursor, 0, warp_item_entry.cursor)
 end
 
 ---Update entries if file or folder was updated

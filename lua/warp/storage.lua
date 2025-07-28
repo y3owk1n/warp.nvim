@@ -50,6 +50,7 @@ end
 ---Load the data from the storage file and set it to the list
 ---@param storage_path? string The path of the storage file
 ---@return Warp.ListItem[] items The list of items
+---@see warp.nvim.types.Warp.ListItem
 ---@usage `require('warp.storage').load()`
 function M.load(storage_path)
   if not storage_path then
@@ -90,6 +91,7 @@ local last_saved_storage_path = nil
 ---@param data? Warp.ListItem[] The list of items
 ---@param storage_path? string The path of the storage file
 ---@return nil
+---@see warp.nvim.types.Warp.ListItem
 ---@usage `require('warp.storage').save()`
 function M.save(data, storage_path)
   if not storage_path then
