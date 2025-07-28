@@ -74,7 +74,7 @@ function M.render_warp_list(parent_item, warp_list, target_win, active_bufnr, ft
 
   local warp_list_win_id = target_win or api.nvim_open_win(bufnr, false, win_opts)
 
-  vim.wo[warp_list_win_id].cursorline = true
+  vim.wo[warp_list_win_id].cursorline = vim.o.cursorline
 
   if not warp_list_win_id then
     notify.error("Failed to open native float window for warp list")
@@ -258,7 +258,7 @@ function M.render_help(target_win)
 
   local warp_help_win_id = target_win or api.nvim_open_win(bufnr, false, win_opts)
 
-  vim.wo[warp_help_win_id].cursorline = true
+  vim.wo[warp_help_win_id].cursorline = vim.o.cursorline
 
   if not warp_help_win_id then
     notify.error("Failed to open native float window for warp help")
