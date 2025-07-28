@@ -92,7 +92,7 @@ require("warp").setup({
   -- you can do fancy detection like if condition then a root that you want, else then another root or a global root
   root_detection_fn = require("warp.builtins").root_detection_fn,
   -- [list_item_format_fn] this function must return in Warp.FormattedLineOpts[]
-  -- Warp.FormattedLineOpts is a table with 2 fields, display_text and optional hl_group
+  -- Warp.FormattedLineOpts is a table and some notable fields are `display_text`, optional `hl_group` and `is_virtual`
   -- passing anything other than specified format will be ommited
   list_item_format_fn = require("warp.builtins").list_item_format_fn,
   -- [keymaps] if you don't want certain keymaps, just set it to {}
