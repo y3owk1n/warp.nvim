@@ -79,13 +79,14 @@ function M.list_item_format_fn(entry, idx, is_active, is_file_exists)
   }
 
   if not is_file_exists then
-    display_path.display_text = display_path.display_text .. "  "
+    display_path.display_text = string.format("%s %s", display_path.display_text, "")
     display_path.hl_group = "Error"
   end
 
   ---@type Warp.FormattedLineOpts
   local display_active_marker = {
-    display_text = "*",
+    display_text = "",
+    hl_group = "Added",
   }
 
   return {

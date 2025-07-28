@@ -32,6 +32,8 @@ local M = {}
 ---@class Warp.FormattedLineOpts
 ---@field display_text string The display text
 ---@field hl_group? string The highlight group of the text
+---@field col_start? number The start column of the text, NOTE: this is calculated and for type purpose only
+---@field col_end? number The end column of the text, NOTE: this is calculated and for type purpose only
 
 ---@class Warp.Config.Window
 ---@field list? vim.api.keyset.win_config|fun(lines: string[]):vim.api.keyset.win_config The window configurations for the list window
