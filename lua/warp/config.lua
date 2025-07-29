@@ -18,10 +18,24 @@
 ---    move_down = { "<C-j>" },
 ---    show_help = { "g?" },
 ---  },
---- window = {
----   list = {},
----   help = {},
---- },
+---  window = {
+---    list = {},
+---    help = {},
+---  },
+---  hl_groups = {
+---    list_normal = { link = "Normal" },
+---    list_border = { link = "FloatBorder" },
+---    list_title = { link = "FloatTitle" },
+---    list_footer = { link = "FloatFooter" },
+---    list_cursor_line = { link = "CursorLine" },
+---    list_item_active = { link = "Added" },
+---    list_item_error = { link = "Error" },
+---    help_normal = { link = "Normal" },
+---    help_border = { link = "FloatBorder" },
+---    help_title = { link = "FloatTitle" },
+---    help_footer = { link = "FloatFooter" },
+---    help_cursor_line = { link = "CursorLine" },
+---  },
 ---}
 ---<
 ---
@@ -59,6 +73,22 @@ M.defaults = {
   window = {
     list = {},
     help = {},
+  },
+  hl_groups = {
+    --- list window hl
+    list_normal = { link = "Normal" },
+    list_border = { link = "FloatBorder" },
+    list_title = { link = "FloatTitle" },
+    list_footer = { link = "FloatFooter" },
+    list_cursor_line = { link = "CursorLine" },
+    list_item_active = { link = "Added" },
+    list_item_error = { link = "Error" },
+    --- help window hl
+    help_normal = { link = "Normal" },
+    help_border = { link = "FloatBorder" },
+    help_title = { link = "FloatTitle" },
+    help_footer = { link = "FloatFooter" },
+    help_cursor_line = { link = "CursorLine" },
   },
 }
 
@@ -234,6 +264,18 @@ function M.setup_usercmds()
 end
 
 ---@private
+---Setup highlight groups
+---@return nil
+function M.setup_hl_groups()
+  local hl_groups = M.config.hl_groups or {}
+
+  for group_name, hl_group in pairs(hl_groups) do
+    group_name = utils.hlname(group_name)
+    vim.api.nvim_set_hl(0, group_name, hl_group)
+  end
+end
+
+---@private
 ---Setup Warp
 ---@param user_config Warp.Config
 ---@return nil
@@ -242,6 +284,7 @@ function M.setup(user_config)
 
   M.setup_autocmds()
   M.setup_usercmds()
+  M.setup_hl_groups()
 
   list.init()
 end

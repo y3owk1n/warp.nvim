@@ -14,6 +14,7 @@ local M = {}
 ---@field list_item_format_fn? fun(warp_item_entry: Warp.ListItem, index: number, is_active: boolean|nil, is_file_exists: boolean|nil): Warp.FormattedLineOpts[] The function to format the list items lines, defaults to `require("warp.ui").default_list_item_format`
 ---@field keymaps? Warp.Config.Keymaps The keymaps for actions
 ---@field window? Warp.Config.Window The windows configurations
+---@field hl_groups? table<string, vim.api.keyset.highlight> The highlight groups for the list
 
 ---@class Warp.Config.Keymaps
 ---@field quit? string[]

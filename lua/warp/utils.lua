@@ -25,12 +25,22 @@ end
 
 ---Create an augroup
 ---@param name string The name of the augroup
----@return integer The augroup ID
+---@return integer augroup The augroup ID
 ---@usage `require('warp.utils').augroup("my_augroup")`
 function M.augroup(name)
   local formatted = M.format_string_to_pascal_case(name)
 
   return api.nvim_create_augroup("Warp" .. formatted, { clear = true })
+end
+
+---Create a highlight group name
+---@param name string The name of the highlight group
+---@return string hl_name The formatted highlight group name
+---@usage `require('warp.utils').hlname("my_hl_group")`
+function M.hlname(name)
+  local formatted = M.format_string_to_pascal_case(name)
+
+  return "Warp" .. formatted
 end
 
 ---Check if a file exists
