@@ -84,6 +84,14 @@ function M.render_warp_list(parent_item, warp_list, active_winid, active_bufnr, 
 
   local warp_list_winid = active_winid or api.nvim_open_win(bufnr, false, win_opts)
 
+  vim.wo[warp_list_winid].winhighlight = string.format(
+    "NormalFloat:%s,FloatBorder:%s,FloatTitle:%s,CursorLine:%s,FloatFooter:%s",
+    utils.hlname("list_normal"),
+    utils.hlname("list_border"),
+    utils.hlname("list_title"),
+    utils.hlname("list_cursor_line"),
+    utils.hlname("list_footer")
+  )
   vim.wo[warp_list_winid].cursorline = vim.o.cursorline
 
   if not warp_list_winid then
@@ -278,6 +286,14 @@ function M.render_help(active_winid)
 
   local warp_help_winid = active_winid or api.nvim_open_win(bufnr, false, win_opts)
 
+  vim.wo[warp_help_winid].winhighlight = string.format(
+    "NormalFloat:%s,FloatBorder:%s,FloatTitle:%s,CursorLine:%s,FloatFooter:%s",
+    utils.hlname("help_normal"),
+    utils.hlname("help_border"),
+    utils.hlname("help_title"),
+    utils.hlname("help_cursor_line"),
+    utils.hlname("help_footer")
+  )
   vim.wo[warp_help_winid].cursorline = vim.o.cursorline
 
   if not warp_help_winid then

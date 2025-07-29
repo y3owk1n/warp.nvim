@@ -7,6 +7,7 @@
 local M = {}
 
 local fn = vim.fn
+local utils = require("warp.utils")
 
 ---Find the root directory based on root markers, or fall back to cwd
 ---@return string root_path The root path
@@ -62,12 +63,12 @@ function M.list_item_format_fn(warp_item_entry, index, is_active, is_file_exists
 
   if is_active then
     display_index.display_text = "*"
-    display_index.hl_group = "Added"
+    display_index.hl_group = utils.hlname("list_item_active")
   end
 
   if not is_file_exists then
     display_index.display_text = "x"
-    display_index.hl_group = "Error"
+    display_index.hl_group = utils.hlname("list_item_error")
   end
 
   local has_devicons, nvim_web_devicons = pcall(require, "nvim-web-devicons")
@@ -93,7 +94,7 @@ function M.list_item_format_fn(warp_item_entry, index, is_active, is_file_exists
   }
 
   if not is_file_exists then
-    display_path.hl_group = "Error"
+    display_path.hl_group = utils.hlname("list_item_error")
   end
 
   return {

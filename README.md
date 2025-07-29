@@ -42,6 +42,7 @@ Just you, your files, and a fast way to warp between them.
 - [Events](#%EF%B8%8F-events)
 - [Integrations](#-integrations)
 - [UI Customization Example](#-ui-customization-example)
+- [Hlgroup](#-hlgroups)
 - [Contributing](#-contributing)
 
 ## 📦 Installation
@@ -115,6 +116,22 @@ require("warp").setup({
     -- can be a table of `win_config` or a function that takes a list of lines and returns a `win_config`
     help = {},
   },
+  hl_groups = {
+    --- list window hl
+    list_normal = { link = "Normal" },
+    list_border = { link = "FloatBorder" },
+    list_title = { link = "FloatTitle" },
+    list_footer = { link = "FloatFooter" },
+    list_cursor_line = { link = "CursorLine" },
+    list_item_active = { link = "Added" },
+    list_item_error = { link = "Error" },
+    --- help window hl
+    help_normal = { link = "Normal" },
+    help_border = { link = "FloatBorder" },
+    help_title = { link = "FloatTitle" },
+    help_footer = { link = "FloatFooter" },
+    help_cursor_line = { link = "CursorLine" },
+  },
 }
 ```
 
@@ -128,6 +145,7 @@ require("warp").setup({
 ---@field list_item_format_fn? fun(warp_item_entry: Warp.ListItem, index: number, is_active: boolean|nil, is_file_exists: boolean|nil): Warp.FormattedLineOpts[] The function to format the list items lines, defaults to `require("warp.ui").default_list_item_format`
 ---@field keymaps? Warp.Config.Keymaps The keymaps for actions
 ---@field window? Warp.Config.Window The windows configurations
+---@field hl_groups? table<string, vim.api.keyset.highlight> The highlight groups for the list
 
 ---@class Warp.Config.Keymaps
 ---@field quit? string[]
@@ -765,6 +783,61 @@ opts = {
     end,
   },
 }
+```
+
+## 🎨 Hlgroups
+
+All the hlgroups are customizable in config via `hl_groups` field. And the below are the defaults.
+
+### Hlgroups for List window
+
+- `WarpListNormal` - links to `Normal`
+- `WarpListBorder` - links to `FloatBorder`
+- `WarpListTitle` - links to `FloatTitle`
+- `WarpListFooter` - links to `FloatFooter`
+- `WarpListCursorLine` - links to `CursorLine`
+- `WarpListItemActive` - links to `Added`
+- `WarpListItemError` - links to `Error`
+
+### Hlgroups for Help window
+
+- `WarpHelpNormal` - links to `Normal`
+- `WarpHelpBorder` - links to `FloatBorder`
+- `WarpHelpTitle` - links to `FloatTitle`
+- `WarpHelpFooter` - links to `FloatFooter`
+- `WarpHelpCursorLine` - links to `CursorLine`
+
+### Adding your own hlgroups for custom formatter fn
+
+Note that this is just one way to do it. You don't have to use the `hl_groups` opts if you don't want to and feel free
+todo manual `vim.api.nvim_set_hl` somewhere in your config and use it in formatter fn too.
+
+```lua
+-- first add it to the hl_groups field in config
+{
+  hl_groups = {
+    my_hl_group = { link = "Added" }, -- set anything as per `vim.api.vim.api.keyset.highlight`
+  },
+}
+
+-- then use it in your formatter fn
+{
+  list_item_format_fn = function(...)
+    local utils = require("warp.utils")
+    -- do some computation or conditional logic
+    return {
+      {
+        display_text = "hello world",
+        -- set the defined hl here
+        -- notice that you can use the `utils.hlname` to get the hlgroup name with proper formatting
+        -- or just do "WarpMyHlGroup"
+        -- the `utils.hlname` is just a convenient helper that parses the string and converts it to PascalCase with `Warp` prefix
+        hl_group = utils.hlname("my_hl_group"),
+      }
+    }
+  end
+}
+
 ```
 
 ## 🤝 Contributing
