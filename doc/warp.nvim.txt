@@ -214,10 +214,24 @@ Default Configuration:
     move_down = { "<C-j>" },
     show_help = { "g?" },
   },
- window = {
-   list = {},
-   help = {},
- },
+  window = {
+    list = {},
+    help = {},
+  },
+  hl_groups = {
+    list_normal = { link = "Normal" },
+    list_border = { link = "FloatBorder" },
+    list_title = { link = "FloatTitle" },
+    list_footer = { link = "FloatFooter" },
+    list_cursor_line = { link = "CursorLine" },
+    list_item_active = { link = "Added" },
+    list_item_error = { link = "Error" },
+    help_normal = { link = "Normal" },
+    help_border = { link = "FloatBorder" },
+    help_title = { link = "FloatTitle" },
+    help_footer = { link = "FloatFooter" },
+    help_cursor_line = { link = "CursorLine" },
+  },
 }
 <
 
@@ -666,11 +680,26 @@ M.augroup({name})                                           *warp.utils.augroup*
         {name}  (string)  The name of the augroup
 
     Returns: ~
-        (integer)  augroup ID
+        (integer)  The augroup ID
 
     Usage: ~
 >lua
         require('warp.utils').augroup("my_augroup")
+<
+
+
+M.hlname({name})                                             *warp.utils.hlname*
+    Create a highlight group name
+
+    Parameters: ~
+        {name}  (string)  The name of the highlight group
+
+    Returns: ~
+        (string)  The formatted highlight group name
+
+    Usage: ~
+>lua
+        require('warp.utils').hlname("my_hl_group")
 <
 
 
@@ -941,6 +970,7 @@ Warp.Config                                             *warp.types.Warp.Config*
         {list_item_format_fn?}  (fun(warp_item_entry:Warp.ListItem,index:number,is_active:boolean|nil,is_file_exists:boolean|nil):Warp.FormattedLineOpts[])  The function to format the list items lines, defaults to `require("warp.ui").default_list_item_format`
         {keymaps?}              (Warp.Config.Keymaps)                                                                                                        The keymaps for actions
         {window?}               (Warp.Config.Window)                                                                                                         The windows configurations
+        {hl_groups?}            (table<string,vim.api.keyset.highlight>)                                                                                     The highlight groups for the list
 
 
 Warp.Config.Keymaps                             *warp.types.Warp.Config.Keymaps*
