@@ -1,5 +1,28 @@
 # Changelog
 
+## [1.3.1](https://github.com/y3owk1n/warp.nvim/compare/v1.3.0...v1.3.1) (2025-07-29)
+
+
+### Bug Fixes
+
+* add `show_help` to docs config section ([#58](https://github.com/y3owk1n/warp.nvim/issues/58)) ([0088800](https://github.com/y3owk1n/warp.nvim/commit/008880048beed811dcee2e321b8979447f3e1365))
+* add configurable `win_opts` for each `warp` managed windows ([#62](https://github.com/y3owk1n/warp.nvim/issues/62)) ([531594b](https://github.com/y3owk1n/warp.nvim/commit/531594b15e845d88b34de1a0aad18046d5c444dd))
+* add help menu & fix window flashes ([#57](https://github.com/y3owk1n/warp.nvim/issues/57)) ([bc64e74](https://github.com/y3owk1n/warp.nvim/commit/bc64e746677e9ba5dede615a1c24f5c121ecbae8))
+* ensure `cursor` doesn't jump to 1 after `delete` a line ([#56](https://github.com/y3owk1n/warp.nvim/issues/56)) ([8dcb2b8](https://github.com/y3owk1n/warp.nvim/commit/8dcb2b84c36f734c2d4ccdb683367e3e84b64b71))
+* ensure float win_config gets from configurations ([#59](https://github.com/y3owk1n/warp.nvim/issues/59)) ([24222db](https://github.com/y3owk1n/warp.nvim/commit/24222dbd7a9473337a1131e5feaeadd2be3b70f8))
+* improve hl detection logic by calculating the `col_start` & `col_end` for each defined items ([#64](https://github.com/y3owk1n/warp.nvim/issues/64)) ([bab8b65](https://github.com/y3owk1n/warp.nvim/commit/bab8b65ba5171d3c91fbf36ab02a336b5d5d5eb9))
+* improve UI parsing with virtual text support ([#67](https://github.com/y3owk1n/warp.nvim/issues/67)) ([6b6711c](https://github.com/y3owk1n/warp.nvim/commit/6b6711c16d0ee603202ad4733b213994f5d41105))
+* make `list_item_format_fn` more configurable with text & highlights ([#50](https://github.com/y3owk1n/warp.nvim/issues/50)) ([c4c9429](https://github.com/y3owk1n/warp.nvim/commit/c4c9429178e2f43a9537f07bd53619b407f9b9f5))
+* make hlgroups customisable ([#69](https://github.com/y3owk1n/warp.nvim/issues/69)) ([ae74331](https://github.com/y3owk1n/warp.nvim/commit/ae74331e51eb58b91cbd1c083690a9b7f130eb66))
+* make most naming of variables more concise ([#65](https://github.com/y3owk1n/warp.nvim/issues/65)) ([9822b38](https://github.com/y3owk1n/warp.nvim/commit/9822b380f02955215f8e839397427a80373e43e4))
+* make pruning configurable and update list item formatter ([#53](https://github.com/y3owk1n/warp.nvim/issues/53)) ([fc8254a](https://github.com/y3owk1n/warp.nvim/commit/fc8254aa2ba31b37e2ed29c33893a601f87d6e31))
+* minimise repeated imports ([#52](https://github.com/y3owk1n/warp.nvim/issues/52)) ([b0fbb5f](https://github.com/y3owk1n/warp.nvim/commit/b0fbb5f81842d71c0c2a3c30356a875edcbc8978))
+* remove configurable float_opts ([#60](https://github.com/y3owk1n/warp.nvim/issues/60)) ([cfae79a](https://github.com/y3owk1n/warp.nvim/commit/cfae79ad6db712731b1b5d0007e7b1ccd4a4d479))
+* remove Snacks.debug, oppsie ([#63](https://github.com/y3owk1n/warp.nvim/issues/63)) ([6d85fdd](https://github.com/y3owk1n/warp.nvim/commit/6d85fdd37b6ac340fc9d2b7cd793ae1990022ecf))
+* set cursorline to `vim.o.cursorline` ([#61](https://github.com/y3owk1n/warp.nvim/issues/61)) ([7a20870](https://github.com/y3owk1n/warp.nvim/commit/7a20870e587418fa32c94c47dfd7df2266ab0abc))
+* show `cursorline` in float ([#55](https://github.com/y3owk1n/warp.nvim/issues/55)) ([c9060f5](https://github.com/y3owk1n/warp.nvim/commit/c9060f59b5796c7936187dcb1c7f99e7858ea2dc))
+* update docs & types typo ([#68](https://github.com/y3owk1n/warp.nvim/issues/68)) ([1556818](https://github.com/y3owk1n/warp.nvim/commit/155681806f7b9e71d0ac9ff53cc6fcfbaf5a1619))
+
 ## [1.3.0](https://github.com/y3owk1n/warp.nvim/compare/v1.2.0...v1.3.0) (2025-07-26)
 
 
