@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.2](https://github.com/y3owk1n/warp.nvim/compare/v1.3.1...v1.3.2) (2025-08-10)
+
+
+### Bug Fixes
+
+* **ci:** move docs to its own workflow ([#70](https://github.com/y3owk1n/warp.nvim/issues/70)) ([a2d49da](https://github.com/y3owk1n/warp.nvim/commit/a2d49da69e55c3ed18134957e309288c84436775))
+
 ## [1.3.1](https://github.com/y3owk1n/warp.nvim/compare/v1.3.0...v1.3.1) (2025-07-29)
 
 
