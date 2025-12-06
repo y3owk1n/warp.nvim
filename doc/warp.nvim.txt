@@ -507,8 +507,7 @@ UI modules                                                             *warp.ui*
 
 UI related implementations
 
-                                              *warp.ui.set_standard_buf_options*
-M.set_standard_buf_options({bufnr}, {ft})
+M.set_standard_buf_options({bufnr}, {ft})     *warp.ui.set_standard_buf_options*
     Set standard buffer options
 
     Parameters: ~
@@ -633,8 +632,7 @@ M.get_formatted_help_lines()                  *warp.ui.get_formatted_help_lines*
 <
 
 
-                                                   *warp.ui.set_list_item_hl_fn*
-M.set_list_item_hl_fn({bufnr}, {line_data})
+M.set_list_item_hl_fn({bufnr}, {line_data})        *warp.ui.set_list_item_hl_fn*
     Set the highlight for the list items
 
     Parameters: ~
@@ -658,7 +656,8 @@ Utility functions                                                   *warp.utils*
 
 Utilities related implementations
 
-M.format_string_to_pascal_case({string})*warp.utils.format_string_to_pascal_case*
+                                       *warp.utils.format_string_to_pascal_case*
+M.format_string_to_pascal_case({string})
     Convert a string to PascalCase
 
     Parameters: ~
@@ -764,8 +763,7 @@ M.get_all_onscreen_bufs()                     *warp.utils.get_all_onscreen_bufs*
 <
 
 
-                                             *warp.utils.parse_format_fn_result*
-M.parse_format_fn_result({format_result})
+M.parse_format_fn_result({format_result})    *warp.utils.parse_format_fn_result*
     Parse a format result and ensure all in string
 
     Parameters: ~
@@ -892,8 +890,7 @@ M.list_item_format_fn({warp_item_entry}, {index}, {is_active}, {is_file_exists})
 <
 
 
-                                             *warp.builtins.help_item_format_fn*
-M.help_item_format_fn({keys}, {description})
+M.help_item_format_fn({keys}, {description}) *warp.builtins.help_item_format_fn*
     Default format for the entry lines for help
 
     Parameters: ~
