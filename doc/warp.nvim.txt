@@ -967,7 +967,7 @@ Warp.Config                                             *warp.types.Warp.Config*
         {list_item_format_fn?}  (fun(warp_item_entry:Warp.ListItem,index:number,is_active:boolean|nil,is_file_exists:boolean|nil):Warp.FormattedLineOpts[])  The function to format the list items lines, defaults to `require("warp.ui").default_list_item_format`
         {keymaps?}              (Warp.Config.Keymaps)                                                                                                        The keymaps for actions
         {window?}               (Warp.Config.Window)                                                                                                         The windows configurations
-        {hl_groups?}            (table<string,vim.api.keyset.highlight>)                                                                                     The highlight groups for the list
+        {hl_groups?}            (table<string,Warp.HighlightConfig>)                                                                                         The highlight groups for the list
 
 
 Warp.Config.Keymaps                             *warp.types.Warp.Config.Keymaps*
@@ -1009,8 +1009,39 @@ Warp.ComputedLineOpts : Warp.FormattedLineOpts
 Warp.Config.Window                               *warp.types.Warp.Config.Window*
 
     Fields: ~
-        {list?}  (vim.api.keyset.win_config|fun(lines:string[]):vim.api.keyset.win_config)  The window configurations for the list window
-        {help?}  (vim.api.keyset.win_config|fun(lines:string[]):vim.api.keyset.win_config)  The window configurations for the help window
+        {list?}  (Warp.WindowConfig|fun(lines:string[]):Warp.WindowConfig)  The window configurations for the list window
+        {help?}  (Warp.WindowConfig|fun(lines:string[]):Warp.WindowConfig)  The window configurations for the help window
+
+
+Warp.WindowConfig                                 *warp.types.Warp.WindowConfig*
+
+    Fields: ~
+        {relative?}  ()
+
+
+Warp.HighlightConfig                           *warp.types.Warp.HighlightConfig*
+
+    Fields: ~
+        {fg?}             (integer|string)
+        {bg?}             (integer|string)
+        {sp?}             (integer|string)
+        {blend?}          (integer)
+        {bold?}           (boolean)
+        {standout?}       (boolean)
+        {underline?}      (boolean)
+        {undercurl?}      (boolean)
+        {underdouble?}    (boolean)
+        {underdotted?}    (boolean)
+        {underdashed?}    (boolean)
+        {strikethrough?}  (boolean)
+        {italic?}         (boolean)
+        {reverse?}        (boolean)
+        {nocombine?}      (boolean)
+        {link?}           (string)
+        {default?}        (boolean)
+        {ctermfg?}        (integer|string)
+        {ctermbg?}        (integer|string)
+        {cterm?}          (table)
 
 
 vim:tw=78:ts=8:noet:ft=help:norl:
