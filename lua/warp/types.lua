@@ -14,7 +14,7 @@ local M = {}
 ---@field list_item_format_fn? fun(warp_item_entry: Warp.ListItem, index: number, is_active: boolean|nil, is_file_exists: boolean|nil): Warp.FormattedLineOpts[] The function to format the list items lines, defaults to `require("warp.ui").default_list_item_format`
 ---@field keymaps? Warp.Config.Keymaps The keymaps for actions
 ---@field window? Warp.Config.Window The windows configurations
----@field hl_groups? table<string, vim.api.keyset.highlight> The highlight groups for the list
+---@field hl_groups? table<string, Warp.HighlightConfig> The highlight groups for the list
 
 ---@class Warp.Config.Keymaps
 ---@field quit? string[]
@@ -40,7 +40,47 @@ local M = {}
 ---@field col_end? number The end column of the text, NOTE: this is calculated and for type purpose only
 
 ---@class Warp.Config.Window
----@field list? vim.api.keyset.win_config|fun(lines: string[]):vim.api.keyset.win_config The window configurations for the list window
----@field help? vim.api.keyset.win_config|fun(lines:string[]):vim.api.keyset.win_config The window configurations for the help window
+---@field list? Warp.WindowConfig|fun(lines: string[]):Warp.WindowConfig The window configurations for the list window
+---@field help? Warp.WindowConfig|fun(lines:string[]):Warp.WindowConfig The window configurations for the help window
+
+---@class Warp.WindowConfig
+---@field relative? "editor"|"win"|"cursor"|"mouse"
+---@field win? integer
+---@field anchor? "NW"|"NE"|"SW"|"SE"
+---@field width? integer
+---@field height? integer
+---@field bufpos? integer[]
+---@field row? integer
+---@field col? integer
+---@field focusable? boolean
+---@field external? boolean
+---@field zindex? integer
+---@field style? "minimal"
+---@field border? string|string[]|table[]
+---@field title? string|string[]
+---@field title_pos? "left"|"center"|"right"
+---@field noautocmd? boolean
+
+---@class Warp.HighlightConfig
+---@field fg? integer|string
+---@field bg? integer|string
+---@field sp? integer|string
+---@field blend? integer
+---@field bold? boolean
+---@field standout? boolean
+---@field underline? boolean
+---@field undercurl? boolean
+---@field underdouble? boolean
+---@field underdotted? boolean
+---@field underdashed? boolean
+---@field strikethrough? boolean
+---@field italic? boolean
+---@field reverse? boolean
+---@field nocombine? boolean
+---@field link? string
+---@field default? boolean
+---@field ctermfg? integer|string
+---@field ctermbg? integer|string
+---@field cterm? table
 
 return M

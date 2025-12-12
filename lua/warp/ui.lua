@@ -63,7 +63,7 @@ function M.render_warp_list(parent_item, warp_list, active_winid, active_bufnr, 
 
   local user_win_opts = require("warp.config").config.window.list or {}
 
-  ---@type vim.api.keyset.win_config
+  ---@type Warp.WindowConfig
   local win_opts = {
     style = "minimal",
     relative = "editor",
@@ -265,7 +265,7 @@ function M.render_help(active_winid)
 
   local user_win_opts = require("warp.config").config.window.help or {}
 
-  ---@type vim.api.keyset.win_config
+  ---@type Warp.WindowConfig
   local win_opts = {
     style = "minimal",
     relative = "cursor",
